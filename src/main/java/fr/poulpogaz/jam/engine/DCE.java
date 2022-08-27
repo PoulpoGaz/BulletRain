@@ -259,7 +259,7 @@ public class DCE implements ICollideEngine {
 
                         Report report2 = edgeEdge(new Edge(p1s, p1e), new Edge(p2s, p2e));
 
-                        if (report2.isIntersect()) {
+                        if (report2.intersect()) {
                             report.combine(report2);
                         }
                     }
@@ -420,7 +420,7 @@ public class DCE implements ICollideEngine {
 
             for (Vector2f point: points) {
 
-                if (pointCircle(point, c).isIntersect()) {
+                if (pointCircle(point, c).intersect()) {
                     return trueReport(c, p);
                 }
             }
@@ -524,7 +524,7 @@ public class DCE implements ICollideEngine {
 
                 Report lineLineReport = edgeEdge(new Edge(p, p_r), new Edge(q, q_s));
 
-                if (lineLineReport.isIntersect()) {
+                if (lineLineReport.intersect()) {
                     if (report == null) {
                         report = trueReport(p1, p2);
                     }
@@ -545,7 +545,7 @@ public class DCE implements ICollideEngine {
         }
 
         for (Vector2f point: p1.points()) {
-            if (pointPolygon(point, p2).isIntersect()) {
+            if (pointPolygon(point, p2).intersect()) {
                 return trueReport(p1, p2);
             }
         }

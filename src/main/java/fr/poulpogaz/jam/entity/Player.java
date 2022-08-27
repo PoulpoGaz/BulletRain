@@ -2,9 +2,12 @@ package fr.poulpogaz.jam.entity;
 
 import fr.poulpogaz.jam.Constants;
 import fr.poulpogaz.jam.Jam;
+import fr.poulpogaz.jam.engine.polygons.AABB;
 import fr.poulpogaz.jam.engine.polygons.Circle;
+import fr.poulpogaz.jam.engine.polygons.Polygon;
 import fr.poulpogaz.jam.patterns.BulletPattern;
 import fr.poulpogaz.jam.patterns.PlayerBulletPattern;
+import fr.poulpogaz.jam.renderer.Colors;
 import fr.poulpogaz.jam.renderer.ITexture;
 import fr.poulpogaz.jam.renderer.SubTexture;
 import fr.poulpogaz.jam.renderer.Texture;
@@ -14,6 +17,8 @@ import fr.poulpogaz.jam.renderer.io.Input;
 import fr.poulpogaz.jam.renderer.utils.TextureCache;
 import fr.poulpogaz.jam.states.Game;
 import org.joml.Vector2f;
+
+import java.awt.*;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -111,6 +116,21 @@ public class Player extends Entity {
     @Override
     public void render(Graphics2D g2d, FontRenderer f2d) {
         g2d.drawSprite(texture, pos.x - texture.getWidth() / 2f, pos.y - texture.getHeight() / 2f);
+
+        if (slowdown) {
+            g2d.setColor(Colors.RED);
+            g2d.fillCircle(pos.x, pos.y, hitBox.getRadius(), 6);
+        }
+    }
+
+    @Override
+    public Polygon getDetailedHitBox() {
+        return hitBox;
+    }
+
+    @Override
+    public AABB aabb() {
+        return hitBox.getAABB();
     }
 
     public float getPower() {

@@ -6,7 +6,7 @@ public interface MovePattern {
 
     /**
      * @param t parameter t
-     * @return direction of the entity after t
+     * @return direction of the entity after t tick
      */
-    Vector2f dir(float t);
+    Vector2f dir(int t);
 }

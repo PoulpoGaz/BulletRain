@@ -61,7 +61,7 @@ public class Jam implements IGame {
         g2d = new Graphics2D(renderer);
         g2d.setProjection(projection2D);
 
-        f2d = new FontRenderer(100);
+        f2d = new FontRenderer(500);
         f2d.setProjection(projection2D);
         f2d.setFont(ImageFont.getOrCreate("dialog24iso8859_1", new Font("dialog", Font.PLAIN, 24), StandardCharsets.ISO_8859_1));
         f2d.setColor(Colors.WHITE);

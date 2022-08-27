@@ -1,5 +1,7 @@
 package fr.poulpogaz.jam.entity;
 
+import fr.poulpogaz.jam.engine.polygons.AABB;
+import fr.poulpogaz.jam.engine.polygons.Polygon;
 import fr.poulpogaz.jam.renderer.g2d.FontRenderer;
 import fr.poulpogaz.jam.renderer.g2d.Graphics2D;
 import fr.poulpogaz.jam.renderer.io.Input;
@@ -20,6 +22,10 @@ public abstract class Entity {
     public abstract void update(Input in, float delta);
 
     public abstract void render(Graphics2D g2d, FontRenderer f2d);
+
+    public abstract Polygon getDetailedHitBox();
+
+    public abstract AABB aabb();
 
     public float getX() {
         return pos.x;

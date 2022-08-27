@@ -1,8 +1,13 @@
 package fr.poulpogaz.jam.patterns;
 
-import fr.poulpogaz.jam.entity.Bullet;
+import fr.poulpogaz.jam.entity.BasicBullet;
+import fr.poulpogaz.jam.entity.TextureBullet;
 import fr.poulpogaz.jam.entity.Entity;
 import fr.poulpogaz.jam.entity.Player;
+import fr.poulpogaz.jam.renderer.ITexture;
+import fr.poulpogaz.jam.renderer.SubTexture;
+import fr.poulpogaz.jam.renderer.Texture;
+import fr.poulpogaz.jam.renderer.utils.TextureCache;
 import fr.poulpogaz.jam.states.Game;
 import org.joml.Vector2f;
 
@@ -19,11 +24,18 @@ public class PlayerBulletPattern implements BulletPattern {
 
     private static final Vector2f BULLET_DIR = new Vector2f(0, -5);
 
+    private static ITexture texture;
+
     private final Player player;
     private int tickCount = 0;
 
     public PlayerBulletPattern(Player player) {
         this.player = player;
+
+        if (texture == null) {
+            Texture t = TextureCache.get("textures/tileset.png");
+            texture = new SubTexture(32, 96, 10, 3, t);
+        }
     }
 
     @Override
@@ -50,62 +62,62 @@ public class PlayerBulletPattern implements BulletPattern {
     private void level1Shots(Game game) {
         Vector2f pos1 = new Vector2f(player.getPos());
         pos1.add(5, -5);
-        game.addBullet(new Bullet(game, true, new LinearPattern(BULLET_DIR), pos1));
+        game.addBullet(new BasicBullet(game, true, new LinearPattern(BULLET_DIR), pos1, texture));
 
         Vector2f pos2 = new Vector2f(player.getPos());
         pos2.add(-5, -5);
-        game.addBullet(new Bullet(game, true, new LinearPattern(BULLET_DIR), pos2));
+        game.addBullet(new BasicBullet(game, true, new LinearPattern(BULLET_DIR), pos2, texture));
     }
 
     private void level2Shots(Game game) {
         Vector2f pos1 = new Vector2f(player.getPos());
         pos1.add(8, -5);
-        game.addBullet(new Bullet(game, true, new LinearPattern(BULLET_DIR), pos1));
+        game.addBullet(new BasicBullet(game, true, new LinearPattern(BULLET_DIR), pos1, texture));
 
         Vector2f pos2 = new Vector2f(player.getPos());
         pos2.add(-8, -5);
-        game.addBullet(new Bullet(game, true, new LinearPattern(BULLET_DIR), pos2));
+        game.addBullet(new BasicBullet(game, true, new LinearPattern(BULLET_DIR), pos2, texture));
 
         Vector2f pos3 = new Vector2f(player.getPos());
         pos3.add(11, -5);
-        game.addBullet(new Bullet(game, true, new LinearPattern(BULLET_DIR), pos3));
+        game.addBullet(new BasicBullet(game, true, new LinearPattern(BULLET_DIR), pos3, texture));
 
         Vector2f pos4 = new Vector2f(player.getPos());
         pos4.add(-11, -5);
-        game.addBullet(new Bullet(game, true, new LinearPattern(BULLET_DIR), pos4));
+        game.addBullet(new BasicBullet(game, true, new LinearPattern(BULLET_DIR), pos4, texture));
     }
 
     private void level3Shots(Game game) {
         Vector2f pos1 = new Vector2f(player.getPos());
         pos1.add(13, 0);
-        game.addBullet(new Bullet(game, true, new Level3BulletMovePattern(false, 0.05f), pos1));
+        game.addBullet(new BasicBullet(game, true, new Level3BulletMovePattern(false, 5), pos1, texture));
 
         Vector2f pos2 = new Vector2f(player.getPos());
         pos2.add(-13, 0);
-        game.addBullet(new Bullet(game, true, new Level3BulletMovePattern(true, 0.05f), pos2));
+        game.addBullet(new BasicBullet(game, true, new Level3BulletMovePattern(true, 5), pos2, texture));
 
         Vector2f pos3 = new Vector2f(player.getPos());
         pos3.add(13, 3);
-        game.addBullet(new Bullet(game, true, new Level3BulletMovePattern(false, 0.1f), pos3));
+        game.addBullet(new BasicBullet(game, true, new Level3BulletMovePattern(false, 10), pos3, texture));
 
         Vector2f pos4 = new Vector2f(player.getPos());
         pos4.add(-13, 3);
-        game.addBullet(new Bullet(game, true, new Level3BulletMovePattern(true, 0.1f), pos4));
+        game.addBullet(new BasicBullet(game, true, new Level3BulletMovePattern(true, 10), pos4, texture));
     }
 
     private static class Level3BulletMovePattern implements MovePattern {
 
         private final boolean left;
-        private final float length;
+        private final int length;
 
-        public Level3BulletMovePattern(boolean left, float length) {
+        public Level3BulletMovePattern(boolean left, int length) {
             this.left = left;
             this.length = length;
         }
 
         @Override
-        public Vector2f dir(float t) {
-            if (t <= length) {
+        public Vector2f dir(int t) {
+            if (t < length) {
                 if (left) {
                     return new Vector2f(-5, -5);
                 } else {

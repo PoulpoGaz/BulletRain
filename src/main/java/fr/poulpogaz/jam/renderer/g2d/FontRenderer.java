@@ -154,6 +154,7 @@ public class FontRenderer implements IFontRenderer, Disposable {
         }
         instanceBuffer.position(0);
         instanceBuffer.limit(instanceBuffer.capacity());
+        dirty = false;
     }
 
     @Override

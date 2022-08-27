@@ -21,15 +21,15 @@ public class Report {
         this.intersectPoints = new ArrayList<>();
     }
 
-    protected void addPoint(Vector2f point) {
+    void addPoint(Vector2f point) {
         intersectPoints.add(point);
     }
 
-    protected void combine(Report report) {
+    void combine(Report report) {
         intersectPoints.addAll(report.getIntersectPoints());
     }
 
-    public boolean isIntersect() {
+    public boolean intersect() {
         return intersect;
     }
 
