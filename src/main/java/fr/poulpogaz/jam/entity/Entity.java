@@ -3,14 +3,23 @@ package fr.poulpogaz.jam.entity;
 import fr.poulpogaz.jam.renderer.g2d.FontRenderer;
 import fr.poulpogaz.jam.renderer.g2d.Graphics2D;
 import fr.poulpogaz.jam.renderer.io.Input;
+import fr.poulpogaz.jam.states.Game;
+
+import java.util.Objects;
 
 public abstract class Entity {
+
+    protected final Game game;
 
     protected int x;
     protected int y;
 
     protected int vx;
     protected int vy;
+
+    public Entity(Game game) {
+        this.game = Objects.requireNonNull(game);
+    }
 
     public abstract void update(Input in, float delta);
 

@@ -9,14 +9,16 @@ import fr.poulpogaz.jam.renderer.g2d.FontRenderer;
 import fr.poulpogaz.jam.renderer.g2d.Graphics2D;
 import fr.poulpogaz.jam.renderer.io.Input;
 import fr.poulpogaz.jam.renderer.utils.TextureCache;
+import fr.poulpogaz.jam.states.Game;
 
 import static org.lwjgl.glfw.GLFW.*;
 
 public class Player extends Entity {
 
-    private ITexture texture;
+    private final ITexture texture;
 
-    public Player() {
+    public Player(Game game) {
+        super(game);
         Texture tex = TextureCache.get("textures/tileset.png");
         texture = new SubTexture(0, 96, 27, 35, tex);
 
@@ -65,6 +67,14 @@ public class Player extends Entity {
 
         x += vx;
         y += vy;
+
+        if (in.keyPressed(GLFW_KEY_X)) {
+            shot();
+        }
+    }
+
+    public void shot() {
+
     }
 
     @Override
