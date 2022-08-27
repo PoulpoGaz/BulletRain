@@ -25,7 +25,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>fr.poulpogaz.isekai.game.Main</mainClass>
+                            <mainClass>fr.poulpogaz.jam.Main</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

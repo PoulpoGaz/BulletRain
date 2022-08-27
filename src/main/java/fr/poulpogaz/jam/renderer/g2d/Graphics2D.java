@@ -2,7 +2,7 @@ package fr.poulpogaz.jam.renderer.g2d;
 
 import fr.poulpogaz.jam.renderer.Colors;
 import fr.poulpogaz.jam.renderer.IColor;
-import fr.poulpogaz.jam.renderer.Texture;
+import fr.poulpogaz.jam.renderer.ITexture;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 
@@ -82,7 +82,7 @@ public class Graphics2D implements IGraphics2D {
     }
 
     @Override
-    public void drawSprite(Texture texture, float dstX, float dstY, float dstWidth, float dstHeight, float srcX, float srcY, float srcWidth, float srcHeight) {
+    public void drawSprite(ITexture texture, float dstX, float dstY, float dstWidth, float dstHeight, float srcX, float srcY, float srcWidth, float srcHeight) {
         if (paint instanceof Paint.TexturePaint texturePaint) {
             if (texturePaint.getTexture() != texture) {
                 texturePaint.setTexture(texture);

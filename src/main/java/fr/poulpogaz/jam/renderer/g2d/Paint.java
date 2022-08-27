@@ -1,6 +1,7 @@
 package fr.poulpogaz.jam.renderer.g2d;
 
 import fr.poulpogaz.jam.renderer.IColor;
+import fr.poulpogaz.jam.renderer.ITexture;
 import fr.poulpogaz.jam.renderer.Texture;
 import org.joml.Vector2f;
 
@@ -106,9 +107,9 @@ public abstract class Paint {
 
     public static abstract class AbstractTexturePaint extends Paint {
 
-        protected Texture texture;
+        protected ITexture texture;
 
-        public AbstractTexturePaint(Texture texture) {
+        public AbstractTexturePaint(ITexture texture) {
             this.texture = texture;
         }
 
@@ -126,7 +127,7 @@ public abstract class Paint {
             return DrawMode.TEXTURE;
         }
 
-        public Texture getTexture() {
+        public ITexture getTexture() {
             return texture;
         }
     }
@@ -146,7 +147,7 @@ public abstract class Paint {
      */
     public static class TexturePaint extends AbstractTexturePaint {
 
-        private Texture texture;
+        private ITexture texture;
 
         private float tx;
         private float ty;
@@ -158,15 +159,15 @@ public abstract class Paint {
             super(null);
         }
 
-        public TexturePaint(Texture texture, float dstX, float dstY) {
+        public TexturePaint(ITexture texture, float dstX, float dstY) {
             this(texture, dstX, dstY, texture.getWidth(), texture.getHeight(), 0, 0, texture.getWidth(), texture.getHeight());
         }
 
-        public TexturePaint(Texture texture, float dstX, float dstY, float dstWidth, float dstHeight) {
+        public TexturePaint(ITexture texture, float dstX, float dstY, float dstWidth, float dstHeight) {
             this(texture, dstX, dstY, dstWidth, dstHeight, 0, 0, texture.getWidth(), texture.getHeight());
         }
 
-        public TexturePaint(Texture texture, float dstX, float dstY, float dstWidth, float dstHeight, float srcX, float srcY, float srcWidth, float srcHeight) {
+        public TexturePaint(ITexture texture, float dstX, float dstY, float dstWidth, float dstHeight, float srcX, float srcY, float srcWidth, float srcHeight) {
             super(texture);
             set(dstX, dstY, dstWidth, dstHeight, srcX, srcY, srcWidth, srcHeight);
         }
@@ -179,23 +180,23 @@ public abstract class Paint {
             return renderer.texf(u, v);
         }
 
-        public Texture getTexture() {
+        public ITexture getTexture() {
             return texture;
         }
 
-        public void setTexture(Texture texture) {
+        public void setTexture(ITexture texture) {
             this.texture = texture;
         }
 
         public void set(float dstX, float dstY, float dstWidth, float dstHeight, float srcX, float srcY, float srcWidth, float srcHeight) {
-            float invWidth = 1f / texture.getWidth();
-            float invHeight = 1f / texture.getHeight();
+            float invWidth = 1f / texture.getFullWidth();
+            float invHeight = 1f / texture.getFullHeight();
 
             this.sx = 1 / dstWidth * srcWidth * invWidth;
             this.sy = 1 / dstHeight * srcHeight * invHeight;
 
-            this.tx = srcX * invWidth - dstX * sx;
-            this.ty = srcY * invHeight - dstY * sy;
+            this.tx = (srcX + texture.getX()) * invWidth - dstX * sx;
+            this.ty = (srcY + texture.getY()) * invHeight - dstY * sy;
         }
     }
 

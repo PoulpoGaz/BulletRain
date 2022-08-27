@@ -9,6 +9,7 @@ import fr.poulpogaz.jam.renderer.io.Window;
 import fr.poulpogaz.jam.renderer.mesh.MultiMesh;
 import fr.poulpogaz.jam.renderer.shaders.Shaders;
 import fr.poulpogaz.jam.renderer.utils.TextureCache;
+import fr.poulpogaz.jam.states.Game;
 import fr.poulpogaz.jam.states.StateManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,16 +18,18 @@ import org.joml.Matrix4f;
 import java.awt.*;
 import java.nio.charset.StandardCharsets;
 
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_F11;
+import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 
 public class Jam implements IGame {
 
     private static final Logger LOGGER = LogManager.getLogger(Jam.class);
 
-    public static final int DEFAULT_WIDTH = 1400;
-    public static final int DEFAULT_HEIGHT = DEFAULT_WIDTH * 9 / 16;
+    public static final int DEFAULT_WIDTH = 800;
+    public static final int DEFAULT_HEIGHT = DEFAULT_WIDTH * 4 / 3;
+
+    public static final int WIDTH_SCALED = DEFAULT_WIDTH / 2;
+    public static final int HEIGHT_SCALED = DEFAULT_HEIGHT / 2;
 
     private static final Jam INSTANCE = new Jam();
 
@@ -61,7 +64,10 @@ public class Jam implements IGame {
         f2d.setProjection(projection2D);
         f2d.setFont(ImageFont.getOrCreate("dialog24iso8859_1", new Font("dialog", Font.PLAIN, 24), StandardCharsets.ISO_8859_1));
 
+        TextureCache.getOrCreate("textures/tileset.png", true);
+
         stateManager.loadStates();
+        stateManager.switchState(Game.class);
     }
 
 
@@ -70,6 +76,7 @@ public class Jam implements IGame {
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_CULL_FACE);
 
+        g2d.setTransform(new Matrix4f().scale(2));
         stateManager.render(g2d, f2d);
         g2d.end();
     }
@@ -77,10 +84,12 @@ public class Jam implements IGame {
     @Override
     public void update(float delta) {
         if (window.isResized()) {
-            projection2D.setOrtho2D(0, window.getWidth(), window.getHeight(), 0);
-            g2d.setProjection(projection2D);
+            //projection2D.setOrtho2D(0, window.getWidth(), window.getHeight(), 0);
+            //g2d.setProjection(projection2D);
 
-            glViewport(0, 0, window.getWidth(), window.getHeight());
+            glViewport((window.getWidth() - DEFAULT_WIDTH) / 2,
+                    (window.getHeight() - DEFAULT_HEIGHT) / 2,
+                    DEFAULT_WIDTH, DEFAULT_HEIGHT);
             window.setResized(false);
         }
 

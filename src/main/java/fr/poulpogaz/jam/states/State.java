@@ -2,12 +2,14 @@ package fr.poulpogaz.jam.states;
 
 import fr.poulpogaz.jam.renderer.g2d.FontRenderer;
 import fr.poulpogaz.jam.renderer.g2d.Graphics2D;
+import fr.poulpogaz.jam.renderer.io.Input;
 import fr.poulpogaz.jam.renderer.utils.Disposable;
 import org.joml.Vector4f;
 
 public abstract class State implements Disposable {
 
     protected final StateManager manager = StateManager.getInstance();
+    protected final Input input = Input.getInstance();
 
     protected Vector4f clearColor;
 

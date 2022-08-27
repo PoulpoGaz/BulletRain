@@ -37,6 +37,5 @@ public class Log4j2Init {
         builder.add(rootLogger);
 
         ((LoggerContext) LogManager.getContext(false)).reconfigure(builder.build());
-        LogManager.getLogger("ROOT").info("=== STARTING JRACE ===");
     }
 }

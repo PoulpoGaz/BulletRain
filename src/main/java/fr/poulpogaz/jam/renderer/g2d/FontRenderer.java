@@ -1,7 +1,6 @@
 package fr.poulpogaz.jam.renderer.g2d;
 
 import fr.poulpogaz.jam.renderer.IColor;
-import fr.poulpogaz.jam.renderer.Texture;
 import fr.poulpogaz.jam.renderer.mesh.DataType;
 import fr.poulpogaz.jam.renderer.mesh.Mesh;
 import fr.poulpogaz.jam.renderer.mesh.VertexAttribute;
@@ -126,7 +125,7 @@ public class FontRenderer implements IFontRenderer, Disposable {
 
             mesh.render(GL_TRIANGLES);
 
-            Texture.unbind();
+            font.getTexture().unbind();
             Program.unbind();
 
             drawing = false;

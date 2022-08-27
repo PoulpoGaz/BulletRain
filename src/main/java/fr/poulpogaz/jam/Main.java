@@ -14,6 +14,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
         Cache.setRoot();
         Log4j2Init.init();
+        LOGGER.info("=== STARTING JAM ===");
 
         System.setProperty("joml.debug", "true");
         System.setProperty("joml.format", "false");

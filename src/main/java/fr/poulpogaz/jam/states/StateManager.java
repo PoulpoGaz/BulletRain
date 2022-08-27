@@ -27,7 +27,7 @@ public class StateManager {
     }
 
     public void loadStates() {
-       // add(new Game());
+        add(new Game());
 
         GLUtils.setClearColor(defaultClearColor);
     }

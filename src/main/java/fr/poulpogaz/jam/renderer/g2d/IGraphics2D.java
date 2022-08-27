@@ -1,7 +1,7 @@
 package fr.poulpogaz.jam.renderer.g2d;
 
 import fr.poulpogaz.jam.renderer.IColor;
-import fr.poulpogaz.jam.renderer.Texture;
+import fr.poulpogaz.jam.renderer.ITexture;
 import fr.poulpogaz.jam.renderer.utils.Disposable;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
@@ -40,15 +40,15 @@ public interface IGraphics2D extends Disposable {
     void rotate(float theta);
 
 
-    default void drawSprite(Texture texture, float x, float y) {
+    default void drawSprite(ITexture texture, float x, float y) {
         drawSprite(texture, x, y, texture.getWidth(), texture.getHeight(), 0, 0, texture.getWidth(), texture.getHeight());
     }
 
-    default void drawSprite(Texture texture, float x, float y, float width, float height) {
+    default void drawSprite(ITexture texture, float x, float y, float width, float height) {
         drawSprite(texture, x, y, width, height, 0, 0, texture.getWidth(), texture.getHeight());
     }
 
-    void drawSprite(Texture texture, float dstX, float dstY, float dstWidth, float dstHeight, float srcX, float srcY, float srcWidth, float srcHeight);
+    void drawSprite(ITexture texture, float dstX, float dstY, float dstWidth, float dstHeight, float srcX, float srcY, float srcWidth, float srcHeight);
 
     void drawRect(float x, float y, float width, float height);
 

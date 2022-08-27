@@ -1,10 +1,10 @@
 package fr.poulpogaz.jam.renderer.g2d;
 
 import fr.poulpogaz.jam.Cache;
-import fr.poulpogaz.json.*;
 import fr.poulpogaz.jam.renderer.Texture;
 import fr.poulpogaz.jam.renderer.utils.Disposable;
 import fr.poulpogaz.jam.renderer.utils.ImageLoader;
+import fr.poulpogaz.json.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFWImage;

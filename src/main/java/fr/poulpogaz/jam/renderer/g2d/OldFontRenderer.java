@@ -216,7 +216,7 @@ public class OldFontRenderer {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
         Program.unbind();
-        Texture.unbind();
+        font.getTexture().unbind();
     }
 
     private static void fillBuffer(ImageFont font, String text, float x, float y, IColor color, float height_ratio, FloatBuffer instanceBuffer) {
@@ -296,7 +296,7 @@ public class OldFontRenderer {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
         Program.unbind();
-        Texture.unbind();
+        font.getTexture().unbind();
     }
 
     private static int fillBufferMultipleColors(ImageFont font, String text, float x, float y, float height_ratio, FloatBuffer instanceBuffer) {

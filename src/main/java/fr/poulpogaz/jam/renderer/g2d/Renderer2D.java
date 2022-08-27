@@ -1,7 +1,7 @@
 package fr.poulpogaz.jam.renderer.g2d;
 
 import fr.poulpogaz.jam.renderer.IColor;
-import fr.poulpogaz.jam.renderer.Texture;
+import fr.poulpogaz.jam.renderer.ITexture;
 import fr.poulpogaz.jam.renderer.mesh.Mesh;
 import fr.poulpogaz.jam.renderer.shaders.Program;
 import fr.poulpogaz.jam.renderer.utils.Disposable;
@@ -17,7 +17,7 @@ public class Renderer2D implements Disposable {
     private Program custom;
     private int primitiveType;
 
-    private Texture tex;
+    private ITexture tex;
     private float invTexWidth;
     private float invTexHeight;
 
@@ -115,8 +115,8 @@ public class Renderer2D implements Disposable {
     public Renderer2D texfNotNormalized(float u, float v) {
         int i = vertexIndex + texOffset;
 
-        vertices[i] = u * invTexWidth;
-        vertices[i + 1] = v * invTexHeight;
+        vertices[i] = (u + tex.getX()) * invTexWidth;
+        vertices[i + 1] = (v + tex.getY()) * invTexHeight;
 
         return this;
     }
@@ -124,8 +124,8 @@ public class Renderer2D implements Disposable {
     public Renderer2D texi(int u, int v) {
         int i = vertexIndex + texOffset;
 
-        vertices[i] = u * invTexWidth;
-        vertices[i + 1] = v * invTexHeight;
+        vertices[i] = (u + tex.getX()) * invTexWidth;
+        vertices[i + 1] = (v + tex.getY()) * invTexHeight;
 
         return this;
     }
@@ -165,22 +165,22 @@ public class Renderer2D implements Disposable {
         }
 
         if (drawMode.isTexture()) {
-            Texture.unbind();
+            tex.unbind();
         }
 
         isDrawing = false;
     }
 
-    public Texture getTexture() {
+    public ITexture getTexture() {
         return tex;
     }
 
-    public void setTexture(Texture tex) {
+    public void setTexture(ITexture tex) {
         this.tex = tex;
 
         if (tex != null) {
-            invTexWidth = 1f / tex.getWidth();
-            invTexHeight = 1f / tex.getHeight();
+            invTexWidth = 1f / tex.getFullWidth();
+            invTexHeight = 1f / tex.getFullHeight();
         }
     }
 

@@ -1,6 +1,5 @@
 package fr.poulpogaz.jam.renderer;
 
-import fr.poulpogaz.jam.renderer.utils.Disposable;
 import fr.poulpogaz.jam.renderer.utils.ImageLoader;
 import org.lwjgl.glfw.GLFWImage;
 
@@ -12,7 +11,7 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 
-public class Texture implements Disposable {
+public class Texture implements ITexture {
 
     private final int texture;
     private final int width;
@@ -59,30 +58,45 @@ public class Texture implements Disposable {
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
+    @Override
     public void bind() {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture);
     }
 
+    @Override
     public void bind(int index) {
         glActiveTexture(GL_TEXTURE0 + index);
         glBindTexture(GL_TEXTURE_2D, texture);
     }
 
-    public static void unbind() {
+    @Override
+    public void unbind() {
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
-    public int getTexture() {
-        return texture;
+    @Override
+    public int getX() {
+        return 0;
     }
 
+    @Override
+    public int getY() {
+        return 0;
+    }
+
+    @Override
     public int getWidth() {
         return width;
     }
 
+    @Override
     public int getHeight() {
         return height;
+    }
+
+    public int getTexture() {
+        return texture;
     }
 
     public void dispose() {

@@ -1,9 +1,9 @@
 package fr.poulpogaz.jam.renderer.shaders;
 
+import fr.poulpogaz.jam.renderer.utils.Resource;
 import fr.poulpogaz.json.IJsonReader;
 import fr.poulpogaz.json.JsonException;
 import fr.poulpogaz.json.JsonReader;
-import fr.poulpogaz.jam.renderer.utils.Resource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
