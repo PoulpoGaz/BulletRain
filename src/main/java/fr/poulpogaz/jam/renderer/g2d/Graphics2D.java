@@ -59,7 +59,7 @@ public class Graphics2D implements IGraphics2D {
 
     @Override
     public void translate(float x, float y) {
-        Matrix4f transform = newTransform == null ? new Matrix4f() : newTransform;
+        Matrix4f transform = newTransform == null ? new Matrix4f(this.transform) : newTransform;
         transform.translate(x, y, 0);
         newTransform = transform;
         dirty = true;
@@ -67,7 +67,7 @@ public class Graphics2D implements IGraphics2D {
 
     @Override
     public void scale(float sx, float sy) {
-        Matrix4f transform = newTransform == null ? new Matrix4f() : newTransform;
+        Matrix4f transform = newTransform == null ? new Matrix4f(this.transform) : newTransform;
         transform.scale(sx, sy, 0);
         newTransform = transform;
         dirty = true;
@@ -75,7 +75,7 @@ public class Graphics2D implements IGraphics2D {
 
     @Override
     public void rotate(float theta) {
-        Matrix4f transform = newTransform == null ? new Matrix4f() : newTransform;
+        Matrix4f transform = newTransform == null ? new Matrix4f(this.transform) : newTransform;
         transform.rotateZ(theta);
         newTransform = transform;
         dirty = true;

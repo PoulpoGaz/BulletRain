@@ -10,6 +10,9 @@ public class GameEngine implements Runnable {
 
     private static final Logger LOGGER = LogManager.getLogger(GameEngine.class);
 
+    public static final int TPS = 60;
+    public static final float INV_TPS = 1 / 60f;
+
     private final IGame game;
     private final Window window;
     private final Input input;
@@ -35,7 +38,7 @@ public class GameEngine implements Runnable {
     @Override
     public void run() {
         long lastTime = System.nanoTime();
-        double ns = 1000000000.0 / 60.0;
+        double ns = 1000000000.0 / TPS;
         double delta = 0.0;
         long timer = System.currentTimeMillis();
         int fps = 0;

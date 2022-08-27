@@ -1,5 +1,6 @@
 package fr.poulpogaz.jam;
 
+import fr.poulpogaz.jam.renderer.Colors;
 import fr.poulpogaz.jam.renderer.g2d.Graphics2D;
 import fr.poulpogaz.jam.renderer.g2d.*;
 import fr.poulpogaz.jam.renderer.io.GameEngine;
@@ -63,6 +64,7 @@ public class Jam implements IGame {
         f2d = new FontRenderer(100);
         f2d.setProjection(projection2D);
         f2d.setFont(ImageFont.getOrCreate("dialog24iso8859_1", new Font("dialog", Font.PLAIN, 24), StandardCharsets.ISO_8859_1));
+        f2d.setColor(Colors.WHITE);
 
         TextureCache.getOrCreate("textures/tileset.png", true);
 
@@ -79,6 +81,7 @@ public class Jam implements IGame {
         g2d.setTransform(new Matrix4f().scale(2));
         stateManager.render(g2d, f2d);
         g2d.end();
+        f2d.flush();
     }
 
     @Override

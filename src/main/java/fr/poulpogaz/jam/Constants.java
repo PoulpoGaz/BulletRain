@@ -2,6 +2,14 @@ package fr.poulpogaz.jam;
 
 public class Constants {
 
-    public static final int PLAYER_SPEED = 5;
+    public static final boolean DEBUG = true;
+
+    public static final int PLAYER_SPEED = 3;
     public static final int PLAYER_SPEED_SLOW_DOWN = 1;
+
+    public static final int PLAYER_SURVIVE = 1; // added every tick
+    public static final int PLAYER_PICK_SCORE_BLOCK = 100;
+    public static final int PLAYER_KILL = 5000;
+    public static final int PLAYER_KILL_BOSS = 100_000;
+    public static final int PLAYER_PERFECT_STAGE = 100_000;
 }

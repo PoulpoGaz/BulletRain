@@ -4,18 +4,14 @@ import fr.poulpogaz.jam.renderer.g2d.FontRenderer;
 import fr.poulpogaz.jam.renderer.g2d.Graphics2D;
 import fr.poulpogaz.jam.renderer.io.Input;
 import fr.poulpogaz.jam.states.Game;
+import org.joml.Vector2f;
 
 import java.util.Objects;
 
 public abstract class Entity {
 
     protected final Game game;
-
-    protected int x;
-    protected int y;
-
-    protected int vx;
-    protected int vy;
+    protected Vector2f pos;
 
     public Entity(Game game) {
         this.game = Objects.requireNonNull(game);
@@ -25,19 +21,15 @@ public abstract class Entity {
 
     public abstract void render(Graphics2D g2d, FontRenderer f2d);
 
-    public int getX() {
-        return x;
+    public float getX() {
+        return pos.x;
     }
 
-    public int getY() {
-        return y;
+    public float getY() {
+        return pos.y;
     }
 
-    public int getVx() {
-        return vx;
-    }
-
-    public int getVy() {
-        return vy;
+    public Vector2f getPos() {
+        return pos;
     }
 }

@@ -171,7 +171,11 @@ public class FontRenderer implements IFontRenderer, Disposable {
 
     @Override
     public ImageFont getFont() {
-        return newFont;
+        if (newFont != null) {
+            return newFont;
+        } else {
+            return font;
+        }
     }
 
     @Override
