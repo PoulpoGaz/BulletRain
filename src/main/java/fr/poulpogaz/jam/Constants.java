@@ -6,6 +6,8 @@ public class Constants {
     public static final boolean SHOW_HITBOX = DEBUG && false;
 
     // speed
+    public static final int MAP_SPEED = 1;
+
     public static final int PLAYER_SPEED = 3;
     public static final int PLAYER_SPEED_SLOW_DOWN = 1;
 

@@ -69,33 +69,33 @@ public class Player extends Entity {
         int vy = 0;
         if (in.keyPressed(GLFW_KEY_DOWN)) {
             if (slowdown) {
-                vy = Constants.PLAYER_SPEED_SLOW_DOWN;
+                vy += Constants.PLAYER_SPEED_SLOW_DOWN;
             } else {
-                vy = Constants.PLAYER_SPEED;
+                vy += Constants.PLAYER_SPEED;
             }
         }
 
         if (in.keyPressed(GLFW_KEY_UP)) {
             if (slowdown) {
-                vy = -Constants.PLAYER_SPEED_SLOW_DOWN;
+                vy -= Constants.PLAYER_SPEED_SLOW_DOWN;
             } else {
-                vy = -Constants.PLAYER_SPEED;
+                vy -= Constants.PLAYER_SPEED;
             }
         }
 
         if (in.keyPressed(GLFW_KEY_LEFT)) {
             if (slowdown) {
-                vx = -Constants.PLAYER_SPEED_SLOW_DOWN;
+                vx -= Constants.PLAYER_SPEED_SLOW_DOWN;
             } else {
-                vx = -Constants.PLAYER_SPEED;
+                vx -= Constants.PLAYER_SPEED;
             }
         }
 
         if (in.keyPressed(GLFW_KEY_RIGHT)) {
             if (slowdown) {
-                vx = Constants.PLAYER_SPEED_SLOW_DOWN;
+                vx += Constants.PLAYER_SPEED_SLOW_DOWN;
             } else {
-                vx = Constants.PLAYER_SPEED;
+                vx += Constants.PLAYER_SPEED;
             }
         }
 

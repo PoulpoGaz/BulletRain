@@ -14,4 +14,14 @@ public class Mathf {
             return (float) Math.pow(a, b);
         }
     }
+
+    public static int absMod(int a, int mod) {
+        int b = a % mod;
+
+        if (b < 0) {
+            return b + mod;
+        } else {
+            return b;
+        }
+    }
 }

@@ -13,6 +13,7 @@ import org.joml.Vector2f;
 public class Enemy extends Entity {
 
     private final int maxLife;
+    private final EnemyRenderer renderer;
     private final MovePattern movePattern;
     private final BulletPattern bulletPattern;
 
@@ -23,11 +24,13 @@ public class Enemy extends Entity {
 
     public Enemy(Game game,
                  int maxLife,
+                 EnemyRenderer renderer,
                  MovePattern movePattern,
                  BulletPattern bulletPattern,
                  Vector2f pos) {
         super(game);
         this.maxLife = maxLife;
+        this.renderer = renderer;
         this.movePattern = movePattern;
         this.bulletPattern = bulletPattern;
         this.pos = pos;
@@ -48,7 +51,7 @@ public class Enemy extends Entity {
 
     @Override
     public void render(Graphics2D g2d, FontRenderer f2d) {
-
+        renderer.render(g2d, f2d, game, this);
     }
 
     @Override
