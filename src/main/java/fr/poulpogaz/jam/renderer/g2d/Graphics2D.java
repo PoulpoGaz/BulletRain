@@ -581,8 +581,13 @@ public class Graphics2D implements IGraphics2D {
 
             if (paint instanceof Paint.AbstractTexturePaint texturePaint) {
                 renderer.setTexture(texturePaint.getTexture());
+                texturePaint.clean();
             }
+        } else if (paint instanceof Paint.AbstractTexturePaint texturePaint && texturePaint.hasTextureChanged()) {
+            renderer.setTexture(texturePaint.getTexture());
+            texturePaint.clean();
         }
+
         if (newProjection != null) {
             projection = newProjection;
             newProjection = null;

@@ -19,13 +19,16 @@ public abstract class TextureBullet extends AbstractBullet {
                          boolean playerBullet,
                          MovePattern movePattern,
                          Vector2f pos,
-                         ITexture texture) {
-        super(game, playerBullet, movePattern, pos);
+                         ITexture texture,
+                         float damage) {
+        super(game, playerBullet, movePattern, pos, damage);
         this.texture = texture;
     }
 
     @Override
     public void render(Graphics2D g2d, FontRenderer f2d) {
+        super.render(g2d, f2d);
+
         g2d.translate(pos.x, pos.y);
         g2d.rotate(angle);
         g2d.drawSprite(texture, -texture.getWidth() / 2f, -texture.getHeight() / 2f);

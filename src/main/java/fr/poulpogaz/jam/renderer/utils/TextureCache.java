@@ -15,7 +15,7 @@ public class TextureCache {
     }
 
     public static Texture get(String path) {
-        return CACHE.get(path);
+        return CACHE.get("textures/" + path);
     }
 
     public static Texture getOrCreate(String path, boolean resource) throws IOException {
@@ -34,7 +34,7 @@ public class TextureCache {
     }
 
     public static Texture getOrCreate(String path) throws IOException {
-        return getOrCreate(path, true);
+        return getOrCreate("textures/" + path, true);
     }
 
     public static void free() {

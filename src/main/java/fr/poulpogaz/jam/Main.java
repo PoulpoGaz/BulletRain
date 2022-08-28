@@ -19,7 +19,7 @@ public class Main {
         System.setProperty("joml.debug", "true");
         System.setProperty("joml.format", "false");
 
-        GameEngine engine = new GameEngine(Jam.getInstance(), "Jam", Jam.DEFAULT_WIDTH, Jam.DEFAULT_HEIGHT);
+        GameEngine engine = new GameEngine(Jam.getInstance(), "Jam", Jam.WINDOW_WIDTH, Jam.WINDOW_HEIGHT);
 
         try {
             engine.init();

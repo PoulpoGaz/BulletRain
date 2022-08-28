@@ -7,6 +7,7 @@ import fr.poulpogaz.jam.renderer.mesh.VertexAttribute;
 import fr.poulpogaz.jam.renderer.shaders.Program;
 import fr.poulpogaz.jam.renderer.shaders.Shaders;
 import fr.poulpogaz.jam.renderer.utils.Disposable;
+import fr.poulpogaz.jam.utils.GLUtils;
 import org.joml.Matrix4f;
 
 import java.nio.FloatBuffer;
@@ -48,6 +49,8 @@ public class FontRenderer implements IFontRenderer, Disposable {
 
     private boolean drawing;
     private boolean dirty = false;
+
+    private boolean blend = true;
 
     public FontRenderer(int numInstances) {
         mesh = new Mesh(4, 6, GL_STATIC_DRAW, VertexAttribute.position2D(0));
@@ -123,7 +126,15 @@ public class FontRenderer implements IFontRenderer, Disposable {
             shader.setUniformi("font_height", font.getHeight());
             font.getTexture().bind();
 
+            if (blend) {
+                GLUtils.blend();
+            }
+
             mesh.render(GL_TRIANGLES);
+
+            if (blend) {
+                GLUtils.revertBlend();
+            }
 
             font.getTexture().unbind();
             Program.unbind();
@@ -227,6 +238,14 @@ public class FontRenderer implements IFontRenderer, Disposable {
     @Override
     public Matrix4f getTransform() {
         return transform;
+    }
+
+    public boolean isBlend() {
+        return blend;
+    }
+
+    public void setBlend(boolean blend) {
+        this.blend = blend;
     }
 
     @Override

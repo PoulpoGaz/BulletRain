@@ -33,7 +33,7 @@ public class PlayerBulletPattern implements BulletPattern {
         this.player = player;
 
         if (texture == null) {
-            Texture t = TextureCache.get("textures/tileset.png");
+            Texture t = TextureCache.get("tileset.png");
             texture = new SubTexture(32, 96, 10, 3, t);
         }
     }
@@ -62,47 +62,47 @@ public class PlayerBulletPattern implements BulletPattern {
     private void level1Shots(Game game) {
         Vector2f pos1 = new Vector2f(player.getPos());
         pos1.add(5, -5);
-        game.addBullet(new BasicBullet(game, true, new LinearPattern(BULLET_DIR), pos1, texture));
+        game.addBullet(new BasicBullet(game, true, new LinearPattern(BULLET_DIR), pos1, texture, player.getPower()));
 
         Vector2f pos2 = new Vector2f(player.getPos());
         pos2.add(-5, -5);
-        game.addBullet(new BasicBullet(game, true, new LinearPattern(BULLET_DIR), pos2, texture));
+        game.addBullet(new BasicBullet(game, true, new LinearPattern(BULLET_DIR), pos2, texture, player.getPower()));
     }
 
     private void level2Shots(Game game) {
         Vector2f pos1 = new Vector2f(player.getPos());
         pos1.add(8, -5);
-        game.addBullet(new BasicBullet(game, true, new LinearPattern(BULLET_DIR), pos1, texture));
+        game.addBullet(new BasicBullet(game, true, new LinearPattern(BULLET_DIR), pos1, texture, player.getPower()));
 
         Vector2f pos2 = new Vector2f(player.getPos());
         pos2.add(-8, -5);
-        game.addBullet(new BasicBullet(game, true, new LinearPattern(BULLET_DIR), pos2, texture));
+        game.addBullet(new BasicBullet(game, true, new LinearPattern(BULLET_DIR), pos2, texture, player.getPower()));
 
         Vector2f pos3 = new Vector2f(player.getPos());
         pos3.add(11, -5);
-        game.addBullet(new BasicBullet(game, true, new LinearPattern(BULLET_DIR), pos3, texture));
+        game.addBullet(new BasicBullet(game, true, new LinearPattern(BULLET_DIR), pos3, texture, player.getPower()));
 
         Vector2f pos4 = new Vector2f(player.getPos());
         pos4.add(-11, -5);
-        game.addBullet(new BasicBullet(game, true, new LinearPattern(BULLET_DIR), pos4, texture));
+        game.addBullet(new BasicBullet(game, true, new LinearPattern(BULLET_DIR), pos4, texture, player.getPower()));
     }
 
     private void level3Shots(Game game) {
         Vector2f pos1 = new Vector2f(player.getPos());
         pos1.add(13, 0);
-        game.addBullet(new BasicBullet(game, true, new Level3BulletMovePattern(false, 5), pos1, texture));
+        game.addBullet(new BasicBullet(game, true, new Level3BulletMovePattern(false, 5), pos1, texture, player.getPower()));
 
         Vector2f pos2 = new Vector2f(player.getPos());
         pos2.add(-13, 0);
-        game.addBullet(new BasicBullet(game, true, new Level3BulletMovePattern(true, 5), pos2, texture));
+        game.addBullet(new BasicBullet(game, true, new Level3BulletMovePattern(true, 5), pos2, texture, player.getPower()));
 
         Vector2f pos3 = new Vector2f(player.getPos());
         pos3.add(13, 3);
-        game.addBullet(new BasicBullet(game, true, new Level3BulletMovePattern(false, 10), pos3, texture));
+        game.addBullet(new BasicBullet(game, true, new Level3BulletMovePattern(false, 10), pos3, texture, player.getPower()));
 
         Vector2f pos4 = new Vector2f(player.getPos());
         pos4.add(-13, 3);
-        game.addBullet(new BasicBullet(game, true, new Level3BulletMovePattern(true, 10), pos4, texture));
+        game.addBullet(new BasicBullet(game, true, new Level3BulletMovePattern(true, 10), pos4, texture, player.getPower()));
     }
 
     private static class Level3BulletMovePattern implements MovePattern {

@@ -108,6 +108,7 @@ public abstract class Paint {
     public static abstract class AbstractTexturePaint extends Paint {
 
         protected ITexture texture;
+        protected boolean hasTextureChanged = false;
 
         public AbstractTexturePaint(ITexture texture) {
             this.texture = texture;
@@ -127,8 +128,21 @@ public abstract class Paint {
             return DrawMode.TEXTURE;
         }
 
+        public void setTexture(ITexture texture) {
+            this.texture = texture;
+            hasTextureChanged = true;
+        }
+
         public ITexture getTexture() {
             return texture;
+        }
+
+        public boolean hasTextureChanged() {
+            return hasTextureChanged;
+        }
+
+        public void clean() {
+            hasTextureChanged = true;
         }
     }
 
@@ -146,8 +160,6 @@ public abstract class Paint {
      * v = ty + y * sy
      */
     public static class TexturePaint extends AbstractTexturePaint {
-
-        private ITexture texture;
 
         private float tx;
         private float ty;
@@ -180,14 +192,6 @@ public abstract class Paint {
             return renderer.texf(u, v);
         }
 
-        public ITexture getTexture() {
-            return texture;
-        }
-
-        public void setTexture(ITexture texture) {
-            this.texture = texture;
-        }
-
         public void set(float dstX, float dstY, float dstWidth, float dstHeight, float srcX, float srcY, float srcWidth, float srcHeight) {
             float invWidth = 1f / texture.getFullWidth();
             float invHeight = 1f / texture.getFullHeight();
@@ -214,10 +218,6 @@ public abstract class Paint {
             Vector2f coord = coords[index];
 
             return renderer.texf(coord.x, coord.y);
-        }
-
-        public void setTexture(Texture texture) {
-            this.texture = texture;
         }
 
         public Vector2f[] getCoords() {

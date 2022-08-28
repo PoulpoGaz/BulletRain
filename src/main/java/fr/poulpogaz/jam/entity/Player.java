@@ -16,11 +16,12 @@ import fr.poulpogaz.jam.renderer.g2d.Graphics2D;
 import fr.poulpogaz.jam.renderer.io.Input;
 import fr.poulpogaz.jam.renderer.utils.TextureCache;
 import fr.poulpogaz.jam.states.Game;
+import fr.poulpogaz.jam.utils.GLUtils;
 import org.joml.Vector2f;
 
-import java.awt.*;
-
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL11.GL_BLEND;
+import static org.lwjgl.opengl.GL11.glEnable;
 
 public class Player extends Entity {
 
@@ -38,7 +39,7 @@ public class Player extends Entity {
         super(game);
         pos = new Vector2f(x, y);
 
-        Texture tex = TextureCache.get("textures/tileset.png");
+        Texture tex = TextureCache.get("tileset.png");
         texture = new SubTexture(0, 96, 27, 35, tex);
 
         power = 4f;
@@ -102,14 +103,14 @@ public class Player extends Entity {
 
         if (pos.x < 0) {
             pos.x = 0;
-        } else if (pos.x >= Jam.WIDTH_SCALED) {
-            pos.x = Jam.WIDTH_SCALED - 1;
+        } else if (pos.x >= Jam.WIDTH) {
+            pos.x = Jam.WIDTH - 1;
         }
 
         if (pos.y < 0) {
             pos.y = 0;
-        } else if (pos.y >= Jam.HEIGHT_SCALED) {
-            pos.y = Jam.HEIGHT_SCALED - 1;
+        } else if (pos.y >= Jam.HEIGHT) {
+            pos.y = Jam.HEIGHT - 1;
         }
     }
 

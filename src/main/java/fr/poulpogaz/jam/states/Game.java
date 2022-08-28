@@ -4,7 +4,6 @@ import fr.poulpogaz.jam.Constants;
 import fr.poulpogaz.jam.Jam;
 import fr.poulpogaz.jam.engine.polygons.AABB;
 import fr.poulpogaz.jam.entity.*;
-import fr.poulpogaz.jam.patterns.StaticPattern;
 import fr.poulpogaz.jam.renderer.ITexture;
 import fr.poulpogaz.jam.renderer.SubTexture;
 import fr.poulpogaz.jam.renderer.Texture;
@@ -12,13 +11,19 @@ import fr.poulpogaz.jam.renderer.g2d.FontRenderer;
 import fr.poulpogaz.jam.renderer.g2d.Graphics2D;
 import fr.poulpogaz.jam.renderer.io.GameEngine;
 import fr.poulpogaz.jam.renderer.utils.TextureCache;
+import fr.poulpogaz.jam.utils.GLUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joml.Math;
 import org.joml.Vector2f;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Game extends State {
+
+    private static final Logger LOGGER = LogManager.getLogger(Game.class);
 
     private final Player player;
     private final List<Enemy> enemies;
@@ -27,16 +32,19 @@ public class Game extends State {
 
     private BasicBullet myBullet;
 
-    private final AABB screen = new AABB(0, 0, Jam.WIDTH_SCALED, Jam.HEIGHT_SCALED);
-    private final AABB largeScreen = new AABB(-100, -100, Jam.WIDTH_SCALED + 200, Jam.HEIGHT_SCALED + 200);
+    private final AABB screen = new AABB(0, 0, Jam.WIDTH, Jam.HEIGHT);
+    private final AABB largeScreen = new AABB(-50, -50, Jam.WIDTH + 100, Jam.HEIGHT + 100);
+
+    private ITexture background;
+    private int mapY;
 
     public Game() {
-        player = new Player(this, Jam.WIDTH_SCALED / 2, Jam.HEIGHT_SCALED / 2);
+        player = new Player(this, Jam.WIDTH / 2, Jam.HEIGHT / 2);
         enemies = new ArrayList<>();
         playerBullets = new ArrayList<>();
         enemiesBullets = new ArrayList<>();
 
-        Texture t = TextureCache.get("textures/tileset.png");
+        Texture t = TextureCache.get("tileset.png");
         ITexture texture = new SubTexture(32, 96, 10, 3, t);
         myBullet = new BasicBullet(this, true, (tick) -> {
             float v = tick * GameEngine.INV_TPS;
@@ -45,11 +53,31 @@ public class Game extends State {
             float vy = Math.sin(v);
 
             return new Vector2f(vx, vy);
-        }, new Vector2f(player.getPos()), texture);
+        }, new Vector2f(player.getPos()), texture, 0);
+
+        try {
+            background = TextureCache.getOrCreate("desert_background.png");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
-    public void render(Graphics2D g2d, FontRenderer f2d) {
+    protected void renderBackground(Graphics2D g2d, FontRenderer f2d) {
+        int texY = background.getHeight() - mapY % background.getHeight() - Jam.HEIGHT;
+
+        if (texY < 0) {
+            int texY2 = background.getHeight() + texY;
+            g2d.drawSprite(background, 0, 0, Jam.WIDTH, -texY, 0, texY2, background.getWidth(), -texY);
+            g2d.drawSprite(background, 0, -texY, Jam.WIDTH, Jam.HEIGHT + texY, 0, 0, background.getWidth(), Jam.HEIGHT + texY);
+        } else {
+            g2d.drawSprite(background, 0, 0, Jam.WIDTH, Jam.HEIGHT, 0, texY, background.getWidth(), Jam.HEIGHT);
+        }
+    }
+
+    @Override
+    protected void renderForeground(Graphics2D g2d, FontRenderer f2d) {
+        GLUtils.blend();
         player.render(g2d, f2d);
 
         for (AbstractBullet p : playerBullets) {
@@ -63,10 +91,11 @@ public class Game extends State {
 
         if (Constants.DEBUG) {
             f2d.drawString("Player: (%d, %d)".formatted((int) player.getX(), (int) player.getY()),
-                    0, f2d.getFont().getHeight());
+                    0, 0);
             f2d.drawString("Number of bullets: %d".formatted(playerBullets.size()),
-                    0, f2d.getFont().getHeight() * 2);
+                    0, f2d.getFont().getHeight());
         }
+        GLUtils.noBlend();
     }
 
     @Override
@@ -87,6 +116,8 @@ public class Game extends State {
         }
 
         myBullet.update(input, delta);
+
+        mapY++;
     }
 
     @Override

@@ -26,11 +26,13 @@ public class Jam implements IGame {
 
     private static final Logger LOGGER = LogManager.getLogger(Jam.class);
 
-    public static final int DEFAULT_WIDTH = 800;
-    public static final int DEFAULT_HEIGHT = DEFAULT_WIDTH * 4 / 3;
+    public static final int HEIGHT = 500;
+    public static final int WIDTH = HEIGHT * 3 / 4;
 
-    public static final int WIDTH_SCALED = DEFAULT_WIDTH / 2;
-    public static final int HEIGHT_SCALED = DEFAULT_HEIGHT / 2;
+    public static final int SCALE_FACTOR = 2;
+
+    public static final int WINDOW_WIDTH = WIDTH * SCALE_FACTOR;
+    public static final int WINDOW_HEIGHT = HEIGHT * SCALE_FACTOR;
 
     private static final Jam INSTANCE = new Jam();
 
@@ -39,7 +41,7 @@ public class Jam implements IGame {
     private Window window;
     private GameEngine engine;
 
-    private final Matrix4f projection2D = new Matrix4f().ortho2D(0, DEFAULT_WIDTH, DEFAULT_HEIGHT, 0);
+    private final Matrix4f projection2D = new Matrix4f().ortho2D(0, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
 
     private Renderer2D renderer;
     private Graphics2D g2d;
@@ -66,7 +68,7 @@ public class Jam implements IGame {
         f2d.setFont(ImageFont.getOrCreate("dialog24iso8859_1", new Font("dialog", Font.PLAIN, 24), StandardCharsets.ISO_8859_1));
         f2d.setColor(Colors.WHITE);
 
-        TextureCache.getOrCreate("textures/tileset.png", true);
+        TextureCache.getOrCreate("tileset.png");
 
         stateManager.loadStates();
         stateManager.switchState(Game.class);
@@ -90,9 +92,9 @@ public class Jam implements IGame {
             //projection2D.setOrtho2D(0, window.getWidth(), window.getHeight(), 0);
             //g2d.setProjection(projection2D);
 
-            glViewport((window.getWidth() - DEFAULT_WIDTH) / 2,
-                    (window.getHeight() - DEFAULT_HEIGHT) / 2,
-                    DEFAULT_WIDTH, DEFAULT_HEIGHT);
+            glViewport((window.getWidth() - WINDOW_WIDTH) / 2,
+                    (window.getHeight() - WINDOW_HEIGHT) / 2,
+                    WINDOW_WIDTH, WINDOW_HEIGHT);
             window.setResized(false);
         }
 
