@@ -1,8 +1,10 @@
 package fr.poulpogaz.jam.states;
 
 import fr.poulpogaz.jam.engine.polygons.AABB;
+import fr.poulpogaz.jam.engine.polygons.Polygon;
 import fr.poulpogaz.jam.entities.Bullet;
 import fr.poulpogaz.jam.entities.Enemy;
+import fr.poulpogaz.jam.particles.Particle;
 import fr.poulpogaz.jam.entities.Player;
 import fr.poulpogaz.jam.renderer.Texture;
 import fr.poulpogaz.jam.renderer.g2d.FontRenderer;
@@ -47,10 +49,14 @@ public class Game extends State {
     private final List<Bullet> playerBullets;
     private final List<Bullet> enemiesBullets;
 
+    // particles
+    private final List<Particle> particles;
+
     public Game() {
         enemies = new ArrayList<>();
         playerBullets = new ArrayList<>();
         enemiesBullets = new ArrayList<>();
+        particles = new ArrayList<>();
     }
 
     @Override
@@ -83,6 +89,10 @@ public class Game extends State {
 
         drawEntities(g2d, f2d);
 
+        for (Particle p : particles) {
+            p.render(g2d, f2d);
+        }
+
         if (DEBUG) {
             drawDebugInfo(g2d, f2d);
         }
@@ -103,9 +113,7 @@ public class Game extends State {
 
         drawBullets(playerBullets, g2d, f2d);
 
-        if (player.getAABB().collide(screen).intersect()) {
-            player.render(g2d, f2d);
-        }
+        player.render(g2d, f2d);
 
         drawBullets(enemiesBullets, g2d, f2d);
     }
@@ -131,17 +139,28 @@ public class Game extends State {
                 0, h * 3);
         f2d.drawString("Number of enemies: %d".formatted(enemies.size()),
                 0, h * 4);
+        f2d.drawString("Number of particles: %d".formatted(particles.size()),
+                0, h * 5);
     }
 
     @Override
     public void update(float delta) {
-        for (Enemy e : enemies) {
+        for (int i = 0; i < enemies.size(); i++) {
+            Enemy e = enemies.get(i);
+
             e.update(input, delta);
+
+            if (!largeScreen.collide(e.getAABB()).intersect()) {
+                enemies.remove(i);
+                i--;
+            }
         }
 
         player.update(input, delta);
         updateBullets(playerBullets, delta);
         updateBullets(enemiesBullets, delta);
+        checkCollisions();
+        updateParticles(delta);
         spawnEnemies();
 
         if (input.keyPressed(GLFW_KEY_R)) {
@@ -156,16 +175,79 @@ public class Game extends State {
     }
 
     private void updateBullets(List<Bullet> bullets, float delta) {
-        for (int i = 0; i < bullets.size(); i++) {
+        int i = 0;
+        while (i < bullets.size()) {
             Bullet p = bullets.get(i);
 
             if (largeScreen.collide(p.getAABB()).intersect()) {
                 p.update(input, delta);
+                i++;
             } else {
                 // remove, bullet is out of the screen and
                 // there is practically no chance the bullet will one day come back
                 bullets.remove(i);
-                i--;
+            }
+        }
+    }
+
+    private void checkCollisions() {
+        // player bullets vs enemies
+        int i = 0;
+
+        loop:
+        while (i < playerBullets.size()) {
+            Bullet playerBullet = playerBullets.get(i);
+            AABB bAABB = playerBullet.getAABB();
+            Polygon p = playerBullet.getDetailedHitBox();
+
+            for (Enemy e : enemies) {
+                AABB eAABB = e.getAABB();
+                Polygon pE = e.getDetailedHitBox();
+
+                if (bAABB.collide(eAABB).intersect() && p.collide(pE).intersect()) {
+                    e.hit(playerBullet);
+                    playerBullets.remove(i);
+                    continue loop;
+                }
+            }
+
+            i++;
+        }
+
+
+        // enemies bullets vs player
+        if (!enemiesBullets.isEmpty()) {
+            AABB playerAABB = player.getAABB();
+            Polygon playerP = player.getDetailedHitBox();
+
+            i = 0;
+            while (i < enemiesBullets.size()) {
+                Bullet bullet = enemiesBullets.get(i);
+
+                AABB eAABB = bullet.getAABB();
+                Polygon pE = bullet.getDetailedHitBox();
+
+                if (playerAABB.collide(eAABB).intersect() && playerP.collide(pE).intersect()) {
+                    player.hit(bullet);
+                    enemiesBullets.remove(i);
+                    break;
+                }
+
+                i++;
+            }
+        }
+    }
+
+    private void updateParticles(float delta) {
+        int i = 0;
+        while (i < particles.size()) {
+            Particle p = particles.get(i);
+
+            if (p.isDied()) {
+                particles.remove(i);
+            } else {
+                p.update(delta);
+                i++;
             }
         }
     }
@@ -200,6 +282,10 @@ public class Game extends State {
         } else {
             enemiesBullets.add(bullet);
         }
+    }
+
+    public void addParticle(Particle particle) {
+        particles.add(particle);
     }
 
     public float getMapScroll() {

@@ -15,7 +15,7 @@ import org.joml.Vector2f;
 
 import static org.lwjgl.glfw.GLFW.*;
 
-public class Player extends Entity {
+public class Player extends LivingEntity {
 
     private final Circle hitBox;
     private float power;
@@ -28,6 +28,7 @@ public class Player extends Entity {
 
     public Player(Game game, Vector2f pos) {
         super(game);
+        life = 1;
         this.pos = new Vector2f(pos);
 
         power = 4f;
@@ -41,20 +42,26 @@ public class Player extends Entity {
 
     @Override
     public void update(Input in, float delta) {
-        slowdown = in.keyPressed(GLFW_KEY_LEFT_SHIFT) || in.keyPressed(GLFW_KEY_RIGHT_SHIFT);
-        move(in);
+        if (isDied()) {
 
-        if (in.keyPressed(GLFW_KEY_X)) {
-            if (!lastWasShooting) {
-                pattern.reset();
-            }
-
-            pattern.addBullets(game, this, true);
-
-            lastWasShooting = true;
         } else {
-            lastWasShooting = false;
+            slowdown = in.keyPressed(GLFW_KEY_LEFT_SHIFT) || in.keyPressed(GLFW_KEY_RIGHT_SHIFT);
+            move(in);
+
+            if (in.keyPressed(GLFW_KEY_X)) {
+                if (!lastWasShooting) {
+                    pattern.reset();
+                }
+
+                pattern.addBullets(game, this, true);
+
+                lastWasShooting = true;
+            } else {
+                lastWasShooting = false;
+            }
         }
+
+        clean();
     }
 
     private void move(Input in) {
@@ -100,6 +107,7 @@ public class Player extends Entity {
 
     @Override
     protected Polygon getDetailedHitBoxImpl() {
+        hitBox.setCenter(pos);
         return hitBox;
     }
 

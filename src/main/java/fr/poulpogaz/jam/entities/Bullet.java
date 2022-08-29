@@ -39,7 +39,7 @@ public class Bullet extends Entity {
         this.playerBullet = playerBullet;
 
         dir = movePattern.dir(0);
-        angle =  computeAngle();
+        angle = computeAngle();
     }
 
     @Override
@@ -70,7 +70,11 @@ public class Bullet extends Entity {
     }
 
     private float computeAngle() {
-        return (float) (Math.atan2(dir.y, dir.x));
+        if (dir.x == 0 && dir.y == 0) {
+            return 0;
+        } else {
+            return (float) (Math.atan2(dir.y, dir.x));
+        }
     }
 
 

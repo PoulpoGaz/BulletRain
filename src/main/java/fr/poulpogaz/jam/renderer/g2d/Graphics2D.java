@@ -83,7 +83,9 @@ public class Graphics2D implements IGraphics2D {
 
     @Override
     public void drawSprite(ITexture texture, float dstX, float dstY, float dstWidth, float dstHeight, float srcX, float srcY, float srcWidth, float srcHeight) {
-        if (paint instanceof Paint.TexturePaint texturePaint) {
+        Paint p = newPaint == null ? paint : newPaint;
+
+        if (p instanceof Paint.TexturePaint texturePaint) {
             if (texturePaint.getTexture() != texture) {
                 texturePaint.setTexture(texture);
                 dirty = true;

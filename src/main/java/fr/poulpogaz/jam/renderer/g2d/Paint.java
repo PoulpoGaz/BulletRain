@@ -5,6 +5,8 @@ import fr.poulpogaz.jam.renderer.ITexture;
 import fr.poulpogaz.jam.renderer.Texture;
 import org.joml.Vector2f;
 
+import java.util.Objects;
+
 public abstract class Paint {
 
     protected Renderer2D renderer;
@@ -117,7 +119,7 @@ public abstract class Paint {
         @Override
         protected boolean compatible(Paint paint) {
             if (paint instanceof AbstractTexturePaint tex) {
-                return tex.getTexture() == texture;
+                return tex.getTexture() == texture && paint.drawMode() == drawMode();
             }
 
             return false;
@@ -201,6 +203,44 @@ public abstract class Paint {
 
             this.tx = (srcX + texture.getX()) * invWidth - dstX * sx;
             this.ty = (srcY + texture.getY()) * invHeight - dstY * sy;
+        }
+    }
+
+    public static class ColorTexturePaint extends TexturePaint {
+
+        private IColor color;
+
+        public ColorTexturePaint(ITexture texture, float dstX, float dstY, IColor color) {
+            super(texture, dstX, dstY);
+            this.color = color;
+        }
+
+        public ColorTexturePaint(ITexture texture, float dstX, float dstY, float dstWidth, float dstHeight, IColor color) {
+            super(texture, dstX, dstY, dstWidth, dstHeight);
+            this.color = color;
+        }
+
+        public ColorTexturePaint(ITexture texture, float dstX, float dstY, float dstWidth, float dstHeight, float srcX, float srcY, float srcWidth, float srcHeight, IColor color) {
+            super(texture, dstX, dstY, dstWidth, dstHeight, srcX, srcY, srcWidth, srcHeight);
+            this.color = color;
+        }
+
+        @Override
+        protected Renderer2D paint(float x, float y, int index) {
+            return super.paint(x, y, index).color(color);
+        }
+
+        @Override
+        protected DrawMode drawMode() {
+            return DrawMode.COLOR_TEXTURE;
+        }
+
+        public IColor getColor() {
+            return color;
+        }
+
+        public void setColor(IColor color) {
+            this.color = color;
         }
     }
 

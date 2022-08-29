@@ -11,7 +11,7 @@ import org.joml.Vector2f;
 
 import java.util.Objects;
 
-public class Enemy extends Entity {
+public class Enemy extends LivingEntity {
 
     private final EnemyScript script;
 
@@ -19,8 +19,6 @@ public class Enemy extends Entity {
     private int movePatternIndex = 0;
     private BulletPattern bulletPattern;
     private MovePattern movePattern;
-
-    private int life;
 
     // time, in tick, since birth
     private int t = 0;
@@ -40,14 +38,16 @@ public class Enemy extends Entity {
 
     @Override
     public void update(Input in, float delta) {
-        movePattern.dir(t, dir);
-        pos.add(dir);
-        bulletPattern.addBullets(game, this, false);
+        if (!isDied()) {
+            movePattern.dir(t, dir);
+            pos.add(dir);
+            bulletPattern.addBullets(game, this, false);
 
-        t++;
-        nextBulletPattern();
-        nextMovePattern();
-        clean();
+            t++;
+            nextBulletPattern();
+            nextMovePattern();
+            clean();
+        }
     }
 
     private void nextBulletPattern() {
@@ -73,7 +73,7 @@ public class Enemy extends Entity {
     }
 
     @Override
-    public Polygon getDetailedHitBoxImpl() {
+    protected Polygon getDetailedHitBoxImpl() {
         return script.enemy().hitBox().getDetailedHitBox(this);
     }
 

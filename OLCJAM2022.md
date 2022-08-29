@@ -68,3 +68,6 @@ TUX!
 ### refs
 https://en.wikipedia.org/wiki/Lists_of_legendary_creatures
 https://en.wikipedia.org/wiki/List_of_legendary_creatures_by_type
+
+
+https://opengameart.org/content/explosions-0
