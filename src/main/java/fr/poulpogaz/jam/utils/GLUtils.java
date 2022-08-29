@@ -9,7 +9,6 @@ import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
 public class GLUtils {
 
     private static boolean blendEnabled = false;
-    private static boolean wasBlendEnabled = false;
 
     public static void setClearColor(Vector4f color) {
         glClearColor(color.x, color.y, color.z, color.w);
@@ -24,14 +23,6 @@ public class GLUtils {
             glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             blendEnabled = true;
-        } else {
-            wasBlendEnabled = true;
-        }
-    }
-
-    public static void revertBlend() {
-        if (!wasBlendEnabled) {
-            noBlend();
         }
     }
 
@@ -39,7 +30,20 @@ public class GLUtils {
         if (blendEnabled) {
             glDisable(GL_BLEND);
             blendEnabled = false;
-            wasBlendEnabled = false;
         }
+    }
+
+    public static void setBlendEnabled(boolean enabled) {
+        if (blendEnabled != enabled) {
+            if (enabled) {
+                blend();
+            } else {
+                noBlend();;
+            }
+        }
+    }
+
+    public static boolean isBlendEnabled() {
+        return blendEnabled;
     }
 }

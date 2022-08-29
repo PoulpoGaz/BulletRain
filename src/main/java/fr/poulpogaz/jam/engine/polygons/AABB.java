@@ -157,6 +157,13 @@ public class AABB extends AbstractPolygon {
         this.height = height;
     }
 
+    public void set(Vector2f a, Vector2f b) {
+        this.x = Math.min(a.x, b.x);
+        this.y = Math.min(a.y, b.y);
+        this.width = Math.abs(a.x - b.x);
+        this.height = Math.abs(a.y - b.y);
+    }
+
     @Override
     public String toString() {
         return "AABB [x=" + x + ", y=" + y + ", width=" + width + ", height=" + height + ", center=" + center() + "]";

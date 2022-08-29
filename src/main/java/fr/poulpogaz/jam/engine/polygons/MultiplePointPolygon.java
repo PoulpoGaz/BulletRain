@@ -83,7 +83,7 @@ public abstract class MultiplePointPolygon extends AbstractPolygon{
         float min_y = Integer.MAX_VALUE;
         float max_y = Integer.MIN_VALUE;
 
-        for (Vector2f point: points) {
+        for (Vector2f point : points) {
             min_x = Math.min(min_x, point.x);
             max_x = Math.max(max_x, point.x);
 

@@ -9,9 +9,13 @@ import fr.poulpogaz.jam.renderer.g2d.FontRenderer;
 import fr.poulpogaz.jam.renderer.g2d.Graphics2D;
 import fr.poulpogaz.jam.renderer.io.Input;
 import fr.poulpogaz.jam.states.Game;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joml.Vector2f;
 
 public abstract class AbstractBullet extends Entity {
+
+    private static final Logger LOGGER = LogManager.getLogger(AbstractBullet.class);
 
     protected final boolean playerBullet;
     protected final MovePattern movePattern;
@@ -56,6 +60,7 @@ public abstract class AbstractBullet extends Entity {
     public void render(Graphics2D g2d, FontRenderer f2d) {
         if (Constants.SHOW_HITBOX) {
             AABB aabb = aabb();
+
             g2d.setColor(Colors.RED);
             g2d.drawRect(aabb.getX(), aabb.getY(), aabb.getWidth(), aabb.getHeight());
         }

@@ -97,7 +97,7 @@ public class InstanceBuffer implements IGLBuffer {
     }
 
     public int getMaxInstances() {
-        return byteBuffer.capacity() /attributes.vertexSizeInBytes();
+        return byteBuffer.capacity() / attributes.vertexSizeInBytes();
     }
 
     public FloatBuffer getBuffer() {
@@ -149,5 +149,9 @@ public class InstanceBuffer implements IGLBuffer {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glDeleteBuffers(glBuffer);
         MemoryUtil.memFree(byteBuffer);
+    }
+
+    public VertexAttributes getAttributes() {
+        return attributes;
     }
 }

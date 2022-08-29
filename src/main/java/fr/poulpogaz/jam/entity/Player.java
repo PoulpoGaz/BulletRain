@@ -16,12 +16,10 @@ import fr.poulpogaz.jam.renderer.g2d.Graphics2D;
 import fr.poulpogaz.jam.renderer.io.Input;
 import fr.poulpogaz.jam.renderer.utils.TextureCache;
 import fr.poulpogaz.jam.states.Game;
-import fr.poulpogaz.jam.utils.GLUtils;
+import org.joml.Math;
 import org.joml.Vector2f;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.GL_BLEND;
-import static org.lwjgl.opengl.GL11.glEnable;
 
 public class Player extends Entity {
 
@@ -35,9 +33,9 @@ public class Player extends Entity {
 
     private boolean lastWasShooting = false;
 
-    public Player(Game game, int x, int y) {
+    public Player(Game game, Vector2f pos) {
         super(game);
-        pos = new Vector2f(x, y);
+        this.pos = pos;
 
         Texture tex = TextureCache.get("tileset.png");
         texture = new SubTexture(0, 96, 27, 35, tex);
@@ -101,17 +99,8 @@ public class Player extends Entity {
 
         pos.add(vx, vy);
 
-        if (pos.x < 0) {
-            pos.x = 0;
-        } else if (pos.x >= Jam.WIDTH) {
-            pos.x = Jam.WIDTH - 1;
-        }
-
-        if (pos.y < 0) {
-            pos.y = 0;
-        } else if (pos.y >= Jam.HEIGHT) {
-            pos.y = Jam.HEIGHT - 1;
-        }
+        pos.x = Math.clamp(0, Constants.WIDTH, pos.x);
+        pos.y = Math.clamp(0, Constants.HEIGHT, pos.y);
     }
 
     @Override

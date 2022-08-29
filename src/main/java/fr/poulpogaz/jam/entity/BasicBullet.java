@@ -31,7 +31,7 @@ public class BasicBullet extends TextureBullet {
             } else if (angle % Mathf.PI == Mathf.PI_2) {
                 // inverted
                 hitBox = new AABB(
-                        pos.y - texture.getHeight() / 2f, pos.x - texture.getWidth() / 2f,
+                        pos.x - texture.getHeight() / 2f, pos.y - texture.getWidth() / 2f,
                         texture.getHeight(), texture.getWidth());
 
             } else {

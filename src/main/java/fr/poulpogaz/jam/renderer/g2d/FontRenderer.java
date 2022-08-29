@@ -82,7 +82,7 @@ public class FontRenderer implements IFontRenderer, Disposable {
 
     @Override
     public void drawString(String str, int x, int y) {
-        check();
+        check(str.length());
         drawing = true;
 
         Matrix4f transform = new Matrix4f(this.transform);
@@ -111,7 +111,7 @@ public class FontRenderer implements IFontRenderer, Disposable {
 
     @Override
     public void drawStringColored(String str, int x, int y) {
-        check();
+        //check();
     }
 
     @Override
@@ -126,14 +126,16 @@ public class FontRenderer implements IFontRenderer, Disposable {
             shader.setUniformi("font_height", font.getHeight());
             font.getTexture().bind();
 
+            boolean b = false;
             if (blend) {
+                b = GLUtils.isBlendEnabled();
                 GLUtils.blend();
             }
 
             mesh.render(GL_TRIANGLES);
 
             if (blend) {
-                GLUtils.revertBlend();
+                GLUtils.setBlendEnabled(b);
             }
 
             font.getTexture().unbind();
@@ -144,7 +146,13 @@ public class FontRenderer implements IFontRenderer, Disposable {
         }
     }
 
-    private void check() {
+    private void check(int stringSize) {
+        int size = mesh.getInstanceBuffer().getAttributes().vertexSize();
+
+        if (drawing && instanceBuffer.remaining() + stringSize * size >= instanceBuffer.limit()) {
+            flush();
+        }
+
         if (dirty) {
             clean();
         }

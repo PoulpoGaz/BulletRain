@@ -18,7 +18,7 @@ public class Stage {
         this.background = background;
         this.descriptors = descriptors;
         this.scripts = scripts;
-        scripts.sort(Comparator.comparingDouble((e) -> e.startPos().y));
+        scripts.sort(Comparator.comparingDouble(EnemyScript::triggerTime));
     }
 
     public String getBackground() {

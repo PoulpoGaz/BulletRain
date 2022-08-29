@@ -1,6 +1,6 @@
 package fr.poulpogaz.jam.stage;
 
-import org.joml.Vector2f;
+import fr.poulpogaz.jam.patterns.TargetPlayer;
 
 public class Stages {
 
@@ -15,7 +15,9 @@ public class Stages {
                     .setLife(100)
                     .build()
                 .scriptBuilder("sunflower")
-                    .setStartPos(new Vector2f())
+                    .setStartPos(new EnemyScript.StartPos(0, EnemyScript.Location.TOP))
+                    .setTriggerTime(0)
+                    .addBulletPattern(0, new TargetPlayer(10))
                     .build()
                 .build();
     }

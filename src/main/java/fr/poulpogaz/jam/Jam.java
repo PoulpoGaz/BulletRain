@@ -26,13 +26,10 @@ public class Jam implements IGame {
 
     private static final Logger LOGGER = LogManager.getLogger(Jam.class);
 
-    public static final int HEIGHT = 500;
-    public static final int WIDTH = HEIGHT * 3 / 4;
-
     public static final int SCALE_FACTOR = 2;
 
-    public static final int WINDOW_WIDTH = WIDTH * SCALE_FACTOR;
-    public static final int WINDOW_HEIGHT = HEIGHT * SCALE_FACTOR;
+    public static final int WINDOW_WIDTH = Constants.WIDTH * SCALE_FACTOR;
+    public static final int WINDOW_HEIGHT = Constants.HEIGHT * SCALE_FACTOR;
 
     private static final Jam INSTANCE = new Jam();
 

@@ -24,4 +24,14 @@ public class Mathf {
             return b;
         }
     }
+
+    public static float absMod(float a, float mod) {
+        float b = a % mod;
+
+        if (b < 0) {
+            return b + mod;
+        } else {
+            return b;
+        }
+    }
 }

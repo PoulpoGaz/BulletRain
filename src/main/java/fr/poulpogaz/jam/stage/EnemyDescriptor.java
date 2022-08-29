@@ -6,7 +6,7 @@ import fr.poulpogaz.jam.utils.BuilderException;
 
 import java.util.Objects;
 
-public record EnemyDescriptor(EnemyRenderer renderer, int life) {
+public record EnemyDescriptor(String name, EnemyRenderer renderer, int life, int width, int height) {
 
 
     public static class Builder {
@@ -15,6 +15,9 @@ public record EnemyDescriptor(EnemyRenderer renderer, int life) {
 
         private EnemyRenderer renderer;
         private int life;
+        private int width;
+        private int height;
+
         private String name;
 
         public Builder(StageBuilder parent) {
@@ -27,8 +30,14 @@ public record EnemyDescriptor(EnemyRenderer renderer, int life) {
             if (life <= 0) {
                 throw new BuilderException("enemy is dead");
             }
+            if (width <= 0) {
+                throw new BuilderException("Negative or null width");
+            }
+            if (height <= 0) {
+                throw new BuilderException("Negative or null height");
+            }
 
-            parent.addDescriptor(name, new EnemyDescriptor(renderer, life));
+            parent.addDescriptor(name, new EnemyDescriptor(name, renderer, life, width, height));
 
             return parent;
         }
@@ -49,6 +58,8 @@ public record EnemyDescriptor(EnemyRenderer renderer, int life) {
 
         public Builder setTexture(String texture, int x, int y, int w, int h) {
             this.renderer = new TextureEnemyRenderer(texture, x, y, w, h);
+            this.width = w;
+            this.height = h;
             return this;
         }
 
@@ -58,6 +69,24 @@ public record EnemyDescriptor(EnemyRenderer renderer, int life) {
 
         public Builder setLife(int life) {
             this.life = life;
+            return this;
+        }
+
+        public int getWidth() {
+            return width;
+        }
+
+        public Builder setWidth(int width) {
+            this.width = width;
+            return this;
+        }
+
+        public int getHeight() {
+            return height;
+        }
+
+        public Builder setHeight(int height) {
+            this.height = height;
             return this;
         }
 

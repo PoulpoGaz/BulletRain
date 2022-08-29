@@ -23,8 +23,8 @@ public class ConvexPolygon extends MultiplePointPolygon {
                 Vector2f b = models.get((i + 2) % models.size());
                 Vector2f c = models.get((i + 3) % models.size());
 
-                Vector2f ab = (Vector2f) b.sub(a, new Vector2f());
-                Vector2f bc = (Vector2f) b.sub(c, new Vector2f());
+                Vector2f ab = b.sub(a, new Vector2f());
+                Vector2f bc = b.sub(c, new Vector2f());
 
                 float numerator = ab.dot(bc);
                 float denominator = ab.length() * bc.length();
