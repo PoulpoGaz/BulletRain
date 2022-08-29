@@ -4,6 +4,7 @@ import fr.poulpogaz.jam.utils.BuilderException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.function.Function;
 
 public class StageBuilder {
 
@@ -57,13 +58,8 @@ public class StageBuilder {
         return this;
     }
 
-    // lol
-    public <T extends BaseBuilder> T subBuilder(Class<T> builder) {
-        try {
-            return builder.getConstructor(StageBuilder.class).newInstance(this);
-        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+    public <T extends BaseBuilder> T subBuilder(Function<StageBuilder, T> constructor) {
+        return constructor.apply(this);
     }
 
     public String getBackground() {

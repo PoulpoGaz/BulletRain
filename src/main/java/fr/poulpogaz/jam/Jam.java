@@ -7,7 +7,6 @@ import fr.poulpogaz.jam.renderer.io.GameEngine;
 import fr.poulpogaz.jam.renderer.io.IGame;
 import fr.poulpogaz.jam.renderer.io.Input;
 import fr.poulpogaz.jam.renderer.io.Window;
-import fr.poulpogaz.jam.renderer.mesh.MultiMesh;
 import fr.poulpogaz.jam.renderer.shaders.Shaders;
 import fr.poulpogaz.jam.renderer.utils.TextureCache;
 import fr.poulpogaz.jam.states.Game;
@@ -109,7 +108,6 @@ public class Jam implements IGame {
 
     @Override
     public void terminate() {
-        MultiMesh.disposeAll();
         renderer.close();
         g2d.close();
         OldFontRenderer.free();

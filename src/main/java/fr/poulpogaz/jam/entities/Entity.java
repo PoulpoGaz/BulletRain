@@ -1,7 +1,9 @@
 package fr.poulpogaz.jam.entities;
 
+import fr.poulpogaz.jam.Constants;
 import fr.poulpogaz.jam.engine.polygons.AABB;
 import fr.poulpogaz.jam.engine.polygons.Polygon;
+import fr.poulpogaz.jam.renderer.Colors;
 import fr.poulpogaz.jam.renderer.g2d.FontRenderer;
 import fr.poulpogaz.jam.renderer.g2d.Graphics2D;
 import fr.poulpogaz.jam.renderer.io.Input;
@@ -42,6 +44,13 @@ public abstract class Entity {
 
     public void render(Graphics2D g2d, FontRenderer f2d) {
         renderer.render(g2d, f2d, game, this);
+
+        if (Constants.SHOW_HITBOX) {
+            AABB aabb = getAABB();
+
+            g2d.setColor(Colors.RED);
+            g2d.drawRect(aabb.getX(), aabb.getY(), aabb.getWidth(), aabb.getHeight());
+        }
     }
 
 

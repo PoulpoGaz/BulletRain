@@ -74,6 +74,6 @@ public class SubTexture implements ITexture {
 
     @Override
     public void close() {
-        texture.close();
+
     }
 }

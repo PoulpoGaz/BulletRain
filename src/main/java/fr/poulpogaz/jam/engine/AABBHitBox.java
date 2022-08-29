@@ -16,6 +16,6 @@ public class AABBHitBox implements HitBoxSupplier {
 
     @Override
     public Polygon getDetailedHitBox(Entity entity) {
-        return new AABB(entity.getX(), entity.getY(), width, height);
+        return new AABB(entity.getX() - width / 2f, entity.getY() - height / 2f, width, height);
     }
 }

@@ -139,8 +139,9 @@ public class IndexBufferObject implements IGLBuffer {
 
     @Override
     public void close() {
-        MemoryUtil.memFree(byteBuffer);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         glDeleteBuffers(ibo);
+
+        MemoryUtil.memFree(byteBuffer);
     }
 }

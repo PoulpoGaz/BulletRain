@@ -26,7 +26,7 @@ public class Stages {
                     .build()
 
                 // bullets
-                .subBuilder(PlayerBulletDescriptor.Builder.class)
+                .subBuilder(PlayerBulletDescriptor.Builder::new)
                     .setName(PLAYER_BULLET_NAME)
                     .setBulletTexture("tileset.png", 32, 96, 10, 3)
                     .setHitBoxSupplier(new AABBRotateHitBox(10, 3))

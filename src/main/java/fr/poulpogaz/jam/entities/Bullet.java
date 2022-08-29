@@ -53,18 +53,6 @@ public class Bullet extends Entity {
     }
 
     @Override
-    public void render(Graphics2D g2d, FontRenderer f2d) {
-        super.render(g2d, f2d);
-
-        if (Constants.SHOW_HITBOX) {
-            AABB aabb = getAABB();
-
-            g2d.setColor(Colors.RED);
-            g2d.drawRect(aabb.getX(), aabb.getY(), aabb.getWidth(), aabb.getHeight());
-        }
-    }
-
-    @Override
     protected Polygon getDetailedHitBoxImpl() {
         return descriptor.hitBoxSupplier().getDetailedHitBox(this);
     }
