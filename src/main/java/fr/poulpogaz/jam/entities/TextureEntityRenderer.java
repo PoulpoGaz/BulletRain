@@ -1,4 +1,4 @@
-package fr.poulpogaz.jam.entity;
+package fr.poulpogaz.jam.entities;
 
 import fr.poulpogaz.jam.renderer.ITexture;
 import fr.poulpogaz.jam.renderer.SubTexture;
@@ -9,21 +9,21 @@ import fr.poulpogaz.jam.renderer.utils.TextureCache;
 import fr.poulpogaz.jam.states.Game;
 import org.joml.Vector2f;
 
-public class TextureEnemyRenderer implements EnemyRenderer {
+public class TextureEntityRenderer implements EntityRenderer {
 
-    private final String texture;
-    private final int x;
-    private final int y;
-    private final int w;
-    private final int h;
+    protected final String texture;
+    protected final int x;
+    protected final int y;
+    protected final int w;
+    protected final int h;
 
-    private ITexture tex;
+    protected ITexture tex;
 
-    public TextureEnemyRenderer(String texture) {
+    public TextureEntityRenderer(String texture) {
         this(texture, -1, -1, -1, -1);
     }
 
-    public TextureEnemyRenderer(String texture, int x, int y, int w, int h) {
+    public TextureEntityRenderer(String texture, int x, int y, int w, int h) {
         this.texture = texture;
         this.x = x;
         this.y = y;
@@ -43,8 +43,8 @@ public class TextureEnemyRenderer implements EnemyRenderer {
     }
 
     @Override
-    public void render(Graphics2D g2d, FontRenderer f2d, Game game, Enemy enemy) {
-        Vector2f p = enemy.getPos();
+    public void render(Graphics2D g2d, FontRenderer f2d, Game game, Entity entity) {
+        Vector2f p = entity.getPos();
 
         g2d.drawSprite(tex, p.x - tex.getWidth() / 2f, p.y - tex.getHeight() / 2f);
     }

@@ -7,36 +7,48 @@ import java.util.*;
 public class StageBuilder {
 
     private String background;
-    private final Map<String, EnemyDescriptor> enemyDescriptors = new HashMap<>();
+    private final Map<String, EnemyDescriptor> enemiesDescriptors = new HashMap<>();
+    private final Map<String, BulletDescriptor> bulletsDescriptors = new HashMap<>();
     private final List<EnemyScript> scripts = new ArrayList<>();
 
     public Stage build() {
         Objects.requireNonNull(background, "no background set");
 
-        if (enemyDescriptors.isEmpty()) {
+        if (enemiesDescriptors.isEmpty()) {
             throw new BuilderException("No enemy");
         }
 
-        return new Stage(background, enemyDescriptors, scripts);
+        return new Stage(background, enemiesDescriptors, bulletsDescriptors, scripts);
     }
 
-    public EnemyDescriptor.Builder descriptorBuilder() {
+    public BulletDescriptor.Builder bulletBuilder() {
+        return new BulletDescriptor.Builder(this);
+    }
+
+
+    public EnemyDescriptor.Builder enemyBuilder() {
         return new EnemyDescriptor.Builder(this);
     }
 
-    public StageBuilder addDescriptor(String name, EnemyDescriptor descriptor) {
-        enemyDescriptors.put(name, descriptor);
-        return this;
-    }
-
     public EnemyScript.Builder scriptBuilder(String enemy) {
-        EnemyDescriptor desc = enemyDescriptors.get(enemy);
+        EnemyDescriptor desc = enemiesDescriptors.get(enemy);
 
         if (desc == null) {
             throw new BuilderException("No descriptor named " + enemy + " has been created");
         }
 
         return new EnemyScript.Builder(this, desc);
+    }
+
+
+    public StageBuilder addBullet(BulletDescriptor bullet) {
+        bulletsDescriptors.put(bullet.name(), bullet);
+        return this;
+    }
+
+    public StageBuilder addEnemy(EnemyDescriptor descriptor) {
+        enemiesDescriptors.put(descriptor.name(), descriptor);
+        return this;
     }
 
     public StageBuilder addEnemyScript(EnemyScript script) {

@@ -1,7 +1,7 @@
 package fr.poulpogaz.jam.patterns;
 
-import fr.poulpogaz.jam.entity.BasicBullet;
-import fr.poulpogaz.jam.entity.Entity;
+import fr.poulpogaz.jam.entities.BasicBullet;
+import fr.poulpogaz.jam.entities.Entity;
 import fr.poulpogaz.jam.renderer.ITexture;
 import fr.poulpogaz.jam.renderer.SubTexture;
 import fr.poulpogaz.jam.renderer.utils.TextureCache;
@@ -21,11 +21,11 @@ public class TargetPlayer implements BulletPattern {
     public void addBullets(Game game, Entity entity, boolean player) {
         if (tick == 0) {
             Vector2f playerPos = game.getPlayer().getPos();
-            Vector2f dir = playerPos.sub(entity.getPos(), new Vector2f()).normalize(5);
+            Vector2f dir = playerPos.sub(entity.getPos()).normalize(5);
 
             ITexture t = new SubTexture(32, 96, 10, 3, TextureCache.get("tileset.png"));
 
-            game.addBullet(new BasicBullet(game, player, new LinearPattern(dir), new Vector2f(entity.getPos()), t, 5));
+            game.addBullet(new BasicBullet(game, player, new LinearPattern(dir), entity.getPos(), t, 5));
         }
 
         tick++;

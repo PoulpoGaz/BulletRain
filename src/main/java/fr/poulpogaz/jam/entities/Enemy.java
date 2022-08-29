@@ -1,11 +1,8 @@
-package fr.poulpogaz.jam.entity;
+package fr.poulpogaz.jam.entities;
 
-import fr.poulpogaz.jam.engine.polygons.AABB;
 import fr.poulpogaz.jam.engine.polygons.Polygon;
 import fr.poulpogaz.jam.patterns.BulletPattern;
 import fr.poulpogaz.jam.patterns.MovePattern;
-import fr.poulpogaz.jam.renderer.g2d.FontRenderer;
-import fr.poulpogaz.jam.renderer.g2d.Graphics2D;
 import fr.poulpogaz.jam.renderer.io.Input;
 import fr.poulpogaz.jam.stage.EnemyAction;
 import fr.poulpogaz.jam.stage.EnemyScript;
@@ -30,7 +27,7 @@ public class Enemy extends Entity {
     private Vector2f dir;
 
     public Enemy(Game game, EnemyScript script) {
-        super(game);
+        super(game, script.enemy().renderer());
         this.script = script;
         this.pos = script.startPosVec();
 
@@ -38,23 +35,18 @@ public class Enemy extends Entity {
         bulletPattern = Objects.requireNonNullElse(script.getFirstBulletPattern(), BulletPattern.NO_BULLET);
         movePattern = Objects.requireNonNullElse(script.getFirstMovePattern(), MovePattern.FOLLOW_MAP);
 
-        dir = movePattern.dir(t);
+        dir = movePattern.dir(0);
     }
 
     @Override
     public void update(Input in, float delta) {
-        dir = movePattern.dir(t);
+        movePattern.dir(t, dir);
         pos.add(dir);
         bulletPattern.addBullets(game, this, false);
 
         t++;
         nextBulletPattern();
         nextMovePattern();
-    }
-
-    @Override
-    public void render(Graphics2D g2d, FontRenderer f2d) {
-        script.enemy().renderer().render(g2d, f2d, game, this);
     }
 
     private void nextBulletPattern() {
@@ -80,12 +72,7 @@ public class Enemy extends Entity {
     }
 
     @Override
-    public Polygon getDetailedHitBox() {
-        return null;
-    }
-
-    @Override
-    public AABB aabb() {
+    public Polygon getDetailedHitBoxImpl() {
         return null;
     }
 

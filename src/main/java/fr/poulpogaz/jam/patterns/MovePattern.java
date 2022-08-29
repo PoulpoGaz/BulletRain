@@ -9,20 +9,24 @@ public interface MovePattern {
      * @param t parameter t
      * @return direction of the entity after t tick
      */
-    Vector2f dir(int t);
+    default Vector2f dir(int t) {
+        return dir(t, new Vector2f());
+    }
+
+    Vector2f dir(int t, Vector2f dest);
 
 
     MovePattern FOLLOW_MAP = new MovePattern() {
         @Override
-        public Vector2f dir(int t) {
-            return new Vector2f(0, Constants.MAP_SCROLL_SPEED);
+        public Vector2f dir(int t, Vector2f dest) {
+            return dest.set(0, Constants.MAP_SCROLL_SPEED);
         }
     };
 
     MovePattern STATIC = new MovePattern() {
         @Override
-        public Vector2f dir(int t) {
-            return new Vector2f();
+        public Vector2f dir(int t, Vector2f dest) {
+            return dest.set(0, 0);
         }
     };
 }

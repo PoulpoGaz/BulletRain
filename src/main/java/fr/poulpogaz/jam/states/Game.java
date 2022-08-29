@@ -1,9 +1,9 @@
 package fr.poulpogaz.jam.states;
 
 import fr.poulpogaz.jam.engine.polygons.AABB;
-import fr.poulpogaz.jam.entity.AbstractBullet;
-import fr.poulpogaz.jam.entity.Enemy;
-import fr.poulpogaz.jam.entity.Player;
+import fr.poulpogaz.jam.entities.Bullet;
+import fr.poulpogaz.jam.entities.Enemy;
+import fr.poulpogaz.jam.entities.Player;
 import fr.poulpogaz.jam.renderer.Texture;
 import fr.poulpogaz.jam.renderer.g2d.FontRenderer;
 import fr.poulpogaz.jam.renderer.g2d.Graphics2D;
@@ -18,7 +18,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joml.Vector2f;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,8 +45,8 @@ public class Game extends State {
     // entities that are on the screen
     private Player player;
     private final List<Enemy> enemies;
-    private final List<AbstractBullet> playerBullets;
-    private final List<AbstractBullet> enemiesBullets;
+    private final List<Bullet> playerBullets;
+    private final List<Bullet> enemiesBullets;
 
     public Game() {
         enemies = new ArrayList<>();
@@ -57,11 +56,9 @@ public class Game extends State {
 
     @Override
     public void show() throws Exception {
-        background = TextureCache.getOrCreate(stage.getBackground());
+        stage.loadAllTextures();
 
-        for (EnemyDescriptor desc : stage.getDescriptors()) {
-            desc.renderer().loadTextures();
-        }
+        background = TextureCache.get(stage.getBackground());
 
         mapScroll = -100;
         player = new Player(this, new Vector2f(HALF_WIDTH, Q3_HEIGHT));
@@ -97,7 +94,7 @@ public class Game extends State {
 
     private void drawEntities(Graphics2D g2d, FontRenderer f2d) {
         for (Enemy e : enemies) {
-            AABB aabb = e.aabb();
+            AABB aabb = e.getAABB();
 
             if (aabb == null || aabb.collide(screen).intersect()) {
                 e.render(g2d, f2d);
@@ -106,16 +103,16 @@ public class Game extends State {
 
         drawBullets(playerBullets, g2d, f2d);
 
-        if (player.aabb().collide(screen).intersect()) {
+        if (player.getAABB().collide(screen).intersect()) {
             player.render(g2d, f2d);
         }
 
         drawBullets(enemiesBullets, g2d, f2d);
     }
 
-    private void drawBullets(List<AbstractBullet> bullets, Graphics2D g2d, FontRenderer f2d) {
-        for (AbstractBullet p : bullets) {
-            AABB aabb = p.aabb();
+    private void drawBullets(List<Bullet> bullets, Graphics2D g2d, FontRenderer f2d) {
+        for (Bullet p : bullets) {
+            AABB aabb = p.getAABB();
 
             if (aabb.collide(screen).intersect()) {
                 p.render(g2d, f2d);
@@ -158,11 +155,11 @@ public class Game extends State {
         mapScroll += MAP_SCROLL_SPEED;
     }
 
-    private void updateBullets(List<AbstractBullet> bullets, float delta) {
+    private void updateBullets(List<Bullet> bullets, float delta) {
         for (int i = 0; i < bullets.size(); i++) {
-            AbstractBullet p = bullets.get(i);
+            Bullet p = bullets.get(i);
 
-            if (largeScreen.collide(p.aabb()).intersect()) {
+            if (largeScreen.collide(p.getAABB()).intersect()) {
                 p.update(input, delta);
             } else {
                 // remove, bullet is out of the screen and
@@ -197,7 +194,7 @@ public class Game extends State {
 
     }
 
-    public void addBullet(AbstractBullet bullet) {
+    public void addBullet(Bullet bullet) {
         if (bullet.isPlayerBullet()) {
             playerBullets.add(bullet);
         } else {
@@ -211,5 +208,9 @@ public class Game extends State {
 
     public Player getPlayer() {
         return player;
+    }
+
+    public Stage getStage() {
+        return stage;
     }
 }

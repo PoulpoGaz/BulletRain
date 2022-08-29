@@ -1,20 +1,14 @@
-package fr.poulpogaz.jam.entity;
+package fr.poulpogaz.jam.entities;
 
 import fr.poulpogaz.jam.Constants;
-import fr.poulpogaz.jam.Jam;
-import fr.poulpogaz.jam.engine.polygons.AABB;
 import fr.poulpogaz.jam.engine.polygons.Circle;
 import fr.poulpogaz.jam.engine.polygons.Polygon;
 import fr.poulpogaz.jam.patterns.BulletPattern;
 import fr.poulpogaz.jam.patterns.PlayerBulletPattern;
 import fr.poulpogaz.jam.renderer.Colors;
-import fr.poulpogaz.jam.renderer.ITexture;
-import fr.poulpogaz.jam.renderer.SubTexture;
-import fr.poulpogaz.jam.renderer.Texture;
 import fr.poulpogaz.jam.renderer.g2d.FontRenderer;
 import fr.poulpogaz.jam.renderer.g2d.Graphics2D;
 import fr.poulpogaz.jam.renderer.io.Input;
-import fr.poulpogaz.jam.renderer.utils.TextureCache;
 import fr.poulpogaz.jam.states.Game;
 import org.joml.Math;
 import org.joml.Vector2f;
@@ -23,8 +17,7 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class Player extends Entity {
 
-    private final ITexture texture;
-    private Circle hitBox;
+    private final Circle hitBox;
     private float power;
 
     private BulletPattern pattern = new PlayerBulletPattern(this);
@@ -37,11 +30,13 @@ public class Player extends Entity {
         super(game);
         this.pos = pos;
 
-        Texture tex = TextureCache.get("tileset.png");
-        texture = new SubTexture(0, 96, 27, 35, tex);
-
         power = 4f;
         hitBox = new Circle(4, pos); // same instance of pos!!
+    }
+
+    @Override
+    protected EntityRenderer createRenderer() {
+        return new PlayerEntityRenderer();
     }
 
     @Override
@@ -104,26 +99,32 @@ public class Player extends Entity {
     }
 
     @Override
-    public void render(Graphics2D g2d, FontRenderer f2d) {
-        g2d.drawSprite(texture, pos.x - texture.getWidth() / 2f, pos.y - texture.getHeight() / 2f);
-
-        if (slowdown) {
-            g2d.setColor(Colors.RED);
-            g2d.fillCircle(pos.x, pos.y, hitBox.getRadius(), 6);
-        }
-    }
-
-    @Override
-    public Polygon getDetailedHitBox() {
+    protected Polygon getDetailedHitBoxImpl() {
         return hitBox;
-    }
-
-    @Override
-    public AABB aabb() {
-        return hitBox.getAABB();
     }
 
     public float getPower() {
         return power;
+    }
+
+    public boolean isSlowdown() {
+        return slowdown;
+    }
+
+    private class PlayerEntityRenderer extends TextureEntityRenderer {
+
+        public PlayerEntityRenderer() {
+            super("tileset.png", 0, 96, 27, 35);
+        }
+
+        @Override
+        public void render(Graphics2D g2d, FontRenderer f2d, Game game, Entity entity) {
+            super.render(g2d, f2d, game, entity);
+
+            if (isSlowdown()) {
+                g2d.setColor(Colors.RED);
+                g2d.fillCircle(pos.x, pos.y, hitBox.getRadius(), 6);
+            }
+        }
     }
 }

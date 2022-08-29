@@ -1,9 +1,8 @@
 package fr.poulpogaz.jam.patterns;
 
-import fr.poulpogaz.jam.entity.BasicBullet;
-import fr.poulpogaz.jam.entity.TextureBullet;
-import fr.poulpogaz.jam.entity.Entity;
-import fr.poulpogaz.jam.entity.Player;
+import fr.poulpogaz.jam.entities.BasicBullet;
+import fr.poulpogaz.jam.entities.Entity;
+import fr.poulpogaz.jam.entities.Player;
 import fr.poulpogaz.jam.renderer.ITexture;
 import fr.poulpogaz.jam.renderer.SubTexture;
 import fr.poulpogaz.jam.renderer.Texture;
@@ -116,16 +115,18 @@ public class PlayerBulletPattern implements BulletPattern {
         }
 
         @Override
-        public Vector2f dir(int t) {
+        public Vector2f dir(int t, Vector2f dest) {
             if (t < length) {
                 if (left) {
-                    return new Vector2f(-5, -5);
+                    dest.set(-5, -5);
                 } else {
-                    return new Vector2f(5, -5);
+                    dest.set(5, -5);
                 }
             } else {
-                return BULLET_DIR;
+                dest.set(BULLET_DIR);
             }
+
+            return dest;
         }
     }
 }

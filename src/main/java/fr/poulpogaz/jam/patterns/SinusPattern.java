@@ -13,7 +13,7 @@ public class SinusPattern implements MovePattern {
     }
 
     @Override
-    public Vector2f dir(int t) {
+    public Vector2f dir(int t, Vector2f dest) {
         return null;
     }
 }

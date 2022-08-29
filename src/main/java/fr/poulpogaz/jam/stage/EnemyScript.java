@@ -8,6 +8,7 @@ import fr.poulpogaz.jam.utils.BuilderException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joml.Vector2f;
+import org.lwjgl.system.CallbackI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -143,6 +144,10 @@ public record EnemyScript(EnemyDescriptor enemy,
 
         public StartPos getStartPos() {
             return startPos;
+        }
+
+        public Builder setStartPos(float xy, Location location) {
+            return setStartPos(new StartPos(xy, location));
         }
 
         public Builder setStartPos(StartPos startPos) {

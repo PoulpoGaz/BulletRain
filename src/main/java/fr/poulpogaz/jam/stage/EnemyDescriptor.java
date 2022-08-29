@@ -1,19 +1,19 @@
 package fr.poulpogaz.jam.stage;
 
-import fr.poulpogaz.jam.entity.EnemyRenderer;
-import fr.poulpogaz.jam.entity.TextureEnemyRenderer;
+import fr.poulpogaz.jam.entities.EntityRenderer;
+import fr.poulpogaz.jam.entities.TextureEntityRenderer;
 import fr.poulpogaz.jam.utils.BuilderException;
 
 import java.util.Objects;
 
-public record EnemyDescriptor(String name, EnemyRenderer renderer, int life, int width, int height) {
+public record EnemyDescriptor(String name, EntityRenderer renderer, int life, int width, int height) {
 
 
     public static class Builder {
 
         private final StageBuilder parent;
 
-        private EnemyRenderer renderer;
+        private EntityRenderer renderer;
         private int life;
         private int width;
         private int height;
@@ -37,27 +37,25 @@ public record EnemyDescriptor(String name, EnemyRenderer renderer, int life, int
                 throw new BuilderException("Negative or null height");
             }
 
-            parent.addDescriptor(name, new EnemyDescriptor(name, renderer, life, width, height));
-
-            return parent;
+            return parent.addEnemy(new EnemyDescriptor(name, renderer, life, width, height));
         }
 
-        public EnemyRenderer getRenderer() {
+        public EntityRenderer getRenderer() {
             return renderer;
         }
 
-        public Builder setRenderer(EnemyRenderer renderer) {
+        public Builder setRenderer(EntityRenderer renderer) {
             this.renderer = renderer;
             return this;
         }
 
         public Builder setTexture(String texture) {
-            this.renderer = new TextureEnemyRenderer(texture);
+            this.renderer = new TextureEntityRenderer(texture);
             return this;
         }
 
         public Builder setTexture(String texture, int x, int y, int w, int h) {
-            this.renderer = new TextureEnemyRenderer(texture, x, y, w, h);
+            this.renderer = new TextureEntityRenderer(texture, x, y, w, h);
             this.width = w;
             this.height = h;
             return this;

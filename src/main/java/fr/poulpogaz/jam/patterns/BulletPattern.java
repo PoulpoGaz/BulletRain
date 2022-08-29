@@ -1,6 +1,6 @@
 package fr.poulpogaz.jam.patterns;
 
-import fr.poulpogaz.jam.entity.Entity;
+import fr.poulpogaz.jam.entities.Entity;
 import fr.poulpogaz.jam.states.Game;
 
 public interface BulletPattern {

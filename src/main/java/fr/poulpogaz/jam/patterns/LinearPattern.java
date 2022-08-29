@@ -11,7 +11,7 @@ public class LinearPattern implements MovePattern {
     }
 
     @Override
-    public Vector2f dir(int t) {
-        return dir;
+    public Vector2f dir(int t, Vector2f dest) {
+        return dest.set(dir);
     }
 }
