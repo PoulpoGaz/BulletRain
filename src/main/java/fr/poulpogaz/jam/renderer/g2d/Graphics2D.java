@@ -669,9 +669,9 @@ public class Graphics2D implements IGraphics2D {
     }
 
     @Override
-    public void dispose() {
+    public void close() {
         if (ownsRenderer) {
-            renderer.dispose();
+            renderer.close();
         }
     }
 }

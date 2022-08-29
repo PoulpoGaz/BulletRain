@@ -4,12 +4,11 @@ import fr.poulpogaz.jam.renderer.IColor;
 import fr.poulpogaz.jam.renderer.ITexture;
 import fr.poulpogaz.jam.renderer.mesh.Mesh;
 import fr.poulpogaz.jam.renderer.shaders.Program;
-import fr.poulpogaz.jam.renderer.utils.Disposable;
 import org.joml.Matrix4f;
 
 import static org.lwjgl.opengl.GL15.GL_DYNAMIC_DRAW;
 
-public class Renderer2D implements Disposable {
+public class Renderer2D implements AutoCloseable {
 
     private final Mesh[] meshes;
 
@@ -225,9 +224,9 @@ public class Renderer2D implements Disposable {
     }
 
     @Override
-    public void dispose() {
+    public void close() {
         for (Mesh mesh : meshes) {
-            mesh.dispose();
+            mesh.close();
         }
     }
 }

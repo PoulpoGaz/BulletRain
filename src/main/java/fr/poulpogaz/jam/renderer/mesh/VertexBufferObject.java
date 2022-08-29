@@ -140,7 +140,7 @@ public class VertexBufferObject implements IGLBuffer {
     }
 
     @Override
-    public void dispose() {
+    public void close() {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glDeleteBuffers(bufferPointer);
 

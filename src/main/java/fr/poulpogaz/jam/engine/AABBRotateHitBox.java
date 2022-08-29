@@ -6,11 +6,15 @@ import fr.poulpogaz.jam.engine.polygons.Polygon;
 import fr.poulpogaz.jam.entities.Bullet;
 import fr.poulpogaz.jam.entities.Entity;
 import fr.poulpogaz.jam.utils.Mathf;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joml.Math;
 import org.joml.Vector2f;
 
 public class AABBRotateHitBox implements HitBoxSupplier {
-    
+
+    private static final Logger LOGGER = LogManager.getLogger(AABBRotateHitBox.class);
+
     private final float width;
     private final float height;
 

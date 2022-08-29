@@ -1,8 +1,6 @@
 package fr.poulpogaz.jam.renderer.mesh;
 
-import fr.poulpogaz.jam.renderer.utils.Disposable;
-
-public interface IGLBuffer extends Disposable {
+public interface IGLBuffer extends AutoCloseable {
 
     boolean updateData();
 
@@ -15,5 +13,5 @@ public interface IGLBuffer extends Disposable {
     int getUsage();
 
     @Override
-    void dispose();
+    void close();
 }

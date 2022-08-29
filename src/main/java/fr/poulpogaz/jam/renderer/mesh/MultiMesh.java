@@ -82,7 +82,7 @@ public class MultiMesh implements IMesh {
     }
 
     @Override
-    public void dispose() {
+    public void close() {
         glBindVertexArray(0);
         glDeleteVertexArrays(vao);
 
@@ -130,10 +130,10 @@ public class MultiMesh implements IMesh {
 
     public static void disposeAll() {
         for (MultiMesh mesh : MESHES) {
-            mesh.dispose();
+            mesh.close();
         }
 
-        MULTI_IBO.dispose();
-        MULTI_VBO.dispose();
+        MULTI_IBO.close();
+        MULTI_VBO.close();
     }
 }

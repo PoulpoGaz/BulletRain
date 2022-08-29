@@ -2,12 +2,11 @@ package fr.poulpogaz.jam.renderer.g2d;
 
 import fr.poulpogaz.jam.renderer.IColor;
 import fr.poulpogaz.jam.renderer.ITexture;
-import fr.poulpogaz.jam.renderer.utils.Disposable;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
-public interface IGraphics2D extends Disposable {
+public interface IGraphics2D extends AutoCloseable {
 
     int OPEN = 0;
 

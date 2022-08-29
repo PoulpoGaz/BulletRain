@@ -1,8 +1,6 @@
 package fr.poulpogaz.jam.renderer;
 
-import fr.poulpogaz.jam.renderer.utils.Disposable;
-
-public interface ITexture extends Disposable {
+public interface ITexture extends AutoCloseable {
 
     void bind();
 

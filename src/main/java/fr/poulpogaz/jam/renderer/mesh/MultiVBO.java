@@ -1,6 +1,5 @@
 package fr.poulpogaz.jam.renderer.mesh;
 
-import fr.poulpogaz.jam.renderer.utils.Disposable;
 import org.lwjgl.system.MemoryUtil;
 
 import java.io.BufferedWriter;
@@ -16,7 +15,7 @@ import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL30.GL_MAP_WRITE_BIT;
 import static org.lwjgl.opengl.GL30.glMapBufferRange;
 
-public class MultiVBO implements Disposable {
+public class MultiVBO implements AutoCloseable {
 
     private final int CAPACITY_DIRTY = 1;
     private final int VBO_DIRTY = 2;
@@ -129,7 +128,7 @@ public class MultiVBO implements Disposable {
     }
 
     @Override
-    public void dispose() {
+    public void close() {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glDeleteBuffers(vbo);
         MemoryUtil.memFree(byteBuffer);

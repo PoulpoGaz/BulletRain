@@ -99,7 +99,7 @@ public class Texture implements ITexture {
         return texture;
     }
 
-    public void dispose() {
+    public void close() {
         glDeleteTextures(texture);
     }
 }

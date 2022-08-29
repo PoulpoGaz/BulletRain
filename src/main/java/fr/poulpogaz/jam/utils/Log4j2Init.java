@@ -26,6 +26,7 @@ public class Log4j2Init {
         AppenderComponentBuilder file = builder.newAppender("file", "File");
         file.addAttribute("fileName", log.toString());
         file.addAttribute("append", true);
+        file.addAttribute("immediateFlush", true);
         file.add(layout);
 
         builder.add(console);

@@ -49,9 +49,9 @@ public class Shaders {
     }
 
     public static void dispose() {
-        programs.forEach(Program::dispose);
-        VERTEX.values().forEach(Shader::dispose);
-        FRAGMENT.values().forEach(Shader::dispose);
+        programs.forEach(Program::close);
+        VERTEX.values().forEach(Shader::close);
+        FRAGMENT.values().forEach(Shader::close);
 
         VERTEX.clear();
         FRAGMENT.clear();

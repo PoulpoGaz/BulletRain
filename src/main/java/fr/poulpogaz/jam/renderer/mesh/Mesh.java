@@ -93,7 +93,7 @@ public class Mesh implements IMesh {
 
     public void disableInstanceRendering() {
         if (instanceBuffer != null) {
-            instanceBuffer.dispose();
+            instanceBuffer.close();
             instanceBuffer = null;
             vaoDirty = true;
         }
@@ -256,12 +256,12 @@ public class Mesh implements IMesh {
     }
 
     @Override
-    public void dispose() {
-        vbo.dispose();
-        ibo.dispose();
+    public void close() {
+        vbo.close();
+        ibo.close();
 
         if (instanceBuffer != null) {
-            instanceBuffer.dispose();
+            instanceBuffer.close();
         }
 
         glBindVertexArray(0);

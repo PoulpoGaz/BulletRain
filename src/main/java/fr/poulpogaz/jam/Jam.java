@@ -89,9 +89,6 @@ public class Jam implements IGame {
     @Override
     public void update(float delta) {
         if (window.isResized()) {
-            //projection2D.setOrtho2D(0, window.getWidth(), window.getHeight(), 0);
-            //g2d.setProjection(projection2D);
-
             glViewport((window.getWidth() - WINDOW_WIDTH) / 2,
                     (window.getHeight() - WINDOW_HEIGHT) / 2,
                     WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -113,8 +110,8 @@ public class Jam implements IGame {
     @Override
     public void terminate() {
         MultiMesh.disposeAll();
-        renderer.dispose();
-        g2d.dispose();
+        renderer.close();
+        g2d.close();
         OldFontRenderer.free();
         Shaders.dispose();
         TextureCache.free();

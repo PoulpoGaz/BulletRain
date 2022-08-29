@@ -39,6 +39,6 @@ public class TextureCache {
     }
 
     public static void free() {
-        CACHE.values().forEach(Texture::dispose);
+        CACHE.values().forEach(Texture::close);
     }
 }

@@ -6,7 +6,7 @@ import org.apache.logging.log4j.Logger;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 
-public class GameEngine implements Runnable {
+public class GameEngine implements Runnable, AutoCloseable {
 
     private static final Logger LOGGER = LogManager.getLogger(GameEngine.class);
 
@@ -77,7 +77,10 @@ public class GameEngine implements Runnable {
                 tps = 0;
             }
         }
+    }
 
+    @Override
+    public void close() {
         game.terminate();
         input.free();
         window.close();

@@ -2,7 +2,6 @@ package fr.poulpogaz.jam.renderer.g2d;
 
 import fr.poulpogaz.jam.Cache;
 import fr.poulpogaz.jam.renderer.Texture;
-import fr.poulpogaz.jam.renderer.utils.Disposable;
 import fr.poulpogaz.jam.renderer.utils.ImageLoader;
 import fr.poulpogaz.json.*;
 import org.apache.logging.log4j.LogManager;
@@ -24,7 +23,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ImageFont implements Disposable {
+public class ImageFont implements AutoCloseable {
 
     private static final Logger LOGGER = LogManager.getLogger(ImageFont.class);
 
@@ -380,7 +379,7 @@ public class ImageFont implements Disposable {
     }
 
     @Override
-    public void dispose() {
-        texture.dispose();
+    public void close() {
+        texture.close();
     }
 }

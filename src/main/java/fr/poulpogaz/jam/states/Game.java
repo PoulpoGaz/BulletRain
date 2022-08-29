@@ -4,8 +4,8 @@ import fr.poulpogaz.jam.engine.polygons.AABB;
 import fr.poulpogaz.jam.engine.polygons.Polygon;
 import fr.poulpogaz.jam.entities.Bullet;
 import fr.poulpogaz.jam.entities.Enemy;
-import fr.poulpogaz.jam.particles.Particle;
 import fr.poulpogaz.jam.entities.Player;
+import fr.poulpogaz.jam.particles.Particle;
 import fr.poulpogaz.jam.renderer.Texture;
 import fr.poulpogaz.jam.renderer.g2d.FontRenderer;
 import fr.poulpogaz.jam.renderer.g2d.Graphics2D;
@@ -272,7 +272,7 @@ public class Game extends State {
     }
 
     @Override
-    public void dispose() {
+    public void close() {
 
     }
 

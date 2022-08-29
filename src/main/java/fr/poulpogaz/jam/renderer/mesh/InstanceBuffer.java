@@ -145,7 +145,7 @@ public class InstanceBuffer implements IGLBuffer {
     }
 
     @Override
-    public void dispose() {
+    public void close() {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glDeleteBuffers(glBuffer);
         MemoryUtil.memFree(byteBuffer);

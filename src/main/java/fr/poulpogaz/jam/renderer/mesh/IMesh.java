@@ -1,8 +1,6 @@
 package fr.poulpogaz.jam.renderer.mesh;
 
-import fr.poulpogaz.jam.renderer.utils.Disposable;
-
-public interface IMesh extends Disposable {
+public interface IMesh extends AutoCloseable {
 
     void render(int primitive);
 
@@ -11,5 +9,5 @@ public interface IMesh extends Disposable {
     int getUsage();
 
     @Override
-    void dispose();
+    void close();
 }

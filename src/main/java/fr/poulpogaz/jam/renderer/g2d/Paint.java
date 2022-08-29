@@ -5,8 +5,6 @@ import fr.poulpogaz.jam.renderer.ITexture;
 import fr.poulpogaz.jam.renderer.Texture;
 import org.joml.Vector2f;
 
-import java.util.Objects;
-
 public abstract class Paint {
 
     protected Renderer2D renderer;

@@ -416,7 +416,7 @@ public class OldFontRenderer {
 
     public static void free() {
         if (shader != null) {
-            shader.dispose();
+            shader.close();
         }
 
         if (instanceBuffer != null) {

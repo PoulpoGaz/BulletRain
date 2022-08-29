@@ -6,7 +6,6 @@ import fr.poulpogaz.jam.renderer.mesh.Mesh;
 import fr.poulpogaz.jam.renderer.mesh.VertexAttribute;
 import fr.poulpogaz.jam.renderer.shaders.Program;
 import fr.poulpogaz.jam.renderer.shaders.Shaders;
-import fr.poulpogaz.jam.renderer.utils.Disposable;
 import fr.poulpogaz.jam.utils.GLUtils;
 import org.joml.Matrix4f;
 
@@ -20,7 +19,7 @@ import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
  * /!\ Code doesn't check if the renderer has sufficiently
  * space for drawing.
  */
-public class FontRenderer implements IFontRenderer, Disposable {
+public class FontRenderer implements IFontRenderer, AutoCloseable {
 
     private static final float[] VERTICES = new float[] {
             0, 0,
@@ -257,7 +256,7 @@ public class FontRenderer implements IFontRenderer, Disposable {
     }
 
     @Override
-    public void dispose() {
-        mesh.dispose();
+    public void close() {
+        mesh.close();
     }
 }

@@ -1,6 +1,5 @@
 package fr.poulpogaz.jam.renderer.shaders;
 
-import fr.poulpogaz.jam.renderer.utils.Disposable;
 import org.joml.Matrix4fc;
 import org.joml.Vector2fc;
 import org.joml.Vector3fc;
@@ -13,7 +12,7 @@ import java.util.HashMap;
 import static org.lwjgl.opengl.GL11.GL_FALSE;
 import static org.lwjgl.opengl.GL20.*;
 
-public class Program implements Disposable {
+public class Program implements AutoCloseable {
 
     private final Shader vertex;
     private final Shader fragment;
@@ -92,7 +91,7 @@ public class Program implements Disposable {
     }
 
     @Override
-    public void dispose() {
+    public void close() {
         glDetachShader(program, vertex.getShader());
         glDetachShader(program, fragment.getShader());
         glDeleteProgram(program);

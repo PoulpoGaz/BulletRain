@@ -1,6 +1,5 @@
 package fr.poulpogaz.jam.renderer.shaders;
 
-import fr.poulpogaz.jam.renderer.utils.Disposable;
 import fr.poulpogaz.jam.renderer.utils.Resource;
 
 import java.io.IOException;
@@ -8,7 +7,7 @@ import java.io.IOException;
 import static org.lwjgl.opengl.GL11.GL_FALSE;
 import static org.lwjgl.opengl.GL20.*;
 
-public class Shader implements Disposable {
+public class Shader implements AutoCloseable {
 
     public static Shader newShader(ShaderType type, String shaderName) throws IOException {
         return switch (type) {
@@ -41,7 +40,7 @@ public class Shader implements Disposable {
     }
 
     @Override
-    public void dispose() {
+    public void close() {
         glDeleteShader(shader);
     }
 }

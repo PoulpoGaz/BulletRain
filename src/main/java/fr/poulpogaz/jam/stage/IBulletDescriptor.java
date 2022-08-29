@@ -9,8 +9,6 @@ import fr.poulpogaz.jam.patterns.MovePattern;
 import fr.poulpogaz.jam.states.Game;
 import org.joml.Vector2f;
 
-import java.util.Objects;
-
 public interface IBulletDescriptor {
 
     Bullet create(Game game, boolean playerBullet, MovePattern pattern, Vector2f pos);

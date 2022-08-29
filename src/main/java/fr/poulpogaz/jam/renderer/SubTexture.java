@@ -73,7 +73,7 @@ public class SubTexture implements ITexture {
     }
 
     @Override
-    public void dispose() {
-        texture.dispose();
+    public void close() {
+        texture.close();
     }
 }

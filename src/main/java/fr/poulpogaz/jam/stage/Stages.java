@@ -3,10 +3,10 @@ package fr.poulpogaz.jam.stage;
 import fr.poulpogaz.jam.engine.AABBHitBox;
 import fr.poulpogaz.jam.engine.AABBRotateHitBox;
 import fr.poulpogaz.jam.engine.CircleHitBox;
-import fr.poulpogaz.jam.entities.PlayerBullet;
 import fr.poulpogaz.jam.patterns.TargetPlayer;
 
-import static fr.poulpogaz.jam.Constants.*;
+import static fr.poulpogaz.jam.Constants.PLAYER_BULLET_NAME;
+import static fr.poulpogaz.jam.Constants.Q_WIDTH;
 import static fr.poulpogaz.jam.stage.EnemyScript.Location;
 
 public class Stages {
