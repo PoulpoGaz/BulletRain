@@ -2,6 +2,7 @@ package fr.poulpogaz.jam.stage;
 
 import fr.poulpogaz.jam.utils.BuilderException;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public class StageBuilder {
@@ -54,6 +55,15 @@ public class StageBuilder {
     public StageBuilder addEnemyScript(EnemyScript script) {
         scripts.add(script);
         return this;
+    }
+
+    // lol
+    public <T extends BaseBuilder> T subBuilder(Class<T> builder) {
+        try {
+            return builder.getConstructor(StageBuilder.class).newInstance(this);
+        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public String getBackground() {

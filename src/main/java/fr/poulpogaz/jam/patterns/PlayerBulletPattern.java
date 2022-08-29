@@ -11,6 +11,7 @@ import fr.poulpogaz.jam.states.Game;
 import org.joml.Vector2f;
 
 import static fr.poulpogaz.jam.Constants.PLAYER_BULLET_NAME;
+import static fr.poulpogaz.jam.Constants.PLAYER_BULLET_SPEED;
 
 /**
  * Power system:
@@ -23,7 +24,7 @@ import static fr.poulpogaz.jam.Constants.PLAYER_BULLET_NAME;
  */
 public class PlayerBulletPattern implements BulletPattern {
 
-    private static final Vector2f BULLET_DIR = new Vector2f(0, -5);
+    private static final Vector2f BULLET_DIR = new Vector2f(0, -1).mul(PLAYER_BULLET_SPEED);
     private static final LinearPattern PATTERN_A = new LinearPattern(BULLET_DIR);
 
     private static ITexture texture;
@@ -85,9 +86,9 @@ public class PlayerBulletPattern implements BulletPattern {
         public Vector2f dir(int t, Vector2f dest) {
             if (t < length) {
                 if (left) {
-                    dest.set(-5, -5);
+                    dest.set(-1, -1).normalize(PLAYER_BULLET_SPEED);
                 } else {
-                    dest.set(5, -5);
+                    dest.set(1, -1).normalize(PLAYER_BULLET_SPEED);
                 }
             } else {
                 dest.set(BULLET_DIR);

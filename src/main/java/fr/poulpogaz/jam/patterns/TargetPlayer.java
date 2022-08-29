@@ -20,7 +20,7 @@ public class TargetPlayer implements BulletPattern {
     public void addBullets(Game game, Entity entity, boolean player) {
         if (tick == 0) {
             Vector2f playerPos = game.getPlayer().getPos();
-            Vector2f dir = playerPos.sub(entity.getPos()).normalize(5);
+            Vector2f dir = playerPos.sub(entity.getPos()).normalize(3);
 
             Stage s = game.getStage();
             game.addBullet(s.createBullet(bullet, game, false, new LinearPattern(dir), entity.getPos()));

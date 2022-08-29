@@ -31,7 +31,7 @@ public class Player extends Entity {
         this.pos = new Vector2f(pos);
 
         power = 4f;
-        hitBox = new Circle(4, pos); // same instance of pos!!
+        hitBox = new Circle(Constants.PLAYER_HITBOX_RAD, pos); // same instance of pos!!
     }
 
     @Override
@@ -58,8 +58,8 @@ public class Player extends Entity {
     }
 
     private void move(Input in) {
-        int vx = 0;
-        int vy = 0;
+        float vx = 0;
+        float vy = 0;
         if (in.keyPressed(GLFW_KEY_DOWN)) {
             if (slowdown) {
                 vy += Constants.PLAYER_SPEED_SLOW_DOWN;

@@ -10,9 +10,7 @@ import java.util.Objects;
 public record EnemyDescriptor(String name, EntityRenderer renderer, HitBoxSupplier hitBox, int life, int width, int height) {
 
 
-    public static class Builder {
-
-        private final StageBuilder parent;
+    public static class Builder extends BaseBuilder {
 
         private EntityRenderer renderer;
         private HitBoxSupplier hitBox;
@@ -23,7 +21,7 @@ public record EnemyDescriptor(String name, EntityRenderer renderer, HitBoxSuppli
         private String name;
 
         public Builder(StageBuilder parent) {
-            this.parent = Objects.requireNonNull(parent);
+            super(parent);
         }
 
         public StageBuilder build() {

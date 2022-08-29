@@ -59,7 +59,7 @@ public class Game extends State {
 
         background = TextureCache.get(stage.getBackground());
 
-        mapScroll = -100;
+        mapScroll = -50;
         player = new Player(this, new Vector2f(HALF_WIDTH, Q3_HEIGHT));
         player.getRenderer().loadTextures();
     }

@@ -24,9 +24,7 @@ public interface IBulletDescriptor {
     float damage();
 
 
-    abstract class Builder {
-
-        protected final StageBuilder parent;
+    abstract class Builder extends BaseBuilder {
 
         protected String name;
         protected EntityRenderer renderer;
@@ -34,7 +32,7 @@ public interface IBulletDescriptor {
         protected float damage;
 
         public Builder(StageBuilder parent) {
-            this.parent = Objects.requireNonNull(parent);
+            super(parent);
         }
 
         public abstract StageBuilder build();

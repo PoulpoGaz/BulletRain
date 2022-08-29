@@ -21,11 +21,13 @@ public class Constants {
     // speed
     public static final float MAP_SCROLL_SPEED = 0.75f; // added to every entity
 
-    public static final int PLAYER_SPEED = 3;
-    public static final int PLAYER_SPEED_SLOW_DOWN = 1;
+    public static final float PLAYER_SPEED = 4f;
+    public static final float PLAYER_SPEED_SLOW_DOWN = 1.5f;
+
+    public static final float PLAYER_HITBOX_RAD = 3;
 
     // bullets
-    public static final int PLAYER_BULLET_DAMAGE = 1;
+    public static final float PLAYER_BULLET_SPEED = 5f;
     public static final String PLAYER_BULLET_NAME = "player_bullet";
 
     // score

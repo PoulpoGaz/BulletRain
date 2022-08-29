@@ -3,6 +3,7 @@ package fr.poulpogaz.jam.stage;
 import fr.poulpogaz.jam.engine.AABBHitBox;
 import fr.poulpogaz.jam.engine.AABBRotateHitBox;
 import fr.poulpogaz.jam.engine.CircleHitBox;
+import fr.poulpogaz.jam.entities.PlayerBullet;
 import fr.poulpogaz.jam.patterns.TargetPlayer;
 
 import static fr.poulpogaz.jam.Constants.*;
@@ -25,10 +26,9 @@ public class Stages {
                     .build()
 
                 // bullets
-                .bulletBuilder()
+                .subBuilder(PlayerBulletDescriptor.Builder.class)
                     .setName(PLAYER_BULLET_NAME)
                     .setBulletTexture("tileset.png", 32, 96, 10, 3)
-                    .setDamage(PLAYER_BULLET_DAMAGE)
                     .setHitBoxSupplier(new AABBRotateHitBox(10, 3))
                     .build()
                 .bulletBuilder()
@@ -42,18 +42,18 @@ public class Stages {
                 .scriptBuilder("sunflower")
                     .setStartPos(0, Location.TOP)
                     .setTriggerTime(0)
-                    .addBulletPattern(0, new TargetPlayer("sunflower_bullet", 10))
+                    .addBulletPattern(0, new TargetPlayer("sunflower_bullet", 45))
                     .build()
 
                 .scriptBuilder("sunflower")
                     .setStartPos(Q_WIDTH, Location.TOP)
                     .setTriggerTime(200)
-                    .addBulletPattern(0, new TargetPlayer("sunflower_bullet", 10))
+                    .addBulletPattern(0, new TargetPlayer("sunflower_bullet", 45))
                     .build()
                 .scriptBuilder("sunflower")
                     .setStartPos(-Q_WIDTH, Location.TOP)
                     .setTriggerTime(200)
-                    .addBulletPattern(0, new TargetPlayer("sunflower_bullet", 10))
+                    .addBulletPattern(0, new TargetPlayer("sunflower_bullet", 45))
                     .build()
                 .build();
     }
