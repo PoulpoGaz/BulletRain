@@ -35,6 +35,11 @@ public abstract class Entity {
 
     public abstract void update(Input in, float delta);
 
+    protected void clean() {
+        detailedHitBox = null;
+        aabbHitBox = null;
+    }
+
     public void render(Graphics2D g2d, FontRenderer f2d) {
         renderer.render(g2d, f2d, game, this);
     }

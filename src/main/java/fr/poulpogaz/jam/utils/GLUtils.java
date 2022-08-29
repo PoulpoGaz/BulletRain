@@ -4,7 +4,6 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
 
 public class GLUtils {
 

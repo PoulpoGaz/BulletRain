@@ -7,7 +7,7 @@ public class LinearPattern implements MovePattern {
     private final Vector2f dir;
 
     public LinearPattern(Vector2f dir) {
-        this.dir = dir;
+        this.dir = new Vector2f(dir);
     }
 
     @Override

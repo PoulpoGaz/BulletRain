@@ -8,7 +8,6 @@ import fr.poulpogaz.jam.utils.BuilderException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joml.Vector2f;
-import org.lwjgl.system.CallbackI;
 
 import java.util.ArrayList;
 import java.util.List;

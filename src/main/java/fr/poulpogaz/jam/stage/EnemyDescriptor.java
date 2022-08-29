@@ -1,12 +1,13 @@
 package fr.poulpogaz.jam.stage;
 
+import fr.poulpogaz.jam.engine.HitBoxSupplier;
 import fr.poulpogaz.jam.entities.EntityRenderer;
 import fr.poulpogaz.jam.entities.TextureEntityRenderer;
 import fr.poulpogaz.jam.utils.BuilderException;
 
 import java.util.Objects;
 
-public record EnemyDescriptor(String name, EntityRenderer renderer, int life, int width, int height) {
+public record EnemyDescriptor(String name, EntityRenderer renderer, HitBoxSupplier hitBox, int life, int width, int height) {
 
 
     public static class Builder {
@@ -14,6 +15,7 @@ public record EnemyDescriptor(String name, EntityRenderer renderer, int life, in
         private final StageBuilder parent;
 
         private EntityRenderer renderer;
+        private HitBoxSupplier hitBox;
         private int life;
         private int width;
         private int height;
@@ -26,6 +28,7 @@ public record EnemyDescriptor(String name, EntityRenderer renderer, int life, in
 
         public StageBuilder build() {
             Objects.requireNonNull(renderer);
+            Objects.requireNonNull(hitBox);
 
             if (life <= 0) {
                 throw new BuilderException("enemy is dead");
@@ -37,7 +40,7 @@ public record EnemyDescriptor(String name, EntityRenderer renderer, int life, in
                 throw new BuilderException("Negative or null height");
             }
 
-            return parent.addEnemy(new EnemyDescriptor(name, renderer, life, width, height));
+            return parent.addEnemy(new EnemyDescriptor(name, renderer, hitBox, life, width, height));
         }
 
         public EntityRenderer getRenderer() {
@@ -58,6 +61,15 @@ public record EnemyDescriptor(String name, EntityRenderer renderer, int life, in
             this.renderer = new TextureEntityRenderer(texture, x, y, w, h);
             this.width = w;
             this.height = h;
+            return this;
+        }
+
+        public HitBoxSupplier getHitBox() {
+            return hitBox;
+        }
+
+        public Builder setHitBox(HitBoxSupplier hitBox) {
+            this.hitBox = hitBox;
             return this;
         }
 

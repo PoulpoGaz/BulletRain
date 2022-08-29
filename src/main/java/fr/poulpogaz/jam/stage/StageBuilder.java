@@ -8,7 +8,7 @@ public class StageBuilder {
 
     private String background;
     private final Map<String, EnemyDescriptor> enemiesDescriptors = new HashMap<>();
-    private final Map<String, BulletDescriptor> bulletsDescriptors = new HashMap<>();
+    private final Map<String, IBulletDescriptor> bulletsDescriptors = new HashMap<>();
     private final List<EnemyScript> scripts = new ArrayList<>();
 
     public Stage build() {
@@ -41,7 +41,7 @@ public class StageBuilder {
     }
 
 
-    public StageBuilder addBullet(BulletDescriptor bullet) {
+    public StageBuilder addBullet(IBulletDescriptor bullet) {
         bulletsDescriptors.put(bullet.name(), bullet);
         return this;
     }

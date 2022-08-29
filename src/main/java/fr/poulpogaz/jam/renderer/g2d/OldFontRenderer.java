@@ -2,7 +2,6 @@ package fr.poulpogaz.jam.renderer.g2d;
 
 import fr.poulpogaz.jam.renderer.Colors;
 import fr.poulpogaz.jam.renderer.IColor;
-import fr.poulpogaz.jam.renderer.Texture;
 import fr.poulpogaz.jam.renderer.shaders.Program;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;

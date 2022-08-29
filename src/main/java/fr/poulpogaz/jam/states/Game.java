@@ -8,7 +8,6 @@ import fr.poulpogaz.jam.renderer.Texture;
 import fr.poulpogaz.jam.renderer.g2d.FontRenderer;
 import fr.poulpogaz.jam.renderer.g2d.Graphics2D;
 import fr.poulpogaz.jam.renderer.utils.TextureCache;
-import fr.poulpogaz.jam.stage.EnemyDescriptor;
 import fr.poulpogaz.jam.stage.EnemyScript;
 import fr.poulpogaz.jam.stage.Stage;
 import fr.poulpogaz.jam.stage.Stages;
@@ -62,6 +61,7 @@ public class Game extends State {
 
         mapScroll = -100;
         player = new Player(this, new Vector2f(HALF_WIDTH, Q3_HEIGHT));
+        player.getRenderer().loadTextures();
     }
 
     @Override
@@ -96,7 +96,7 @@ public class Game extends State {
         for (Enemy e : enemies) {
             AABB aabb = e.getAABB();
 
-            if (aabb == null || aabb.collide(screen).intersect()) {
+            if (aabb.collide(screen).intersect()) {
                 e.render(g2d, f2d);
             }
         }

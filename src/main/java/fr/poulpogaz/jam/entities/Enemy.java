@@ -47,6 +47,7 @@ public class Enemy extends Entity {
         t++;
         nextBulletPattern();
         nextMovePattern();
+        clean();
     }
 
     private void nextBulletPattern() {
@@ -73,7 +74,7 @@ public class Enemy extends Entity {
 
     @Override
     public Polygon getDetailedHitBoxImpl() {
-        return null;
+        return script.enemy().hitBox().getDetailedHitBox(this);
     }
 
     public int getLife() {

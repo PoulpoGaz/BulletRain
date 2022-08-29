@@ -2,7 +2,7 @@ package fr.poulpogaz.jam.engine;
 
 import fr.poulpogaz.jam.engine.polygons.Circle;
 import fr.poulpogaz.jam.engine.polygons.Polygon;
-import fr.poulpogaz.jam.entities.Bullet;
+import fr.poulpogaz.jam.entities.Entity;
 
 public class CircleHitBox implements HitBoxSupplier {
 
@@ -13,7 +13,7 @@ public class CircleHitBox implements HitBoxSupplier {
     }
 
     @Override
-    public Polygon getDetailedHitBox(Bullet bullet) {
-        return new Circle(radius, bullet.getPos());
+    public Polygon getDetailedHitBox(Entity entity) {
+        return new Circle(radius, entity.getPos());
     }
 }

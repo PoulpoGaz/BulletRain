@@ -25,8 +25,9 @@ public class TextureCache {
             return texture;
         }
 
-        GLFWImage image = ImageLoader.loadImage(path, resource);
-        texture = new Texture(image);
+        try (GLFWImage image = ImageLoader.loadImage(path, resource)) {
+            texture = new Texture(image);
+        }
 
         CACHE.put(path, texture);
 

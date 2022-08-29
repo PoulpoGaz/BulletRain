@@ -13,19 +13,19 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-public class Stage implements BulletFactory {
+public class Stage  {
 
     private static final Logger LOGGER = LogManager.getLogger(Stage.class);
 
     // background texture
     private final String background;
     private final Map<String, EnemyDescriptor> enemiesDescriptors;
-    private final Map<String, BulletDescriptor> bulletsDescriptors;
+    private final Map<String, IBulletDescriptor> bulletsDescriptors;
     private final List<EnemyScript> scripts;
 
     public Stage(String background,
                  Map<String, EnemyDescriptor> enemiesDescriptors,
-                 Map<String, BulletDescriptor> bulletsDescriptors,
+                 Map<String, IBulletDescriptor> bulletsDescriptors,
                  List<EnemyScript> scripts) {
         this.background = background;
         this.enemiesDescriptors = enemiesDescriptors;
@@ -39,22 +39,25 @@ public class Stage implements BulletFactory {
             desc.renderer().loadTextures();
         }
 
-        for (BulletDescriptor desc : bulletsDescriptors.values()) {
+        for (IBulletDescriptor desc : bulletsDescriptors.values()) {
             desc.renderer().loadTextures();
         }
 
         TextureCache.getOrCreate(background);
     }
 
-    @Override
+    public Bullet createPlayerBullet(String name, Game game, MovePattern movePattern, Vector2f pos) {
+        return createBullet(name, game, true, movePattern, pos);
+    }
+
     public Bullet createBullet(String name, Game game, boolean playerBullet, MovePattern pattern, Vector2f pos) {
-        BulletDescriptor desc = bulletsDescriptors.get(name);
+        IBulletDescriptor desc = bulletsDescriptors.get(name);
         if (desc == null) {
             LOGGER.warn("No bullet descriptor named {} found", name);
             return null;
         }
 
-        return new Bullet(game, desc, playerBullet, pattern, pos);
+        return desc.create(game, playerBullet, pattern, pos);
     }
 
     public String getBackground() {

@@ -7,9 +7,13 @@ import fr.poulpogaz.jam.renderer.g2d.FontRenderer;
 import fr.poulpogaz.jam.renderer.g2d.Graphics2D;
 import fr.poulpogaz.jam.renderer.utils.TextureCache;
 import fr.poulpogaz.jam.states.Game;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joml.Vector2f;
 
 public class TextureEntityRenderer implements EntityRenderer {
+
+    private static final Logger LOGGER = LogManager.getLogger(TextureEntityRenderer.class);
 
     protected final String texture;
     protected final int x;
@@ -20,7 +24,7 @@ public class TextureEntityRenderer implements EntityRenderer {
     protected ITexture tex;
 
     public TextureEntityRenderer(String texture) {
-        this(texture, -1, -1, -1, -1);
+        this(texture, 0, 0, -1, -1);
     }
 
     public TextureEntityRenderer(String texture, int x, int y, int w, int h) {
@@ -35,7 +39,11 @@ public class TextureEntityRenderer implements EntityRenderer {
     public void loadTextures() throws Exception {
         Texture t = TextureCache.getOrCreate(texture);
 
-        if (x >= 0) {
+        if (t == null) {
+            throw new RuntimeException("Can't find texture: " + texture);
+        }
+
+        if (w >= 0 || h >= 0) {
             tex = new SubTexture(x, y, w, h, t);
         } else {
             tex = t;

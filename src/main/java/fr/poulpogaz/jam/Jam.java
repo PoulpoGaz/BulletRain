@@ -19,7 +19,8 @@ import org.joml.Matrix4f;
 import java.awt.*;
 import java.nio.charset.StandardCharsets;
 
-import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_F11;
 import static org.lwjgl.opengl.GL11.*;
 
 public class Jam implements IGame {

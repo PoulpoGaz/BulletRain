@@ -24,8 +24,9 @@ public class Constants {
     public static final int PLAYER_SPEED = 3;
     public static final int PLAYER_SPEED_SLOW_DOWN = 1;
 
-    // damage
+    // bullets
     public static final int PLAYER_BULLET_DAMAGE = 1;
+    public static final String PLAYER_BULLET_NAME = "player_bullet";
 
     // score
     public static final int PLAYER_SURVIVE = 1; // added every tick

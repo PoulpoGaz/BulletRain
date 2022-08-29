@@ -28,7 +28,7 @@ public class Player extends Entity {
 
     public Player(Game game, Vector2f pos) {
         super(game);
-        this.pos = pos;
+        this.pos = new Vector2f(pos);
 
         power = 4f;
         hitBox = new Circle(4, pos); // same instance of pos!!

@@ -8,7 +8,7 @@ import fr.poulpogaz.jam.renderer.Colors;
 import fr.poulpogaz.jam.renderer.g2d.FontRenderer;
 import fr.poulpogaz.jam.renderer.g2d.Graphics2D;
 import fr.poulpogaz.jam.renderer.io.Input;
-import fr.poulpogaz.jam.stage.BulletDescriptor;
+import fr.poulpogaz.jam.stage.IBulletDescriptor;
 import fr.poulpogaz.jam.states.Game;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,7 +18,7 @@ public class Bullet extends Entity {
 
     private static final Logger LOGGER = LogManager.getLogger(Bullet.class);
 
-    protected final BulletDescriptor descriptor;
+    protected final IBulletDescriptor descriptor;
     protected final MovePattern movePattern;
     protected final boolean playerBullet;
 
@@ -28,12 +28,12 @@ public class Bullet extends Entity {
     protected float angle;
 
     public Bullet(Game game,
-                  BulletDescriptor descriptor,
+                  IBulletDescriptor descriptor,
                   boolean playerBullet,
                   MovePattern movePattern,
                   Vector2f pos) {
-        super(game);
-        this.pos = pos;
+        super(game, descriptor.renderer());
+        this.pos = new Vector2f(pos);
         this.descriptor = descriptor;
         this.movePattern = movePattern;
         this.playerBullet = playerBullet;
@@ -49,6 +49,7 @@ public class Bullet extends Entity {
         t++;
 
         angle = computeAngle();
+        clean();
     }
 
     @Override
@@ -72,23 +73,28 @@ public class Bullet extends Entity {
         return (float) (Math.atan2(dir.y, dir.x));
     }
 
-    public boolean isPlayerBullet() {
-        return playerBullet;
+
+    public IBulletDescriptor getDescriptor() {
+        return descriptor;
     }
 
-    public BulletDescriptor getDescriptor() {
-        return descriptor;
+    public boolean isPlayerBullet() {
+        return playerBullet;
     }
 
     public float getAngle() {
         return angle;
     }
 
-    public Vector2f getDir() {
-        return getDir(new Vector2f());
+    public Vector2f getDirection() {
+        return getDirection(new Vector2f());
     }
 
-    public Vector2f getDir(Vector2f dest) {
+    public Vector2f getDirection(Vector2f dest) {
         return dest.set(dir);
+    }
+
+    public float getDamage() {
+        return descriptor.damage();
     }
 }
