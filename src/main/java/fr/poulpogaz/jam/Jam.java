@@ -40,6 +40,7 @@ public class Jam implements IGame {
     private GameEngine engine;
 
     private final Matrix4f projection2D = new Matrix4f().ortho2D(0, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
+    private final Matrix4f scale = new Matrix4f().scale(2);
 
     private Renderer2D renderer;
     private Graphics2D g2d;
@@ -60,6 +61,7 @@ public class Jam implements IGame {
         renderer = new Renderer2D(5000, 50000);
         g2d = new Graphics2D(renderer);
         g2d.setProjection(projection2D);
+        g2d.setTransform(scale);
 
         f2d = new FontRenderer(500);
         f2d.setProjection(projection2D);
@@ -79,7 +81,7 @@ public class Jam implements IGame {
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_CULL_FACE);
 
-        g2d.setTransform(new Matrix4f().scale(2));
+        g2d.setTransform(scale);
         stateManager.render(g2d, f2d);
         g2d.end();
         f2d.flush();
@@ -108,9 +110,11 @@ public class Jam implements IGame {
 
     @Override
     public void terminate() {
-        renderer.close();
         g2d.close();
-        OldFontRenderer.free();
+        renderer.close();
+        f2d.getFont().close();
+        f2d.close();
+
         Shaders.dispose();
         TextureCache.free();
     }

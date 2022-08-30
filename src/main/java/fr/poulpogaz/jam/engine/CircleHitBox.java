@@ -16,7 +16,7 @@ public class CircleHitBox implements HitBoxSupplier {
     public Polygon getDetailedHitBox(Entity entity, Polygon p) {
         if (p instanceof Circle c) {
             c.setRadius(radius);
-            c.setCenter(entity.getPos());
+            entity.getPos(c.center());
             return c;
         } else {
             return new Circle(radius, entity.getPos());

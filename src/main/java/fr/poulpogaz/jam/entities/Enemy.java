@@ -38,7 +38,9 @@ public class Enemy extends LivingEntity {
 
     @Override
     public void update(Input in, float delta) {
-        if (!isDied()) {
+        super.update(in, delta);
+
+        if (isAlive()) {
             movePattern.dir(t, dir);
             pos.add(dir);
             bulletPattern.addBullets(game, this, false);
@@ -82,9 +84,5 @@ public class Enemy extends LivingEntity {
 
     public int getLife() {
         return life;
-    }
-
-    public boolean isDied() {
-        return life <= 0;
     }
 }

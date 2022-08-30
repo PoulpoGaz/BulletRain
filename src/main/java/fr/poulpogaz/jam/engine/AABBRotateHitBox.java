@@ -36,27 +36,36 @@ public class AABBRotateHitBox implements HitBoxSupplier {
                         height, width);
 
             } else {
-                ConvexPolygon poly;
-
-                if (last instanceof ConvexPolygon p) {
-                    poly = p;
-                    poly.reset();
-                } else {
-                    poly = new ConvexPolygon();
-                }
-
                 float cx = width / 2;
                 float cy = height / 2;
 
                 float cos = Math.cos(bullet.getAngle());
                 float sin = Math.sin(bullet.getAngle());
 
-                poly.setCenter(bullet.getPos());
+                float x1 = cos * -cx - sin * -cy,  y1 =  cos * -cy + sin * -cx;
+                float x2 = cos * +cx - sin * -cy,  y2 =  cos * -cy + sin * +cx;
+                float x3 = cos * +cx - sin * +cy,  y3 =  cos * +cy + sin * +cx;
+                float x4 = cos * -cx - sin * +cy,  y4 =  cos * +cy + sin * -cx;
 
-                poly.addPoint(new Vector2f(cos * -cx - sin * -cy, cos * -cy + sin * -cx));
-                poly.addPoint(new Vector2f(cos * +cx - sin * -cy, cos * -cy + sin * +cx));
-                poly.addPoint(new Vector2f(cos * +cx - sin * +cy, cos * +cy + sin * +cx));
-                poly.addPoint(new Vector2f(cos * -cx - sin * +cy, cos * +cy + sin * -cx));
+
+                ConvexPolygon poly;
+                if (last instanceof ConvexPolygon p) {
+                    poly = p;
+                    p.getModel(0).set(x1, y1);
+                    p.getModel(1).set(x2, y2);
+                    p.getModel(2).set(x3, y3);
+                    p.getModel(3).set(x4, y4);
+                    p.reloadPoints();
+
+                } else {
+                    poly = new ConvexPolygon();
+                    poly.addPoint(new Vector2f(x1, y1));
+                    poly.addPoint(new Vector2f(x2, y2));
+                    poly.addPoint(new Vector2f(x3, y3));
+                    poly.addPoint(new Vector2f(x4, y4));
+                }
+
+                bullet.getPos(poly.center());
 
                 return poly;
             }

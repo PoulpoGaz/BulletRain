@@ -142,7 +142,7 @@ public abstract class Paint {
         }
 
         public void clean() {
-            hasTextureChanged = true;
+            hasTextureChanged = false;
         }
     }
 

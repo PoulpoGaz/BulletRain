@@ -79,29 +79,30 @@ public class ImageFont implements AutoCloseable {
     private static ImageFont loadFontFromCache(Path image, Path glyph, Font font) {
         try {
             // get image
-            GLFWImage img = ImageLoader.loadImage(image.toAbsolutePath().toString(), false);
-            Texture texture = new Texture(img);
+            try (GLFWImage img = ImageLoader.loadImage(image.toAbsolutePath().toString(), false)) {
+                Texture texture = new Texture(img);
 
-            // get glyphs
-            Map<Character, Glyph> glyphs = new HashMap<>();
-            IJsonReader jr = new JsonReader(Files.newBufferedReader(glyph, StandardCharsets.UTF_8));
+                // get glyphs
+                Map<Character, Glyph> glyphs = new HashMap<>();
+                IJsonReader jr = new JsonReader(Files.newBufferedReader(glyph, StandardCharsets.UTF_8));
 
-            jr.beginObject();
-            while (!jr.isObjectEnd()) {
-                char c = jr.nextKey().charAt(0);
+                jr.beginObject();
+                while (!jr.isObjectEnd()) {
+                    char c = jr.nextKey().charAt(0);
 
-                jr.beginArray();
-                int x = jr.nextInt();
-                int y = jr.nextInt();
-                int width = jr.nextInt();
-                jr.endArray();
+                    jr.beginArray();
+                    int x = jr.nextInt();
+                    int y = jr.nextInt();
+                    int width = jr.nextInt();
+                    jr.endArray();
 
-                glyphs.put(c, new Glyph(c, x, y, width));
+                    glyphs.put(c, new Glyph(c, x, y, width));
+                }
+                jr.endObject();
+                jr.close();
+
+                return new ImageFont(font, glyphs, texture);
             }
-            jr.endObject();
-            jr.close();
-
-            return new ImageFont(font, glyphs, texture);
         } catch (IOException | JsonException e) {
             LOGGER.warn("Failed to load font image:{} glyph:{}", image, glyph, e);
         }

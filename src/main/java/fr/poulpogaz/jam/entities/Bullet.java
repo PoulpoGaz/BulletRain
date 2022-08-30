@@ -39,6 +39,8 @@ public class Bullet extends Entity {
 
     @Override
     public void update(Input in, float delta) {
+        super.update(in, delta);
+
         movePattern.dir(t, dir);
         pos.add(dir);
         t++;

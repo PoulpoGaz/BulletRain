@@ -3,6 +3,7 @@ package fr.poulpogaz.jam.entities;
 import fr.poulpogaz.jam.Constants;
 import fr.poulpogaz.jam.engine.polygons.AABB;
 import fr.poulpogaz.jam.engine.polygons.Polygon;
+import fr.poulpogaz.jam.particles.Particle;
 import fr.poulpogaz.jam.renderer.Colors;
 import fr.poulpogaz.jam.renderer.g2d.FontRenderer;
 import fr.poulpogaz.jam.renderer.g2d.Graphics2D;
@@ -10,6 +11,8 @@ import fr.poulpogaz.jam.renderer.io.Input;
 import fr.poulpogaz.jam.states.Game;
 import org.joml.Vector2f;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public abstract class Entity {
@@ -22,6 +25,8 @@ public abstract class Entity {
     protected AABB aabbHitBox;
     protected boolean hitBoxDirty = true;
     protected boolean aabbDirty = true;
+
+    protected List<Particle> particles = new ArrayList<>();
 
     public Entity(Game game) {
         this.game = Objects.requireNonNull(game);
@@ -37,10 +42,31 @@ public abstract class Entity {
         return null;
     }
 
-    public abstract void update(Input in, float delta);
+    public void update(Input in, float delta) {
+        updateParticles(delta);
+    }
+
+    protected void updateParticles(float delta) {
+        int i = 0;
+        while (i < particles.size()) {
+            Particle p = particles.get(i);
+            p.update(delta);
+
+            if (p.isDied()) {
+                particles.remove(i);
+                continue;
+            }
+            i++;
+        }
+    }
+
 
     public void render(Graphics2D g2d, FontRenderer f2d) {
         renderer.render(g2d, f2d, game, this);
+
+        for (Particle p : particles) {
+            p.render(g2d, f2d);
+        }
 
         if (Constants.SHOW_HITBOX) {
             AABB aabb = getAABB();
@@ -65,6 +91,7 @@ public abstract class Entity {
     public Polygon getDetailedHitBox() {
         if (hitBoxDirty) {
             detailedHitBox = getDetailedHitBoxImpl();
+            hitBoxDirty = false;
         }
 
         return detailedHitBox;
@@ -73,6 +100,7 @@ public abstract class Entity {
     public AABB getAABB() {
         if (aabbDirty) {
             aabbHitBox = getAABBImpl();
+            aabbDirty = false;
         }
 
         return aabbHitBox;
@@ -98,5 +126,9 @@ public abstract class Entity {
 
     public EntityRenderer getRenderer() {
         return renderer;
+    }
+
+    public boolean hasParticles() {
+        return !particles.isEmpty();
     }
 }

@@ -5,6 +5,8 @@ public class Constants {
     public static final boolean DEBUG = true;
     public static final boolean SHOW_HITBOX = DEBUG && true;
 
+    public static final boolean CONVEX_POLYGON_NO_CHECK = true;
+
     // window
     public static final int HEIGHT = 500;
     public static final int WIDTH = HEIGHT * 3 / 4;

@@ -42,9 +42,9 @@ public class Player extends LivingEntity {
 
     @Override
     public void update(Input in, float delta) {
-        if (isDied()) {
+        super.update(in, delta);
 
-        } else {
+        if (isAlive()) {
             slowdown = in.keyPressed(GLFW_KEY_LEFT_SHIFT) || in.keyPressed(GLFW_KEY_RIGHT_SHIFT);
             boolean moved = move(in);
 

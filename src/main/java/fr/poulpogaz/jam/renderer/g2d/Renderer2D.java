@@ -3,8 +3,12 @@ package fr.poulpogaz.jam.renderer.g2d;
 import fr.poulpogaz.jam.renderer.IColor;
 import fr.poulpogaz.jam.renderer.ITexture;
 import fr.poulpogaz.jam.renderer.mesh.Mesh;
+import fr.poulpogaz.jam.renderer.mesh.VertexBufferObject;
 import fr.poulpogaz.jam.renderer.shaders.Program;
 import org.joml.Matrix4f;
+
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 
 import static org.lwjgl.opengl.GL15.GL_DYNAMIC_DRAW;
 
@@ -20,10 +24,9 @@ public class Renderer2D implements AutoCloseable {
     private float invTexWidth;
     private float invTexHeight;
 
-    private final float[] vertices;
-    private final int[] indices;
+    private FloatBuffer vbo;
+    private IntBuffer ibo;
 
-    private int indicesPos;
     private int vertexIndex;
 
     private int colOffset;
@@ -37,16 +40,13 @@ public class Renderer2D implements AutoCloseable {
         DrawMode[] modes = DrawMode.values();
         meshes = new Mesh[modes.length];
 
-        int max = 0;
+        //int max = 0;
         for (int i = 0; i < modes.length; i++) {
             DrawMode mode = modes[i];
 
             meshes[i] = new Mesh(mode.getAttributes(), numVertices, numIndices, GL_DYNAMIC_DRAW);
-            max = Math.max(mode.getAttributes().vertexSizeInBytes(), max);
+            //max = Math.max(mode.getAttributes().vertexSizeInBytes(), max);
         }
-
-        vertices = new float[numVertices * max];
-        indices = new int[numIndices];
     }
 
     public void begin(int primitiveType, DrawMode drawMode) {
@@ -62,21 +62,58 @@ public class Renderer2D implements AutoCloseable {
         texOffset = drawMode.getTextureOffset();
 
         vertexIndex = 0;
-        indicesPos = 0;
+
+        Mesh m = meshes[drawMode.ordinal()];
+        vbo = m.getVerticesBuffer();
+        vbo.limit(vbo.capacity());
+        vbo.position(0);
+
+        ibo = m.getIndicesBuffer();
+        ibo.limit(ibo.capacity());
+        ibo.position(0);
 
         isDrawing = true;
     }
 
+    public Renderer2D index(int i) {
+        ibo.put(i);
+        return this;
+    }
+
+    public Renderer2D index(int i, int i2) {
+        ibo.put(i).put(i2);
+        return this;
+    }
+
+    public Renderer2D index(int i, int i2, int i3) {
+        ibo.put(i).put(i2).put(i3);
+        return this;
+    }
+
+    public Renderer2D index(int i, int i2, int i3, int i4) {
+        ibo.put(i).put(i2).put(i3).put(i4);
+        return this;
+    }
+
+    public Renderer2D index(int i, int i2, int i3, int i4, int i5) {
+        ibo.put(i).put(i2).put(i3).put(i4).put(i5);
+        return this;
+    }
+
+    public Renderer2D index(int i, int i2, int i3, int i4, int i5, int i6) {
+        ibo.put(i).put(i2).put(i3).put(i4).put(i5).put(i6);
+        return this;
+    }
+
     public Renderer2D index(int... index) {
-        System.arraycopy(index, 0, indices, indicesPos, index.length);
-        indicesPos += index.length;
+        ibo.put(index);
 
         return this;
     }
 
     public Renderer2D pos(float x, float y) {
-        vertices[vertexIndex] = x;
-        vertices[vertexIndex + 1] = y;
+        vbo.put(vertexIndex, x);
+        vbo.put(vertexIndex + 1, y);
 
         vertexIndex += vertexSize;
 
@@ -94,10 +131,10 @@ public class Renderer2D implements AutoCloseable {
     public Renderer2D color(float r, float g, float b, float a) {
         int i = vertexIndex + colOffset;
 
-        vertices[i] = r;
-        vertices[i + 1] = g;
-        vertices[i + 2] = b;
-        vertices[i + 3] = a;
+        vbo.put(i, r);
+        vbo.put(i + 1, g);
+        vbo.put(i + 2, b);
+        vbo.put(i + 3, a);
 
         return this;
     }
@@ -105,8 +142,8 @@ public class Renderer2D implements AutoCloseable {
     public Renderer2D texf(float u, float v) {
         int i = vertexIndex + texOffset;
 
-        vertices[i] = u;
-        vertices[i + 1] = v;
+        vbo.put(i, u);
+        vbo.put(i + 1, v);
 
         return this;
     }
@@ -114,8 +151,8 @@ public class Renderer2D implements AutoCloseable {
     public Renderer2D texfNotNormalized(float u, float v) {
         int i = vertexIndex + texOffset;
 
-        vertices[i] = (u + tex.getX()) * invTexWidth;
-        vertices[i + 1] = (v + tex.getY()) * invTexHeight;
+        vbo.put(i, (u + tex.getX()) * invTexWidth);
+        vbo.put(i + 1, (v + tex.getY()) * invTexHeight);
 
         return this;
     }
@@ -123,8 +160,8 @@ public class Renderer2D implements AutoCloseable {
     public Renderer2D texi(int u, int v) {
         int i = vertexIndex + texOffset;
 
-        vertices[i] = (u + tex.getX()) * invTexWidth;
-        vertices[i + 1] = (v + tex.getY()) * invTexHeight;
+        vbo.put(i, (u + tex.getX()) * invTexWidth);
+        vbo.put(i + 1, (v + tex.getY()) * invTexHeight);
 
         return this;
     }
@@ -141,11 +178,14 @@ public class Renderer2D implements AutoCloseable {
         Program shader = custom == null ? drawMode.getShader() : custom;
 
         Mesh mesh = meshes[drawMode.ordinal()];
-        mesh.setVertices(vertices, 0, vertexIndex);
 
-        if (mesh.getNumIndices() != indicesPos) {
-            mesh.setIndices(indices, 0, indicesPos);
-        }
+        // flip vbo
+        vbo.limit(vertexIndex);
+        vbo.position(0);
+        mesh.getVBO().markDirty();
+
+        ibo.flip();
+        mesh.getIBO().markDirty();
 
         if (drawMode.isTexture()) {
             tex.bind();
@@ -220,7 +260,7 @@ public class Renderer2D implements AutoCloseable {
     }
 
     public int getNumIndices() {
-        return indicesPos;
+        return ibo.position();
     }
 
     @Override

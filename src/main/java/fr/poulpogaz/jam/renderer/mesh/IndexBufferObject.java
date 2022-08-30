@@ -50,12 +50,6 @@ public class IndexBufferObject implements IGLBuffer {
         buffer.flip();
     }
 
-    public void setIndices(int[] indices) {
-        buffer.clear();
-        buffer.put(indices);
-        buffer.flip();
-    }
-
     public void setIndices(int[] array, int offset) {
         setIndices(array, offset, array.length, 0);
     }

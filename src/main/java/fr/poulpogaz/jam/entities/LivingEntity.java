@@ -4,10 +4,13 @@ import fr.poulpogaz.jam.particles.AnimatedParticle;
 import fr.poulpogaz.jam.states.Game;
 import fr.poulpogaz.jam.utils.AnimationDescriptor;
 import fr.poulpogaz.jam.utils.Animations;
+import fr.poulpogaz.jam.utils.Mathf;
+import org.joml.Vector2f;
 
 public abstract class LivingEntity extends Entity {
 
     private static final AnimationDescriptor HIT = Animations.get("hit_animation");
+    private static final AnimationDescriptor DEATH = Animations.get("expl_08_animation");
 
     protected int life;
     protected boolean hit;
@@ -21,13 +24,19 @@ public abstract class LivingEntity extends Entity {
     }
 
     public void hit(Bullet b) {
-        if (life > 0) {
-            //life -= b.getDamage();
+        if (isAlive()) {
+            life -= b.getDamage();
+
+            float x = Mathf.random(getX(), b.getX());
+            float y = Mathf.random(getY(), b.getY());
+            Vector2f pos = new Vector2f(x, y);
 
             if (life <= 0) {
                 life = 0;
+
+                particles.add(new AnimatedParticle(pos, DEATH));
             } else {
-                game.addParticle(new AnimatedParticle(b.getPos(), HIT));
+                particles.add(new AnimatedParticle(pos, HIT));
             }
 
             hit = true;
@@ -38,8 +47,12 @@ public abstract class LivingEntity extends Entity {
         return life;
     }
 
-    public boolean isDied() {
+    public boolean isDead() {
         return life <= 0;
+    }
+
+    public boolean isAlive() {
+        return life > 0;
     }
 
     public boolean isHit() {

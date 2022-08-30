@@ -1,5 +1,6 @@
 package fr.poulpogaz.jam.engine.polygons;
 
+import fr.poulpogaz.jam.Constants;
 import org.joml.Vector2f;
 
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ public class ConvexPolygon extends MultiplePointPolygon {
 
     @Override
     protected boolean checkValid(Vector2f point) {
-        if (models.size() > 2) {
+        if (models.size() > 2 && !Constants.CONVEX_POLYGON_NO_CHECK) {
             models.add(point);
 
             List<Double> angles = new ArrayList<>(models.size());

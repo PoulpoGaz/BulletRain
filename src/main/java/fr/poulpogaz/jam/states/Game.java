@@ -150,7 +150,7 @@ public class Game extends State {
 
             e.update(input, delta);
 
-            if (!largeScreen.collide(e.getAABB())) {
+            if ((e.isDead() && !e.hasParticles()) || !largeScreen.collide(e.getAABB())) {
                 enemies.remove(i);
                 i--;
             }
@@ -201,6 +201,10 @@ public class Game extends State {
             Polygon p = playerBullet.getDetailedHitBox();
 
             for (Enemy e : enemies) {
+                if (e.isDead()) {
+                    continue;
+                }
+
                 AABB eAABB = e.getAABB();
                 Polygon pE = e.getDetailedHitBox();
 

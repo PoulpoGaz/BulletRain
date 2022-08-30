@@ -24,6 +24,10 @@ public abstract class MultiplePointPolygon extends AbstractPolygon{
         }
     }
 
+    public Vector2f getModel(int index) {
+        return models.get(index);
+    }
+
     public void removePoint(Vector2f point) {
         int i = models.indexOf(point);
         models.remove(i);
@@ -45,7 +49,7 @@ public abstract class MultiplePointPolygon extends AbstractPolygon{
     public void reloadPoints() {
         for (int i = 0; i < points.size(); i++) {
             Vector2f v = points.get(i);
-            v.set(models.get(i).add(center, new Vector2f()));
+            models.get(i).add(center, v);
         }
     }
 

@@ -19,6 +19,7 @@ public class Animations {
 
     public static void loadAnimations() throws IOException, JsonException {
         load("hit_animation");
+        load("expl_08_animation");
     }
 
     private static void load(String name) throws IOException, JsonException {

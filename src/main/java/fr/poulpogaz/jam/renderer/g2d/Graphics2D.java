@@ -29,11 +29,13 @@ public class Graphics2D implements IGraphics2D {
     private Paint paint = color; // never null
     private Paint newPaint;
 
-    private Matrix4f projection;
-    private Matrix4f transform;
+    private final Matrix4f projection = new Matrix4f();
+    private final Matrix4f transform = new Matrix4f();
 
-    private Matrix4f newProjection;
-    private Matrix4f newTransform;
+    private final Matrix4f newProjection = new Matrix4f();
+    private boolean projectionDirty = false;
+    private final Matrix4f newTransform = new Matrix4f();
+    private boolean transformDirty = false;
 
     private boolean dirty = false;
 
@@ -47,37 +49,34 @@ public class Graphics2D implements IGraphics2D {
         this.renderer = new Renderer2D(numVertices, numIndices);
         ownsRenderer = true;
 
-        color.set(renderer);
+        paint.set(renderer);
     }
 
     public Graphics2D(Renderer2D renderer) {
         this.renderer = Objects.requireNonNull(renderer);
         ownsRenderer = false;
 
-        color.set(renderer);
+        paint.set(renderer);
     }
 
     @Override
     public void translate(float x, float y) {
-        Matrix4f transform = newTransform == null ? new Matrix4f(this.transform) : newTransform;
-        transform.translate(x, y, 0);
-        newTransform = transform;
+        newTransform.translate(x, y, 0);
+        transformDirty = true;
         dirty = true;
     }
 
     @Override
     public void scale(float sx, float sy) {
-        Matrix4f transform = newTransform == null ? new Matrix4f(this.transform) : newTransform;
-        transform.scale(sx, sy, 0);
-        newTransform = transform;
+        newTransform.scale(sx, sy, 0);
+        transformDirty = true;
         dirty = true;
     }
 
     @Override
     public void rotate(float theta) {
-        Matrix4f transform = newTransform == null ? new Matrix4f(this.transform) : newTransform;
-        transform.rotateZ(theta);
-        newTransform = transform;
+        newTransform.rotateZ(theta);
+        transformDirty = true;
         dirty = true;
     }
 
@@ -590,13 +589,13 @@ public class Graphics2D implements IGraphics2D {
             texturePaint.clean();
         }
 
-        if (newProjection != null) {
-            projection = newProjection;
-            newProjection = null;
+        if (projectionDirty) {
+            projection.set(newProjection);
+            projectionDirty = false;
         }
-        if (newTransform != null) {
-            transform = newTransform;
-            newTransform = null;
+        if (transformDirty) {
+            transform.set(newTransform);
+            transformDirty = false;
         }
         dirty = false;
     }
@@ -648,24 +647,30 @@ public class Graphics2D implements IGraphics2D {
 
     @Override
     public void setProjection(Matrix4f projection) {
-        newProjection = projection;
+        newProjection.set(projection);
         dirty = true;
+        projectionDirty = true;
     }
 
     @Override
     public Matrix4f getProjection() {
-        return projection;
+        dirty = true;
+        projectionDirty = true;
+        return newProjection;
     }
 
     @Override
     public void setTransform(Matrix4f transform) {
-        newTransform = transform;
+        newTransform.set(transform);
+        transformDirty = true;
         dirty = true;
     }
 
     @Override
     public Matrix4f getTransform() {
-        return transform;
+        dirty = true;
+        transformDirty = true;
+        return newTransform;
     }
 
     @Override
