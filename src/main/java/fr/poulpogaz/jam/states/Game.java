@@ -247,7 +247,7 @@ public class Game extends State {
         while (i < particles.size()) {
             Particle p = particles.get(i);
 
-            if (p.isDied()) {
+            if (p.isDead()) {
                 particles.remove(i);
             } else {
                 p.update(delta);

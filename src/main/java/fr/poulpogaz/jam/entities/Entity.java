@@ -52,7 +52,7 @@ public abstract class Entity {
             Particle p = particles.get(i);
             p.update(delta);
 
-            if (p.isDied()) {
+            if (p.isDead()) {
                 particles.remove(i);
                 continue;
             }

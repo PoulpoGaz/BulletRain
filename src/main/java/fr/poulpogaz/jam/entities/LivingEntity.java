@@ -15,6 +15,8 @@ public abstract class LivingEntity extends Entity {
     protected int life;
     protected boolean hit;
 
+    protected AnimatedParticle death;
+
     public LivingEntity(Game game) {
         super(game);
     }
@@ -34,7 +36,8 @@ public abstract class LivingEntity extends Entity {
             if (life <= 0) {
                 life = 0;
 
-                particles.add(new AnimatedParticle(pos, DEATH));
+                death = new AnimatedParticle(pos, DEATH);
+                particles.add(death);
             } else {
                 particles.add(new AnimatedParticle(pos, HIT));
             }
@@ -49,6 +52,18 @@ public abstract class LivingEntity extends Entity {
 
     public boolean isDead() {
         return life <= 0;
+    }
+
+    public boolean isDying() {
+        return death != null && !death.isDead();
+    }
+
+    public float percentToDeath() {
+        if (death == null) {
+            return 0;
+        }
+
+        return (float) death.getTimeAlive() / death.getLifetime();
     }
 
     public boolean isAlive() {

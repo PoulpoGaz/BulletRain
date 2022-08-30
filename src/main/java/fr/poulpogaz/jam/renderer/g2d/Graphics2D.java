@@ -24,6 +24,7 @@ public class Graphics2D implements IGraphics2D {
     private final boolean ownsRenderer;
 
     private final Paint.TexturePaint myTexturePaint = new Paint.TexturePaint();
+    private final Paint.ColorTexturePaint myColorTexturePaint = new Paint.ColorTexturePaint();
 
     private final Paint.ColorPaint color = new Paint.ColorPaint(Colors.WHITE); // never null, default paint
     private Paint paint = color; // never null
@@ -84,6 +85,10 @@ public class Graphics2D implements IGraphics2D {
     public void drawSprite(ITexture texture, float dstX, float dstY, float dstWidth, float dstHeight, float srcX, float srcY, float srcWidth, float srcHeight) {
         Paint p = newPaint == null ? paint : newPaint;
 
+        if (p instanceof Paint.ColorTexturePaint colorTexturePaint) {
+            colorTexturePaint.setColor(Colors.WHITE);
+        }
+
         if (p instanceof Paint.TexturePaint texturePaint) {
             if (texturePaint.getTexture() != texture) {
                 texturePaint.setTexture(texture);
@@ -94,6 +99,27 @@ public class Graphics2D implements IGraphics2D {
             myTexturePaint.setTexture(texture);
             myTexturePaint.set(dstX, dstY, dstWidth, dstHeight, srcX, srcY, srcWidth, srcHeight);
             setPaint(myTexturePaint);
+        }
+
+        fillRect(dstX, dstY, dstWidth, dstHeight);
+    }
+
+    @Override
+    public void drawSprite(ITexture texture, IColor color, float dstX, float dstY, float dstWidth, float dstHeight, float srcX, float srcY, float srcWidth, float srcHeight) {
+        Paint p = newPaint == null ? paint : newPaint;
+
+        if (p instanceof Paint.ColorTexturePaint texturePaint) {
+            if (texturePaint.getTexture() != texture) {
+                texturePaint.setTexture(texture);
+                dirty = true;
+            }
+            texturePaint.set(dstX, dstY, dstWidth, dstHeight, srcX, srcY, srcWidth, srcHeight);
+            texturePaint.setColor(color);
+        } else {
+            myColorTexturePaint.setTexture(texture);
+            myColorTexturePaint.set(dstX, dstY, dstWidth, dstHeight, srcX, srcY, srcWidth, srcHeight);
+            myColorTexturePaint.setColor(color);
+            setPaint(myColorTexturePaint);
         }
 
         fillRect(dstX, dstY, dstWidth, dstHeight);

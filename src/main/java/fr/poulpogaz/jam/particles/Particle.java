@@ -33,7 +33,15 @@ public abstract class Particle {
         return lifetime;
     }
 
-    public boolean isDied() {
+    public int getTimeAlive() {
+        return timeAlive;
+    }
+
+    public int getRemainingTimeAlive() {
+        return lifetime - timeAlive;
+    }
+
+    public boolean isDead() {
         return lifetime <= timeAlive;
     }
 }

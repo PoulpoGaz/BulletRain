@@ -49,6 +49,17 @@ public interface IGraphics2D extends AutoCloseable {
 
     void drawSprite(ITexture texture, float dstX, float dstY, float dstWidth, float dstHeight, float srcX, float srcY, float srcWidth, float srcHeight);
 
+
+    default void drawSprite(ITexture texture, IColor color, float x, float y) {
+        drawSprite(texture, color, x, y, texture.getWidth(), texture.getHeight(), 0, 0, texture.getWidth(), texture.getHeight());
+    }
+
+    default void drawSprite(ITexture texture, IColor color, float x, float y, float width, float height) {
+        drawSprite(texture, color, x, y, width, height, 0, 0, texture.getWidth(), texture.getHeight());
+    }
+
+    void drawSprite(ITexture texture, IColor color, float dstX, float dstY, float dstWidth, float dstHeight, float srcX, float srcY, float srcWidth, float srcHeight);
+
     void drawRect(float x, float y, float width, float height);
 
     void fillRect(float x, float y, float width, float height);

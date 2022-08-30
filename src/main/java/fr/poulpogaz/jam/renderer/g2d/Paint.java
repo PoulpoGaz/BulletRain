@@ -208,6 +208,10 @@ public abstract class Paint {
 
         private IColor color;
 
+        ColorTexturePaint() {
+
+        }
+
         public ColorTexturePaint(ITexture texture, float dstX, float dstY, IColor color) {
             super(texture, dstX, dstY);
             this.color = color;

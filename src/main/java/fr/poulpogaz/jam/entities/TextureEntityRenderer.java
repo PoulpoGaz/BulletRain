@@ -1,5 +1,6 @@
 package fr.poulpogaz.jam.entities;
 
+import fr.poulpogaz.jam.renderer.Color;
 import fr.poulpogaz.jam.renderer.ITexture;
 import fr.poulpogaz.jam.renderer.SubTexture;
 import fr.poulpogaz.jam.renderer.Texture;
@@ -54,6 +55,10 @@ public class TextureEntityRenderer implements EntityRenderer {
     public void render(Graphics2D g2d, FontRenderer f2d, Game game, Entity entity) {
         Vector2f p = entity.getPos();
 
-        g2d.drawSprite(tex, p.x - tex.getWidth() / 2f, p.y - tex.getHeight() / 2f);
+        if (entity instanceof LivingEntity l && l.isDying()) {
+            g2d.drawSprite(tex, new Color(1, 1, 1, 1 - l.percentToDeath()), p.x - tex.getWidth() / 2f, p.y - tex.getHeight() / 2f);
+        } else {
+            g2d.drawSprite(tex, p.x - tex.getWidth() / 2f, p.y - tex.getHeight() / 2f);
+        }
     }
 }
