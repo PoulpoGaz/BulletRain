@@ -2,7 +2,6 @@ package fr.poulpogaz.jam.stage;
 
 import fr.poulpogaz.jam.utils.BuilderException;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.function.Function;
 

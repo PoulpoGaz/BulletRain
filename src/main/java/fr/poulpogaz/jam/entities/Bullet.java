@@ -1,12 +1,7 @@
 package fr.poulpogaz.jam.entities;
 
-import fr.poulpogaz.jam.Constants;
-import fr.poulpogaz.jam.engine.polygons.AABB;
 import fr.poulpogaz.jam.engine.polygons.Polygon;
 import fr.poulpogaz.jam.patterns.MovePattern;
-import fr.poulpogaz.jam.renderer.Colors;
-import fr.poulpogaz.jam.renderer.g2d.FontRenderer;
-import fr.poulpogaz.jam.renderer.g2d.Graphics2D;
 import fr.poulpogaz.jam.renderer.io.Input;
 import fr.poulpogaz.jam.stage.IBulletDescriptor;
 import fr.poulpogaz.jam.states.Game;
@@ -49,12 +44,15 @@ public class Bullet extends Entity {
         t++;
 
         angle = computeAngle();
-        clean();
+
+        if (!dir.equals(0, 0)) {
+            markDirty();
+        }
     }
 
     @Override
     protected Polygon getDetailedHitBoxImpl() {
-        return descriptor.hitBoxSupplier().getDetailedHitBox(this);
+        return descriptor.hitBoxSupplier().getDetailedHitBox(this, detailedHitBox);
     }
 
     private float computeAngle() {

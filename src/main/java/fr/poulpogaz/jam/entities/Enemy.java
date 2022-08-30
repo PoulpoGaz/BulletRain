@@ -3,8 +3,6 @@ package fr.poulpogaz.jam.entities;
 import fr.poulpogaz.jam.engine.polygons.Polygon;
 import fr.poulpogaz.jam.patterns.BulletPattern;
 import fr.poulpogaz.jam.patterns.MovePattern;
-import fr.poulpogaz.jam.renderer.g2d.FontRenderer;
-import fr.poulpogaz.jam.renderer.g2d.Graphics2D;
 import fr.poulpogaz.jam.renderer.io.Input;
 import fr.poulpogaz.jam.stage.EnemyAction;
 import fr.poulpogaz.jam.stage.EnemyScript;
@@ -48,7 +46,10 @@ public class Enemy extends LivingEntity {
             t++;
             nextBulletPattern();
             nextMovePattern();
-            clean();
+
+            if (!dir.equals(0, 0)) {
+                markDirty();
+            }
         }
     }
 
@@ -76,7 +77,7 @@ public class Enemy extends LivingEntity {
 
     @Override
     protected Polygon getDetailedHitBoxImpl() {
-        return script.enemy().hitBox().getDetailedHitBox(this);
+        return script.enemy().hitBox().getDetailedHitBox(this, detailedHitBox);
     }
 
     public int getLife() {

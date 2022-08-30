@@ -20,6 +20,8 @@ public abstract class Entity {
 
     protected Polygon detailedHitBox;
     protected AABB aabbHitBox;
+    protected boolean hitBoxDirty = true;
+    protected boolean aabbDirty = true;
 
     public Entity(Game game) {
         this.game = Objects.requireNonNull(game);
@@ -37,11 +39,6 @@ public abstract class Entity {
 
     public abstract void update(Input in, float delta);
 
-    protected void clean() {
-        detailedHitBox = null;
-        aabbHitBox = null;
-    }
-
     public void render(Graphics2D g2d, FontRenderer f2d) {
         renderer.render(g2d, f2d, game, this);
 
@@ -54,6 +51,11 @@ public abstract class Entity {
     }
 
 
+    protected void markDirty() {
+        hitBoxDirty = true;
+        aabbDirty = true;
+    }
+
     protected abstract Polygon getDetailedHitBoxImpl();
 
     protected AABB getAABBImpl() {
@@ -61,7 +63,7 @@ public abstract class Entity {
     }
 
     public Polygon getDetailedHitBox() {
-        if (detailedHitBox == null) {
+        if (hitBoxDirty) {
             detailedHitBox = getDetailedHitBoxImpl();
         }
 
@@ -69,7 +71,7 @@ public abstract class Entity {
     }
 
     public AABB getAABB() {
-        if (aabbHitBox == null) {
+        if (aabbDirty) {
             aabbHitBox = getAABBImpl();
         }
 

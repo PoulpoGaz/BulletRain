@@ -3,13 +3,13 @@ package fr.poulpogaz.jam.engine.polygons;
 import org.joml.Vector2f;
 
 import java.util.ArrayList;
-import java.util.function.Function;
+import java.util.List;
 
 public abstract class MultiplePointPolygon extends AbstractPolygon{
 
     protected Vector2f center;
-    protected ArrayList<Vector2f> models;
-    protected ArrayList<Vector2f> points;
+    protected List<Vector2f> models;
+    protected List<Vector2f> points;
 
     public MultiplePointPolygon() {
         center = new Vector2f();
@@ -20,21 +20,19 @@ public abstract class MultiplePointPolygon extends AbstractPolygon{
     public void addPoint(Vector2f point) {
         if (checkValid(point)) {
             models.add(point);
-
-            reloadPoints();
+            points.add(point.add(center, new Vector2f()));
         }
     }
 
     public void removePoint(Vector2f point) {
-        models.remove(point);
-
-        reloadPoints();
+        int i = models.indexOf(point);
+        models.remove(i);
+        points.remove(i);
     }
 
     public void removePoint(int index) {
         models.remove(index);
-
-        reloadPoints();
+        points.remove(index);
     }
 
     public void reset() {
@@ -45,14 +43,9 @@ public abstract class MultiplePointPolygon extends AbstractPolygon{
     protected abstract boolean checkValid(Vector2f point);
 
     public void reloadPoints() {
-        reloadPoints((vec) -> vec.add(center, new Vector2f()));
-    }
-
-    public void reloadPoints(Function<Vector2f, Vector2f> function) {
-        points.clear();
-
-        for (Vector2f model : models) {
-            points.add(function.apply(model));
+        for (int i = 0; i < points.size(); i++) {
+            Vector2f v = points.get(i);
+            v.set(models.get(i).add(center, new Vector2f()));
         }
     }
 

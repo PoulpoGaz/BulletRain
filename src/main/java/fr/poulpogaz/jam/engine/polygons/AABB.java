@@ -163,6 +163,13 @@ public class AABB extends AbstractPolygon {
         this.height = Math.abs(a.y - b.y);
     }
 
+    public void set(float x, float y, float width, float height) {
+        setX(x);
+        setY(y);
+        setWidth(width);
+        setHeight(height);
+    }
+
     @Override
     public String toString() {
         return "AABB [x=" + x + ", y=" + y + ", width=" + width + ", height=" + height + ", center=" + center() + "]";

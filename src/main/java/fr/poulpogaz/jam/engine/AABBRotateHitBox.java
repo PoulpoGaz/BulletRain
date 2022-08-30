@@ -1,6 +1,5 @@
 package fr.poulpogaz.jam.engine;
 
-import fr.poulpogaz.jam.engine.polygons.AABB;
 import fr.poulpogaz.jam.engine.polygons.ConvexPolygon;
 import fr.poulpogaz.jam.engine.polygons.Polygon;
 import fr.poulpogaz.jam.entities.Bullet;
@@ -24,35 +23,42 @@ public class AABBRotateHitBox implements HitBoxSupplier {
     }
 
     @Override
-    public Polygon getDetailedHitBox(Entity entity) {
+    public Polygon getDetailedHitBox(Entity entity, Polygon last) {
         if (entity instanceof Bullet bullet) {
             if (bullet.getAngle() % Mathf.PI == 0) {
-                return new AABB(
+                return HitBoxUtils.createAABB(last,
                         bullet.getX() - width / 2f, bullet.getY() - height / 2f,
                         width, height);
             } else if (bullet.getAngle() % Mathf.PI == Mathf.PI_2) {
                 // inverted
-                return new AABB(
+                return HitBoxUtils.createAABB(last,
                         bullet.getX() - height / 2f, bullet.getY() - width / 2f,
                         height, width);
 
             } else {
+                ConvexPolygon poly;
+
+                if (last instanceof ConvexPolygon p) {
+                    poly = p;
+                    poly.reset();
+                } else {
+                    poly = new ConvexPolygon();
+                }
+
                 float cx = width / 2;
                 float cy = height / 2;
 
                 float cos = Math.cos(bullet.getAngle());
                 float sin = Math.sin(bullet.getAngle());
 
-                ConvexPolygon polygon = new ConvexPolygon();
+                poly.setCenter(bullet.getPos());
 
-                polygon.setCenter(bullet.getPos());
+                poly.addPoint(new Vector2f(cos * -cx - sin * -cy, cos * -cy + sin * -cx));
+                poly.addPoint(new Vector2f(cos * +cx - sin * -cy, cos * -cy + sin * +cx));
+                poly.addPoint(new Vector2f(cos * +cx - sin * +cy, cos * +cy + sin * +cx));
+                poly.addPoint(new Vector2f(cos * -cx - sin * +cy, cos * +cy + sin * -cx));
 
-                polygon.addPoint(new Vector2f(cos * -cx - sin * -cy, cos * -cy + sin * -cx));
-                polygon.addPoint(new Vector2f(cos * +cx - sin * -cy, cos * -cy + sin * +cx));
-                polygon.addPoint(new Vector2f(cos * +cx - sin * +cy, cos * +cy + sin * +cx));
-                polygon.addPoint(new Vector2f(cos * -cx - sin * +cy, cos * +cy + sin * -cx));
-
-                return polygon;
+                return poly;
             }
         }
 

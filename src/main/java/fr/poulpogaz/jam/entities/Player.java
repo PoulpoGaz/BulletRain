@@ -46,7 +46,7 @@ public class Player extends LivingEntity {
 
         } else {
             slowdown = in.keyPressed(GLFW_KEY_LEFT_SHIFT) || in.keyPressed(GLFW_KEY_RIGHT_SHIFT);
-            move(in);
+            boolean moved = move(in);
 
             if (in.keyPressed(GLFW_KEY_X)) {
                 if (!lastWasShooting) {
@@ -59,12 +59,14 @@ public class Player extends LivingEntity {
             } else {
                 lastWasShooting = false;
             }
-        }
 
-        clean();
+            if (moved) {
+                markDirty();
+            }
+        }
     }
 
-    private void move(Input in) {
+    private boolean move(Input in) {
         float vx = 0;
         float vy = 0;
         if (in.keyPressed(GLFW_KEY_DOWN)) {
@@ -103,6 +105,8 @@ public class Player extends LivingEntity {
 
         pos.x = Math.clamp(0, Constants.WIDTH, pos.x);
         pos.y = Math.clamp(0, Constants.HEIGHT, pos.y);
+
+        return vx != 0 || vy != 0;
     }
 
     @Override

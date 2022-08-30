@@ -6,14 +6,20 @@ import fr.poulpogaz.jam.entities.Entity;
 
 public class CircleHitBox implements HitBoxSupplier {
 
-    private float radius;
+    private final float radius;
 
     public CircleHitBox(float radius) {
         this.radius = radius;
     }
 
     @Override
-    public Polygon getDetailedHitBox(Entity entity) {
-        return new Circle(radius, entity.getPos());
+    public Polygon getDetailedHitBox(Entity entity, Polygon p) {
+        if (p instanceof Circle c) {
+            c.setRadius(radius);
+            c.setCenter(entity.getPos());
+            return c;
+        } else {
+            return new Circle(radius, entity.getPos());
+        }
     }
 }

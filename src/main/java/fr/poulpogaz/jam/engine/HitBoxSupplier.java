@@ -5,5 +5,5 @@ import fr.poulpogaz.jam.entities.Entity;
 
 public interface HitBoxSupplier {
 
-    Polygon getDetailedHitBox(Entity entity);
+    Polygon getDetailedHitBox(Entity entity, Polygon last);
 }

@@ -3,6 +3,7 @@ package fr.poulpogaz.jam.engine.polygons;
 import org.joml.Vector2f;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ConvexPolygon extends MultiplePointPolygon {
 
@@ -15,7 +16,7 @@ public class ConvexPolygon extends MultiplePointPolygon {
         if (models.size() > 2) {
             models.add(point);
 
-            ArrayList<Double> angles = new ArrayList<>(models.size());
+            List<Double> angles = new ArrayList<>(models.size());
 
             for (int i = -1; i < models.size() - 1; i++) {
                 Vector2f a = models.get((i + 1) % models.size());
@@ -37,7 +38,7 @@ public class ConvexPolygon extends MultiplePointPolygon {
 
             double sumAngle = angles.stream().mapToDouble((a) -> a).sum();
 
-            return Math.round(sumAngle) == (models.size() - 1) * 180;
+            return Math.round(sumAngle) == (models.size() - 1) * 180L;
         }
 
         return true;
