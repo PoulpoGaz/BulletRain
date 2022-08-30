@@ -1,11 +1,15 @@
 package fr.poulpogaz.jam.states;
 
-import fr.poulpogaz.jam.engine.polygons.AABB;
-import fr.poulpogaz.jam.engine.polygons.Polygon;
+import fr.poulpogaz.jam.Constants;
+import fr.poulpogaz.jam.engine.AABB;
+import fr.poulpogaz.jam.engine.HitBox;
 import fr.poulpogaz.jam.entities.Bullet;
 import fr.poulpogaz.jam.entities.Enemy;
+import fr.poulpogaz.jam.entities.Entity;
 import fr.poulpogaz.jam.entities.Player;
 import fr.poulpogaz.jam.particles.Particle;
+import fr.poulpogaz.jam.renderer.Color;
+import fr.poulpogaz.jam.renderer.Colors;
 import fr.poulpogaz.jam.renderer.Texture;
 import fr.poulpogaz.jam.renderer.g2d.FontRenderer;
 import fr.poulpogaz.jam.renderer.g2d.Graphics2D;
@@ -23,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static fr.poulpogaz.jam.Constants.*;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_R;
 
 public class Game extends State {
 
@@ -93,6 +96,19 @@ public class Game extends State {
             p.render(g2d, f2d);
         }
 
+        if (player.isDead()) {
+            g2d.setColor(new Color(0.3f, 0.3f, 0.3f, player.percentToDeath() / 2f));
+            g2d.fillRect(0, 0, WIDTH, HEIGHT);
+        }
+
+        if (Constants.SHOW_HITBOX) {
+            drawHitBox(g2d, player);
+
+            for (Bullet b : playerBullets) drawHitBox(g2d, b);
+            for (Bullet b : enemiesBullets) drawHitBox(g2d, b);
+            for (Enemy e : enemies) drawHitBox(g2d, e);
+        }
+
         if (DEBUG) {
             drawDebugInfo(g2d, f2d);
         }
@@ -128,6 +144,13 @@ public class Game extends State {
         }
     }
 
+    private void drawHitBox(Graphics2D g2d, Entity entity) {
+        AABB a = entity.getAABB();
+
+        g2d.setColor(Colors.RED);
+        g2d.drawRect(a.getX(), a.getY(), a.getWidth(), a.getHeight());
+    }
+
     private void drawDebugInfo(Graphics2D g2d, FontRenderer f2d) {
         int h = f2d.getFont().getHeight();
         f2d.drawString("Player: (%.0f, %.0f)".formatted(player.getX(), player.getY()),
@@ -159,17 +182,13 @@ public class Game extends State {
         player.update(input, delta);
         updateBullets(playerBullets, delta);
         updateBullets(enemiesBullets, delta);
-        checkCollisions();
+
+        if (!player.isDead()) {
+            checkCollisions();
+        }
+
         updateParticles(delta);
         spawnEnemies();
-
-        if (input.keyPressed(GLFW_KEY_R)) {
-            mapScroll = -100;
-            nextEnemyToAdd = 0;
-            enemies.clear();
-            playerBullets.clear();
-            enemiesBullets.clear();
-        }
 
         mapScroll += MAP_SCROLL_SPEED;
     }
@@ -198,7 +217,7 @@ public class Game extends State {
         while (i < playerBullets.size()) {
             Bullet playerBullet = playerBullets.get(i);
             AABB bAABB = playerBullet.getAABB();
-            Polygon p = playerBullet.getDetailedHitBox();
+            HitBox p = playerBullet.getDetailedHitBox();
 
             for (Enemy e : enemies) {
                 if (e.isDead()) {
@@ -206,7 +225,7 @@ public class Game extends State {
                 }
 
                 AABB eAABB = e.getAABB();
-                Polygon pE = e.getDetailedHitBox();
+                HitBox pE = e.getDetailedHitBox();
 
                 if (bAABB.collide(eAABB) && p.collide(pE)) {
                     e.hit(playerBullet);
@@ -222,14 +241,14 @@ public class Game extends State {
         // enemies bullets vs player
         if (!enemiesBullets.isEmpty()) {
             AABB playerAABB = player.getAABB();
-            Polygon playerP = player.getDetailedHitBox();
+            HitBox playerP = player.getDetailedHitBox();
 
             i = 0;
             while (i < enemiesBullets.size()) {
                 Bullet bullet = enemiesBullets.get(i);
 
                 AABB eAABB = bullet.getAABB();
-                Polygon pE = bullet.getDetailedHitBox();
+                HitBox pE = bullet.getDetailedHitBox();
 
                 if (playerAABB.collide(eAABB) && playerP.collide(pE)) {
                     player.hit(bullet);

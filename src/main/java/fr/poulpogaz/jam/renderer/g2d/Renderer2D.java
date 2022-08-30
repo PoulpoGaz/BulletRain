@@ -40,12 +40,10 @@ public class Renderer2D implements AutoCloseable {
         DrawMode[] modes = DrawMode.values();
         meshes = new Mesh[modes.length];
 
-        //int max = 0;
         for (int i = 0; i < modes.length; i++) {
             DrawMode mode = modes[i];
 
             meshes[i] = new Mesh(mode.getAttributes(), numVertices, numIndices, GL_DYNAMIC_DRAW);
-            //max = Math.max(mode.getAttributes().vertexSizeInBytes(), max);
         }
     }
 

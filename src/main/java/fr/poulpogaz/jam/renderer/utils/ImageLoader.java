@@ -1,6 +1,7 @@
 package fr.poulpogaz.jam.renderer.utils;
 
 import org.lwjgl.glfw.GLFWImage;
+import org.lwjgl.system.MemoryUtil;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -22,22 +23,29 @@ public class ImageLoader {
     }
 
     public static GLFWImage loadImage(String path, int bufferSize, boolean resource) throws IOException {
-        ByteBuffer buffer = Resource.toByteBuffer(path, bufferSize, resource);
+        ByteBuffer buffer = null;
+        try {
+            buffer = Resource.toByteBuffer(path, bufferSize, resource);
 
-        int[] w = new int[1];
-        int[] h = new int[1];
-        int[] comp = new int[1];
+            int[] w = new int[1];
+            int[] h = new int[1];
+            int[] comp = new int[1];
 
-        if (!stbi_info_from_memory(buffer, w, h, comp)) {
-            throw new IOException("Failed to read image information: " + stbi_failure_reason() + "; at " + path);
+            if (!stbi_info_from_memory(buffer, w, h, comp)) {
+                throw new IOException("Failed to read image information: " + stbi_failure_reason() + "; at " + path);
+            }
+
+            ByteBuffer pixels = stbi_load_from_memory(buffer, w, h, comp, STBI_rgb_alpha);
+            if (pixels == null) {
+                throw new IOException("Failed to load image: " + stbi_failure_reason() + "; at " + path);
+            }
+
+            return GLFWImage.create().set(w[0], h[0], pixels);
+        } finally {
+            if (buffer != null) {
+                MemoryUtil.memFree(buffer);
+            }
         }
-
-        ByteBuffer pixels = stbi_load_from_memory(buffer, w, h, comp, STBI_rgb_alpha);
-        if (pixels == null) {
-            throw new IOException("Failed to load image: " + stbi_failure_reason() + "; at " + path);
-        }
-
-        return GLFWImage.create().set(w[0], h[0], pixels);
     }
 
     public static GLFWImage loadImage(ByteBuffer buffer) throws IOException {

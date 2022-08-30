@@ -1,8 +1,8 @@
 package fr.poulpogaz.jam.entities;
 
 import fr.poulpogaz.jam.Constants;
-import fr.poulpogaz.jam.engine.polygons.AABB;
-import fr.poulpogaz.jam.engine.polygons.Polygon;
+import fr.poulpogaz.jam.engine.AABB;
+import fr.poulpogaz.jam.engine.HitBox;
 import fr.poulpogaz.jam.particles.Particle;
 import fr.poulpogaz.jam.renderer.Colors;
 import fr.poulpogaz.jam.renderer.g2d.FontRenderer;
@@ -21,8 +21,8 @@ public abstract class Entity {
     protected final EntityRenderer renderer;
     protected Vector2f pos;
 
-    protected Polygon detailedHitBox;
-    protected AABB aabbHitBox;
+    protected HitBox detailedHitBox;
+    protected AABB aabbHitBox = new AABB();
     protected boolean hitBoxDirty = true;
     protected boolean aabbDirty = true;
 
@@ -67,13 +67,6 @@ public abstract class Entity {
         for (Particle p : particles) {
             p.render(g2d, f2d);
         }
-
-        if (Constants.SHOW_HITBOX) {
-            AABB aabb = getAABB();
-
-            g2d.setColor(Colors.RED);
-            g2d.drawRect(aabb.getX(), aabb.getY(), aabb.getWidth(), aabb.getHeight());
-        }
     }
 
 
@@ -82,13 +75,13 @@ public abstract class Entity {
         aabbDirty = true;
     }
 
-    protected abstract Polygon getDetailedHitBoxImpl();
+    protected abstract HitBox getDetailedHitBoxImpl();
 
-    protected AABB getAABBImpl() {
-        return getDetailedHitBoxImpl().getAABB();
+    protected void getAABBImpl() {
+        getDetailedHitBoxImpl().getAABB(aabbHitBox);
     }
 
-    public Polygon getDetailedHitBox() {
+    public HitBox getDetailedHitBox() {
         if (hitBoxDirty) {
             detailedHitBox = getDetailedHitBoxImpl();
             hitBoxDirty = false;
@@ -99,7 +92,7 @@ public abstract class Entity {
 
     public AABB getAABB() {
         if (aabbDirty) {
-            aabbHitBox = getAABBImpl();
+            getAABBImpl();
             aabbDirty = false;
         }
 

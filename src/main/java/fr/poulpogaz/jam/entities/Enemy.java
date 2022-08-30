@@ -1,6 +1,6 @@
 package fr.poulpogaz.jam.entities;
 
-import fr.poulpogaz.jam.engine.polygons.Polygon;
+import fr.poulpogaz.jam.engine.HitBox;
 import fr.poulpogaz.jam.patterns.BulletPattern;
 import fr.poulpogaz.jam.patterns.MovePattern;
 import fr.poulpogaz.jam.renderer.io.Input;
@@ -78,7 +78,7 @@ public class Enemy extends LivingEntity {
     }
 
     @Override
-    protected Polygon getDetailedHitBoxImpl() {
+    protected HitBox getDetailedHitBoxImpl() {
         return script.enemy().hitBox().getDetailedHitBox(this, detailedHitBox);
     }
 

@@ -11,10 +11,6 @@ import java.util.Objects;
 import static org.lwjgl.opengl.GL11.GL_LINES;
 import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
 
-/**
- * /!\ Code doesn't check if the renderer has sufficiently
- * space for drawing.
- */
 @SuppressWarnings("DuplicatedCode")
 public class Graphics2D implements IGraphics2D {
 
@@ -90,10 +86,7 @@ public class Graphics2D implements IGraphics2D {
         }
 
         if (p instanceof Paint.TexturePaint texturePaint) {
-            if (texturePaint.getTexture() != texture) {
-                texturePaint.setTexture(texture);
-                dirty = true;
-            }
+            dirty |= texturePaint.setTexture(texture);
             texturePaint.set(dstX, dstY, dstWidth, dstHeight, srcX, srcY, srcWidth, srcHeight);
         } else {
             myTexturePaint.setTexture(texture);
@@ -109,10 +102,7 @@ public class Graphics2D implements IGraphics2D {
         Paint p = newPaint == null ? paint : newPaint;
 
         if (p instanceof Paint.ColorTexturePaint texturePaint) {
-            if (texturePaint.getTexture() != texture) {
-                texturePaint.setTexture(texture);
-                dirty = true;
-            }
+            dirty |= texturePaint.setTexture(texture);
             texturePaint.set(dstX, dstY, dstWidth, dstHeight, srcX, srcY, srcWidth, srcHeight);
             texturePaint.setColor(color);
         } else {

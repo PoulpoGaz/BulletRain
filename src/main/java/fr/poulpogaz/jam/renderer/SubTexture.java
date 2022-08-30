@@ -76,4 +76,8 @@ public class SubTexture implements ITexture {
     public void close() {
 
     }
+
+    public Texture getSource() {
+        return texture;
+    }
 }

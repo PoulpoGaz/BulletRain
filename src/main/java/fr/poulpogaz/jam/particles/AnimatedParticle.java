@@ -19,7 +19,7 @@ public class AnimatedParticle extends Particle {
 
     public AnimatedParticle(Vector2f pos, AnimationDescriptor desc) {
         super(desc.getDuration());
-        this.pos = new Vector2f(pos);
+        this.pos = pos;
         this.animation = desc.createAnimation();
 
         try {

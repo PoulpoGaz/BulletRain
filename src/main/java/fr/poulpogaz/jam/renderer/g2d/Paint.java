@@ -2,6 +2,7 @@ package fr.poulpogaz.jam.renderer.g2d;
 
 import fr.poulpogaz.jam.renderer.IColor;
 import fr.poulpogaz.jam.renderer.ITexture;
+import fr.poulpogaz.jam.renderer.SubTexture;
 import fr.poulpogaz.jam.renderer.Texture;
 import org.joml.Vector2f;
 
@@ -128,9 +129,28 @@ public abstract class Paint {
             return DrawMode.TEXTURE;
         }
 
-        public void setTexture(ITexture texture) {
+        public boolean setTexture(ITexture texture) {
+            boolean eq = textureEquals(texture, this.texture);
+
+            // because the texture may be a SubTexturex
             this.texture = texture;
-            hasTextureChanged = true;
+
+            if (eq) {
+                return false;
+            } else {
+                hasTextureChanged = true;
+                return true;
+            }
+        }
+
+        private boolean textureEquals(ITexture a, ITexture b) {
+            if (a instanceof SubTexture s) {
+                return textureEquals(s.getSource(), b);
+            } else if (b instanceof SubTexture s) {
+                return textureEquals(a, s.getSource());
+            } else {
+                return a == b;
+            }
         }
 
         public ITexture getTexture() {

@@ -27,18 +27,11 @@ public class PlayerBulletPattern implements BulletPattern {
     private static final Vector2f BULLET_DIR = new Vector2f(0, -1).mul(PLAYER_BULLET_SPEED);
     private static final LinearPattern PATTERN_A = new LinearPattern(BULLET_DIR);
 
-    private static ITexture texture;
-
     private final Player player;
     private int tickCount = 0;
 
     public PlayerBulletPattern(Player player) {
         this.player = player;
-
-        if (texture == null) {
-            Texture t = TextureCache.get("tileset.png");
-            texture = new SubTexture(32, 96, 10, 3, t);
-        }
     }
 
     @Override

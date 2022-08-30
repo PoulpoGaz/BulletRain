@@ -1,8 +1,10 @@
 package fr.poulpogaz.jam.renderer.utils;
 
 import org.lwjgl.BufferUtils;
+import org.lwjgl.system.MemoryUtil;
 
 import java.io.*;
+import java.nio.Buffer;
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
@@ -37,10 +39,16 @@ public class Resource {
         return builder.toString();
     }
 
+    /**
+     * Buffer must be freed with {@link MemoryUtil#memFree(Buffer)}
+     */
     public static ByteBuffer toByteBuffer(String path, int bufferSize) throws IOException {
         return toByteBuffer(path, bufferSize, true);
     }
 
+    /**
+     * Buffer must be freed with {@link MemoryUtil#memFree(Buffer)}
+     */
     public static ByteBuffer toByteBuffer(String path, int bufferSize, boolean resource) throws IOException {
         ByteBuffer buffer;
         InputStream source;
@@ -59,7 +67,7 @@ public class Resource {
 
         try (source;
              ReadableByteChannel rbc = Channels.newChannel(source)) {
-            buffer = BufferUtils.createByteBuffer(bufferSize);
+            buffer = MemoryUtil.memAlloc(bufferSize);
 
             while (true) {
                 int bytes = rbc.read(buffer);
@@ -68,24 +76,11 @@ public class Resource {
                 }
 
                 if (buffer.remaining() == 0) {
-                    buffer = resize(buffer, buffer.capacity() + bufferSize);
+                    buffer = MemoryUtil.memRealloc(buffer, buffer.capacity() + bufferSize);
                 }
             }
         }
 
         return buffer.flip();
-    }
-
-    public static ByteBuffer resize(ByteBuffer buffer, int newCapacity) {
-        if (newCapacity < buffer.capacity()) {
-            throw new BufferOverflowException();
-        }
-
-        ByteBuffer newBuffer = BufferUtils.createByteBuffer(newCapacity);
-
-        buffer.flip();
-        newBuffer.put(buffer);
-
-        return newBuffer;
     }
 }

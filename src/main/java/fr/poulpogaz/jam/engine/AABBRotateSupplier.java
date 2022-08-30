@@ -1,7 +1,5 @@
 package fr.poulpogaz.jam.engine;
 
-import fr.poulpogaz.jam.engine.polygons.ConvexPolygon;
-import fr.poulpogaz.jam.engine.polygons.Polygon;
 import fr.poulpogaz.jam.entities.Bullet;
 import fr.poulpogaz.jam.entities.Entity;
 import fr.poulpogaz.jam.utils.Mathf;
@@ -10,20 +8,20 @@ import org.apache.logging.log4j.Logger;
 import org.joml.Math;
 import org.joml.Vector2f;
 
-public class AABBRotateHitBox implements HitBoxSupplier {
+public class AABBRotateSupplier implements HitBoxSupplier {
 
-    private static final Logger LOGGER = LogManager.getLogger(AABBRotateHitBox.class);
+    private static final Logger LOGGER = LogManager.getLogger(AABBRotateSupplier.class);
 
     private final float width;
     private final float height;
 
-    public AABBRotateHitBox(float width, float height) {
+    public AABBRotateSupplier(float width, float height) {
         this.width = width;
         this.height = height;
     }
 
     @Override
-    public Polygon getDetailedHitBox(Entity entity, Polygon last) {
+    public HitBox getDetailedHitBox(Entity entity, HitBox last) {
         if (entity instanceof Bullet bullet) {
             if (bullet.getAngle() % Mathf.PI == 0) {
                 return HitBoxUtils.createAABB(last,
@@ -48,9 +46,10 @@ public class AABBRotateHitBox implements HitBoxSupplier {
                 float x4 = cos * -cx - sin * +cy,  y4 =  cos * +cy + sin * -cx;
 
 
-                ConvexPolygon poly;
-                if (last instanceof ConvexPolygon p) {
+                Polygon poly;
+                if (last instanceof Polygon p) {
                     poly = p;
+                    bullet.getPos(poly.getCenter());
                     p.getModel(0).set(x1, y1);
                     p.getModel(1).set(x2, y2);
                     p.getModel(2).set(x3, y3);
@@ -58,14 +57,13 @@ public class AABBRotateHitBox implements HitBoxSupplier {
                     p.reloadPoints();
 
                 } else {
-                    poly = new ConvexPolygon();
+                    poly = new Polygon();
+                    bullet.getPos(poly.getCenter());
                     poly.addPoint(new Vector2f(x1, y1));
                     poly.addPoint(new Vector2f(x2, y2));
                     poly.addPoint(new Vector2f(x3, y3));
                     poly.addPoint(new Vector2f(x4, y4));
                 }
-
-                bullet.getPos(poly.center());
 
                 return poly;
             }

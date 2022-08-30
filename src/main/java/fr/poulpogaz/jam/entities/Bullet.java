@@ -1,6 +1,6 @@
 package fr.poulpogaz.jam.entities;
 
-import fr.poulpogaz.jam.engine.polygons.Polygon;
+import fr.poulpogaz.jam.engine.HitBox;
 import fr.poulpogaz.jam.patterns.MovePattern;
 import fr.poulpogaz.jam.renderer.io.Input;
 import fr.poulpogaz.jam.stage.IBulletDescriptor;
@@ -28,7 +28,7 @@ public class Bullet extends Entity {
                   MovePattern movePattern,
                   Vector2f pos) {
         super(game, descriptor.renderer());
-        this.pos = new Vector2f(pos);
+        this.pos = pos;
         this.descriptor = descriptor;
         this.movePattern = movePattern;
         this.playerBullet = playerBullet;
@@ -53,7 +53,7 @@ public class Bullet extends Entity {
     }
 
     @Override
-    protected Polygon getDetailedHitBoxImpl() {
+    protected HitBox getDetailedHitBoxImpl() {
         return descriptor.hitBoxSupplier().getDetailedHitBox(this, detailedHitBox);
     }
 

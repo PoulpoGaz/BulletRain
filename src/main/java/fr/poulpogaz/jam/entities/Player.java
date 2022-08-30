@@ -1,10 +1,11 @@
 package fr.poulpogaz.jam.entities;
 
 import fr.poulpogaz.jam.Constants;
-import fr.poulpogaz.jam.engine.polygons.Circle;
-import fr.poulpogaz.jam.engine.polygons.Polygon;
+import fr.poulpogaz.jam.engine.Circle;
+import fr.poulpogaz.jam.engine.HitBox;
 import fr.poulpogaz.jam.patterns.BulletPattern;
 import fr.poulpogaz.jam.patterns.PlayerBulletPattern;
+import fr.poulpogaz.jam.renderer.Color;
 import fr.poulpogaz.jam.renderer.Colors;
 import fr.poulpogaz.jam.renderer.g2d.FontRenderer;
 import fr.poulpogaz.jam.renderer.g2d.Graphics2D;
@@ -29,10 +30,10 @@ public class Player extends LivingEntity {
     public Player(Game game, Vector2f pos) {
         super(game);
         life = 1;
-        this.pos = new Vector2f(pos);
+        this.pos = pos;
 
         power = 4f;
-        hitBox = new Circle(Constants.PLAYER_HITBOX_RAD, pos); // same instance of pos!!
+        hitBox = new Circle(pos, Constants.PLAYER_HITBOX_RAD);
     }
 
     @Override
@@ -110,8 +111,8 @@ public class Player extends LivingEntity {
     }
 
     @Override
-    protected Polygon getDetailedHitBoxImpl() {
-        hitBox.setCenter(pos);
+    protected HitBox getDetailedHitBoxImpl() {
+        hitBox.getCenter().set(pos);
         return hitBox;
     }
 
