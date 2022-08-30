@@ -1,6 +1,5 @@
 package fr.poulpogaz.jam.engine.polygons;
 
-import fr.poulpogaz.jam.engine.Report;
 import org.joml.Vector2f;
 
 import java.util.ArrayList;
@@ -45,7 +44,7 @@ public class ConvexPolygon extends MultiplePointPolygon {
     }
 
     @Override
-    public Report collide(Polygon polygon) {
+    public boolean collide(Polygon polygon) {
         if (polygon.isAABB()) {
             return engine.aabbConvex((AABB) polygon, this);
 

@@ -106,7 +106,7 @@ public class Game extends State {
         for (Enemy e : enemies) {
             AABB aabb = e.getAABB();
 
-            if (aabb.collide(screen).intersect()) {
+            if (aabb.collide(screen)) {
                 e.render(g2d, f2d);
             }
         }
@@ -122,7 +122,7 @@ public class Game extends State {
         for (Bullet p : bullets) {
             AABB aabb = p.getAABB();
 
-            if (aabb.collide(screen).intersect()) {
+            if (aabb.collide(screen)) {
                 p.render(g2d, f2d);
             }
         }
@@ -150,7 +150,7 @@ public class Game extends State {
 
             e.update(input, delta);
 
-            if (!largeScreen.collide(e.getAABB()).intersect()) {
+            if (!largeScreen.collide(e.getAABB())) {
                 enemies.remove(i);
                 i--;
             }
@@ -179,7 +179,7 @@ public class Game extends State {
         while (i < bullets.size()) {
             Bullet p = bullets.get(i);
 
-            if (largeScreen.collide(p.getAABB()).intersect()) {
+            if (largeScreen.collide(p.getAABB())) {
                 p.update(input, delta);
                 i++;
             } else {
@@ -204,7 +204,7 @@ public class Game extends State {
                 AABB eAABB = e.getAABB();
                 Polygon pE = e.getDetailedHitBox();
 
-                if (bAABB.collide(eAABB).intersect() && p.collide(pE).intersect()) {
+                if (bAABB.collide(eAABB) && p.collide(pE)) {
                     e.hit(playerBullet);
                     playerBullets.remove(i);
                     continue loop;
@@ -227,7 +227,7 @@ public class Game extends State {
                 AABB eAABB = bullet.getAABB();
                 Polygon pE = bullet.getDetailedHitBox();
 
-                if (playerAABB.collide(eAABB).intersect() && playerP.collide(pE).intersect()) {
+                if (playerAABB.collide(eAABB) && playerP.collide(pE)) {
                     player.hit(bullet);
                     enemiesBullets.remove(i);
                     break;

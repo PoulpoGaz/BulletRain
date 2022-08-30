@@ -1,12 +1,11 @@
 package fr.poulpogaz.jam.engine.polygons;
 
 import fr.poulpogaz.jam.engine.ICollideEngine;
-import fr.poulpogaz.jam.engine.Report;
 import org.joml.Vector2f;
 
 public interface Polygon {
 
-    Report collide(Polygon polygon);
+    boolean collide(Polygon polygon);
 
     boolean isCircle();
 

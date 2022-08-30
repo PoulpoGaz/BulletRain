@@ -1,6 +1,5 @@
 package fr.poulpogaz.jam.engine.polygons;
 
-import fr.poulpogaz.jam.engine.Report;
 import org.joml.Vector2f;
 
 import java.util.Objects;
@@ -15,7 +14,7 @@ public class Point extends AbstractPolygon {
 
 
     @Override
-    public Report collide(Polygon polygon) {
+    public boolean collide(Polygon polygon) {
         if (polygon.isPoint()) {
             return engine.pointPoint(this, (Point) polygon);
 

@@ -1,6 +1,5 @@
 package fr.poulpogaz.jam.engine.polygons;
 
-import fr.poulpogaz.jam.engine.Report;
 import org.joml.Vector2f;
 
 public class AABB extends AbstractPolygon {
@@ -22,7 +21,7 @@ public class AABB extends AbstractPolygon {
     }
 
     @Override
-    public Report collide(Polygon polygon) {
+    public boolean collide(Polygon polygon) {
         if (polygon.isPoint()) {
             return engine.pointAABB(polygon.center(), this);
 

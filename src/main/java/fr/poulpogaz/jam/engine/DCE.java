@@ -3,7 +3,7 @@ package fr.poulpogaz.jam.engine;
 import fr.poulpogaz.jam.engine.polygons.*;
 import org.joml.Vector2f;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -16,35 +16,29 @@ public class DCE implements ICollideEngine {
         return INSTANCE;
     }
 
-    private ArrayList<Report> reports;
     private boolean calculateIntersection = false;
 
-    private DCE() {
-        reports = new ArrayList<>();
-    }
+    private DCE() {}
 
     // START OF IMPLEMENTS METHOD
 
     // POINT
 
     @Override
-    public Report pointPoint(Point p1, Point p2) {
+    public boolean pointPoint(Point p1, Point p2, List<Vector2f> out) {
         if (p1.equals(p2)) {
-            Report report = trueReport(p1, p2);
-
-            if (calculateIntersection) {
-                report = trueReport(p1, p2);
-                report.addPoint(p1.center());
+            if (calculateIntersection && out != null) {
+                out.add(p1.center());
             }
 
-            return report;
+            return true;
         }
 
-        return falseReport(p1, p2);
+        return false;
     }
 
     @Override
-    public Report pointEdge(Point p, Edge e) {
+    public boolean pointEdge(Point p, Edge e, List<Vector2f> out) {
         Vector2f s = e.getStart();
         Vector2f en = e.getEnd();
 
@@ -59,22 +53,19 @@ public class DCE implements ICollideEngine {
             float a2 = (p.y() - y1) / (p.x() - x1);
 
             if (a == a2) {
-
-                Report report = trueReport(p, e);
-
                 if (calculateIntersection) {
-                    report.addPoint(p.center());
-
+                    out.add(p.center());
                 }
-                return report;
+
+                return true;
             }
         }
 
-        return falseReport(p, e);
+        return false;
     }
 
     @Override
-    public Report pointAABB(Point p, AABB a) {
+    public boolean pointAABB(Point p, AABB a, List<Vector2f> out) {
         float x0 = a.getX();
         float y0 = a.getY();
         float x1 = x0 + a.getWidth();
@@ -82,55 +73,49 @@ public class DCE implements ICollideEngine {
 
         if (between(p.x(), x0, x1) && between(p.x(), y0, y1)) {
 
-            Report report = trueReport(p, a);
-            if (calculateIntersection) {
+            if (calculateIntersection && out != null) {
 
                 if (p.x() == x0 || p.x() == x1 || p.y() == y0 || p.y() == y1) {
-
-                    report.addPoint(p.center());
+                    out.add(p.center());
                 }
             }
 
-            return report;
+            return true;
         }
 
-        return falseReport(p, a);
+        return false;
     }
 
     @Override
-    public Report pointCircle(Point p, Circle c) {
+    public boolean pointCircle(Point p, Circle c, List<Vector2f> out) {
         float dist = p.center().distanceSquared(c.center());
 
         float rad2 = c.getRadius() * c.getRadius();
 
         if (dist <= rad2) { // p is in c
-
-            Report report = trueReport(p, c);
-
             if (calculateIntersection && dist == rad2) { // p intersect c
-                report = trueReport(p, c);
-                report.addPoint(p.center());
+                out.add(p.center());
             }
 
-            return report;
+            return true;
         }
 
-        return falseReport(p, c);
+        return false;
     }
 
     @Override
-    public Report pointConvex(Point p, ConvexPolygon c) {
-        return pointPolygon(p, c);
+    public boolean pointConvex(Point p, ConvexPolygon c, List<Vector2f> out) {
+        return pointPolygon(p, c, out);
     }
 
     @Override
-    public Report pointConcave(Point p, ConcavePolygon c) {
-        return pointPolygon(p, c);
+    public boolean pointConcave(Point p, ConcavePolygon c, List<Vector2f> out) {
+        return pointPolygon(p, c, out);
     }
 
     // http://www.alienryderflex.com/polygon/
     @Override
-    public Report pointPolygon(Point p, Polygon polygon) {
+    public boolean pointPolygon(Point p, Polygon polygon, List<Vector2f> out) {
         boolean intersect = false;
 
         Vector2f[] points = polygon.points();
@@ -149,14 +134,14 @@ public class DCE implements ICollideEngine {
             }
         }
 
-        return new Report(intersect, p, polygon);
+        return intersect;
     }
 
 
     // EDGE
 
     @Override
-    public Report edgeEdge(Edge e1, Edge e2) {
+    public boolean edgeEdge(Edge e1, Edge e2, List<Vector2f> out) {
         Vector2f a = e1.getStart();
         Vector2f b = e1.getEnd();
         Vector2f c = e2.getStart();
@@ -178,53 +163,50 @@ public class DCE implements ICollideEngine {
             float u = -(x1x2 * y1y3 - y1y2 * x1x3) / denominator;
 
             if (between(t, 0, 1) && between(u, 0, 1)) {
-                Report report = trueReport(e1, e2);
-
-                if (calculateIntersection) {
-
-                    report.addPoint(new Vector2f(a.x + t * (b.x - a.x), a.y + t * (b.y - a.y)));
+                if (calculateIntersection && out != null) {
+                    out.add(new Vector2f(a.x + t * (b.x - a.x), a.y + t * (b.y - a.y)));
                 }
 
-                return report;
+                return true;
             }
         }
 
-        return falseReport(e1, e2);
+        return false;
     }
 
     // https://tavianator.com/fast-branchless-raybounding-box-intersections/
     @Override
-    public Report edgeAABB(Edge e, AABB a) {
-        return polygonPolygon(e, a);
+    public boolean edgeAABB(Edge e, AABB a, List<Vector2f> out) {
+        return polygonPolygon(e, a, out);
     }
 
     @Override
-    public Report edgeCircle(Edge e, Circle c) {
-        return circlePolygon(c, e);
+    public boolean edgeCircle(Edge e, Circle c, List<Vector2f> out) {
+        return circlePolygon(c, e, out);
     }
 
     @Override
-    public Report edgeConvex(Edge e, ConvexPolygon c) {
-        return convexPolygon(c, e);
+    public boolean edgeConvex(Edge e, ConvexPolygon c, List<Vector2f> out) {
+        return convexPolygon(c, e, out);
     }
 
     @Override
-    public Report edgeConcave(Edge e, ConcavePolygon c) {
-        return polygonPolygon(e, c);
+    public boolean edgeConcave(Edge e, ConcavePolygon c, List<Vector2f> out) {
+        return polygonPolygon(e, c, out);
     }
 
     @Override
-    public Report edgePolygon(Edge e, Polygon p) {
-        return falseReport(e, p);
+    public boolean edgePolygon(Edge e, Polygon p, List<Vector2f> out) {
+        throw new UnsupportedOperationException();
     }
 
 
     // AABB
 
     @Override
-    public Report aabbAABB(AABB a, AABB b) {
+    public boolean aabbAABB(AABB a, AABB b, List<Vector2f> out) {
         if (a.isEmpty() || b.isEmpty()) {
-            return falseReport(a, b);
+            return false;
         }
 
         float x0 = a.getX();
@@ -242,9 +224,7 @@ public class DCE implements ICollideEngine {
                 x0 < x1 + w1 &&
                 y0 < y1 + h1)) {
 
-            Report report = trueReport(a, b);
-
-            if (calculateIntersection) {
+            if (calculateIntersection && out != null) {
                 Vector2f[] p1 = a.points();
                 Vector2f[] p2 = b.points();
 
@@ -253,43 +233,38 @@ public class DCE implements ICollideEngine {
                     Vector2f p1e = p1[(i + 1) % p1.length];
 
                     for (int j = 0; j < p2.length; j++) {
-
                         Vector2f p2s = p2[j];
                         Vector2f p2e = p2[(j + 1) % p2.length];
 
-                        Report report2 = edgeEdge(new Edge(p1s, p1e), new Edge(p2s, p2e));
-
-                        if (report2.intersect()) {
-                            report.combine(report2);
-                        }
+                        edgeEdge(new Edge(p1s, p1e), new Edge(p2s, p2e), out);
                     }
                 }
             }
 
-            return report;
+            return true;
         }
 
-        return falseReport(a, b);
+        return false;
     }
 
     @Override
-    public Report aabbCircle(AABB a, Circle c) {
-        return circlePolygon(c, a);
+    public boolean aabbCircle(AABB a, Circle c, List<Vector2f> out) {
+        return circlePolygon(c, a, out);
     }
 
     @Override
-    public Report aabbConvex(AABB a, ConvexPolygon p) {
-        return convexPolygon(p, a);
+    public boolean aabbConvex(AABB a, ConvexPolygon p, List<Vector2f> out) {
+        return convexPolygon(p, a, out);
     }
 
     @Override
-    public Report aabbConcave(AABB a, ConcavePolygon p) {
-        return polygonPolygon(a, p);
+    public boolean aabbConcave(AABB a, ConcavePolygon p, List<Vector2f> out) {
+        return polygonPolygon(a, p, out);
     }
 
     @Override
-    public Report aabbPolygon(AABB a, Polygon p) {
-        return polygonPolygon(a, p);
+    public boolean aabbPolygon(AABB a, Polygon p, List<Vector2f> out) {
+        return polygonPolygon(a, p, out);
     }
 
 
@@ -297,16 +272,13 @@ public class DCE implements ICollideEngine {
 
     // http://paulbourke.net/geometry/circlesphere/
     @Override
-    public Report circleCircle(Circle c0, Circle c1) {
+    public boolean circleCircle(Circle c0, Circle c1, List<Vector2f> out) {
         float d = c1.center().distanceSquared(c0.center());
 
         float totRad = c0.getRadius() + c1.getRadius();
 
         if (d <= totRad * totRad) {
-
-            Report report = trueReport(c0, c1);
-
-            if (calculateIntersection) {
+            if (calculateIntersection && out != null) {
 
                 Vector2f p0 = c0.center();
                 Vector2f p1 = c1.center();
@@ -326,9 +298,9 @@ public class DCE implements ICollideEngine {
 
                     float h = (float) Math.sqrt(rad0sq - a * a);
 
-                    Vector2f dir = (Vector2f) p1.sub(p0, new Vector2f());
+                    Vector2f dir = p1.sub(p0, new Vector2f());
 
-                    Vector2f p2 = (Vector2f) dir.mul(a / d, new Vector2f()).add(p0);
+                    Vector2f p2 = dir.mul(a / d, new Vector2f()).add(p0);
 
                     float x3 = p2.x + h * dir.y / d;
                     float y3 = p2.y - h * dir.x / d;
@@ -336,32 +308,32 @@ public class DCE implements ICollideEngine {
                     float x4 = p2.x - h * dir.y / d;
                     float y4 = p2.y + h * dir.x / d;
 
-                    report.addPoint(new Vector2f(x3, y3));
-                    report.addPoint(new Vector2f(x4, y4));
+                    out.add(new Vector2f(x3, y3));
+                    out.add(new Vector2f(x4, y4));
                 }
             }
 
-            return report;
+            return true;
         }
 
-        return falseReport(c0, c1);
+        return false;
     }
 
     @Override
-    public Report circleConvex(Circle c, ConvexPolygon convex) {
-        return circlePolygon(c, convex);
+    public boolean circleConvex(Circle c, ConvexPolygon convex, List<Vector2f> out) {
+        return circlePolygon(c, convex, out);
     }
 
     @Override
-    public Report circleConcave(Circle c, ConcavePolygon concave) {
-        return circlePolygon(c, concave);
+    public boolean circleConcave(Circle c, ConcavePolygon concave, List<Vector2f> out) {
+        return circlePolygon(c, concave, out);
     }
 
     // https://stackoverflow.com/questions/1073336/circle-line-segment-collision-detection-algorithm
     @Override
-    public Report circlePolygon(Circle c, Polygon p) {
+    public boolean circlePolygon(Circle c, Polygon p, List<Vector2f> out) {
         if (c.isEmpty()) {
-            return falseReport(c, p);
+            return false;
         }
 
         Vector2f[] points = p.points();
@@ -369,14 +341,13 @@ public class DCE implements ICollideEngine {
         Vector2f center = c.center();
         float r2 = c.getRadius() * c.getRadius();
 
-        Report report = null;
         boolean intersect = false;
         for (int i = 0; i < points.length; i++) {
             Vector2f p1 = points[i];
             Vector2f p2 = points[(i + 1) % points.length];
 
-            Vector2f d = (Vector2f) p2.sub(p1, new Vector2f());
-            Vector2f e = (Vector2f) p1.sub(center, new Vector2f());
+            Vector2f d = p2.sub(p1, new Vector2f());
+            Vector2f e = p1.sub(center, new Vector2f());
 
             float A = d.dot(d);
             float B = 2 * d.dot(e);
@@ -391,70 +362,63 @@ public class DCE implements ICollideEngine {
                 float t2 = (-B + sqrt) / (2 * A);
 
                 if (between(t1, 0, 1) || between(t2, 0, 1)) {
-
-                    if (report == null) {
-                        report = trueReport(c, p);
-                    }
-
-                    if (calculateIntersection) {
+                    if (calculateIntersection && out != null) {
                         if (between(t1, 0, 1)) {
-                            report.addPoint(new Vector2f(p1.x + t1 * d.x, p1.y + t1 * d.y));
+                            out.add(new Vector2f(p1.x + t1 * d.x, p1.y + t1 * d.y));
                         }
 
                         if (between(t2, 0, 1)) {
-                            report.addPoint(new Vector2f(p1.x + t2 * d.x, p1.y + t2 * d.y));
+                            out.add(new Vector2f(p1.x + t2 * d.x, p1.y + t2 * d.y));
                         }
 
                         intersect = true;
                         continue;
                     }
 
-                    return report;
+                    return true;
                 }
             }
         }
 
         if (intersect) {
-            return report;
+            return true;
         } else {
-
             for (Vector2f point: points) {
-
-                if (pointCircle(point, c).intersect()) {
-                    return trueReport(c, p);
+                if (pointCircle(point, c, out)) {
+                    return true;
                 }
             }
         }
 
-        return falseReport(c, p);
+        return false;
     }
 
 
     // CONVEX
 
     @Override
-    public Report convexConvex(ConvexPolygon c1, ConvexPolygon c2) {
-        return convexPolygon(c1, c2);
+    public boolean convexConvex(ConvexPolygon c1, ConvexPolygon c2, List<Vector2f> out) {
+        return convexPolygon(c1, c2, out);
     }
 
     @Override
-    public Report convexConcave(ConvexPolygon c1, ConcavePolygon c2) {
-        return polygonPolygon(c1, c2);
+    public boolean convexConcave(ConvexPolygon c1, ConcavePolygon c2, List<Vector2f> out) {
+        return polygonPolygon(c1, c2, out);
     }
 
     @Override
-    public Report convexPolygon(ConvexPolygon c, Polygon p) {
+    public boolean convexPolygon(ConvexPolygon c, Polygon p, List<Vector2f> out) {
         if (p.isConvex() && !calculateIntersection) {
             Vector2f[] points1 = c.points();
             Vector2f[] points2 = p.points();
 
             if (!sat(points1, points2)) {
-                return falseReport(c, p);
+                return false;
             }
 
-            return new Report(sat(points2, points1), c, p);
+            return sat(points2, points1);
         } else {
-            return polygonPolygon(c, p);
+            return polygonPolygon(c, p, out);
         }
     }
 
@@ -497,21 +461,20 @@ public class DCE implements ICollideEngine {
     // CONCAVE
 
     @Override
-    public Report concaveConcave(ConcavePolygon c1, ConcavePolygon c2) {
-        return polygonPolygon(c1, c2);
+    public boolean concaveConcave(ConcavePolygon c1, ConcavePolygon c2, List<Vector2f> out) {
+        return polygonPolygon(c1, c2, out);
     }
 
     @Override
-    public Report concavePolygon(ConcavePolygon c, Polygon p) {
-        return polygonPolygon(c, p);
+    public boolean concavePolygon(ConcavePolygon c, Polygon p, List<Vector2f> out) {
+        return polygonPolygon(c, p, out);
     }
 
     @Override
-    public Report polygonPolygon(Polygon p1, Polygon p2) {
+    public boolean polygonPolygon(Polygon p1, Polygon p2, List<Vector2f> out) {
         Vector2f[] points1 = p1.points();
         Vector2f[] points2 = p2.points();
 
-        Report report = null;
         boolean intersect = false;
         for (int i = 0; i < points1.length; i++) {
             Vector2f p = points1[i];
@@ -522,35 +485,30 @@ public class DCE implements ICollideEngine {
                 Vector2f q = points2[j];
                 Vector2f q_s = points2[(j + 1) % points2.length];
 
-                Report lineLineReport = edgeEdge(new Edge(p, p_r), new Edge(q, q_s));
+                boolean edgeEdge = edgeEdge(new Edge(p, p_r), new Edge(q, q_s), out);
 
-                if (lineLineReport.intersect()) {
-                    if (report == null) {
-                        report = trueReport(p1, p2);
-                    }
-
-                    if (calculateIntersection) {
-                        report.combine(lineLineReport);
+                if (edgeEdge) {
+                    if (calculateIntersection && out != null) {
                         intersect = true;
                         continue;
                     }
 
-                    return report;
+                    return true;
                 }
             }
         }
 
         if (intersect) {
-            return report;
+            return true;
         }
 
         for (Vector2f point: p1.points()) {
-            if (pointPolygon(point, p2).intersect()) {
-                return trueReport(p1, p2);
+            if (pointPolygon(point, p2)) {
+                return true;
             }
         }
 
-        return falseReport(p1, p2);
+        return false;
     }
 
     // END OF IMPLEMENTS METHOD
@@ -566,8 +524,6 @@ public class DCE implements ICollideEngine {
 
     // END OF UTILS METHOD
 
-    // START OF REPORT PART
-
     @Override
     public void calculateIntersection(boolean intersection) {
         calculateIntersection = intersection;
@@ -577,30 +533,4 @@ public class DCE implements ICollideEngine {
     public boolean isCalculateIntersection() {
         return calculateIntersection;
     }
-
-    private Report trueReport(Polygon first, Polygon second) {
-        Report report = new Report(true, first, second);
-
-        reports.add(report);
-
-        return report;
-    }
-
-    private Report falseReport(Polygon first, Polygon second) {
-        Report report = new Report(false, first, second);
-
-        reports.add(report);
-
-        return report;
-    }
-
-    public ArrayList<Report> getReports() {
-        return reports;
-    }
-
-    public void clearReports() {
-        reports.clear();
-    }
-
-    // END OF REPORT PART
 }

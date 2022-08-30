@@ -1,6 +1,5 @@
 package fr.poulpogaz.jam.engine.polygons;
 
-import fr.poulpogaz.jam.engine.Report;
 import org.joml.Vector2f;
 
 public class ConcavePolygon extends MultiplePointPolygon {
@@ -15,7 +14,7 @@ public class ConcavePolygon extends MultiplePointPolygon {
     }
 
     @Override
-    public Report collide(Polygon polygon) {
+    public boolean collide(Polygon polygon) {
         if (polygon.isAABB()) {
             return engine.aabbConcave((AABB) polygon, this);
 

@@ -1,6 +1,5 @@
 package fr.poulpogaz.jam.engine.polygons;
 
-import fr.poulpogaz.jam.engine.Report;
 import org.joml.Vector2f;
 
 public class Circle extends AbstractPolygon {
@@ -24,7 +23,7 @@ public class Circle extends AbstractPolygon {
     }
 
     @Override
-    public Report collide(Polygon polygon) {
+    public boolean collide(Polygon polygon) {
         if (polygon.isAABB()) {
             return engine.aabbCircle((AABB) polygon, this);
         } else if (polygon.isCircle()) {

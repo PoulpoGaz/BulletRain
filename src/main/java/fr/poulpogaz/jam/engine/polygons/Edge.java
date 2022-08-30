@@ -1,6 +1,5 @@
 package fr.poulpogaz.jam.engine.polygons;
 
-import fr.poulpogaz.jam.engine.Report;
 import org.joml.Vector2f;
 
 public class Edge extends AbstractPolygon {
@@ -24,7 +23,7 @@ public class Edge extends AbstractPolygon {
     }
 
     @Override
-    public Report collide(Polygon polygon) {
+    public boolean collide(Polygon polygon) {
         if (polygon.isEdge()) {
             return engine.edgeEdge(this, (Edge) polygon);
 
