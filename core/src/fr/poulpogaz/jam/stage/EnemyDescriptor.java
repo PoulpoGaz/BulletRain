@@ -7,7 +7,75 @@ import fr.poulpogaz.jam.utils.BuilderException;
 
 import java.util.Objects;
 
-public record EnemyDescriptor(String name, EntityRenderer renderer, HitBoxSupplier hitBox, int life, int width, int height) {
+public final class EnemyDescriptor {
+    private final String name;
+    private final EntityRenderer renderer;
+    private final HitBoxSupplier hitBox;
+    private final int life;
+    private final int width;
+    private final int height;
+
+    EnemyDescriptor(String name, EntityRenderer renderer, HitBoxSupplier hitBox, int life, int width, int height) {
+        this.name = name;
+        this.renderer = renderer;
+        this.hitBox = hitBox;
+        this.life = life;
+        this.width = width;
+        this.height = height;
+    }
+
+    public String name() {
+        return name;
+    }
+
+    public EntityRenderer renderer() {
+        return renderer;
+    }
+
+    public HitBoxSupplier hitBox() {
+        return hitBox;
+    }
+
+    public int life() {
+        return life;
+    }
+
+    public int width() {
+        return width;
+    }
+
+    public int height() {
+        return height;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (obj == null || obj.getClass() != this.getClass()) return false;
+        EnemyDescriptor that = (EnemyDescriptor) obj;
+        return Objects.equals(this.name, that.name) &&
+                Objects.equals(this.renderer, that.renderer) &&
+                Objects.equals(this.hitBox, that.hitBox) &&
+                this.life == that.life &&
+                this.width == that.width &&
+                this.height == that.height;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, renderer, hitBox, life, width, height);
+    }
+
+    @Override
+    public String toString() {
+        return "EnemyDescriptor[" +
+                "name=" + name + ", " +
+                "renderer=" + renderer + ", " +
+                "hitBox=" + hitBox + ", " +
+                "life=" + life + ", " +
+                "width=" + width + ", " +
+                "height=" + height + ']';
+    }
 
 
     public static class Builder extends BaseBuilder {

@@ -7,6 +7,7 @@ import fr.poulpogaz.jam.patterns.BulletPattern;
 import fr.poulpogaz.jam.patterns.MovePattern;
 import fr.poulpogaz.jam.stage.EnemyAction;
 import fr.poulpogaz.jam.stage.EnemyScript;
+import fr.poulpogaz.jam.utils.Utils;
 
 import java.util.Objects;
 
@@ -29,8 +30,8 @@ public class Enemy extends LivingEntity {
         this.pos = script.startPosVec();
 
         life = script.enemy().life();
-        bulletPattern = Objects.requireNonNullElse(script.getFirstBulletPattern(), BulletPattern.NO_BULLET);
-        movePattern = Objects.requireNonNullElse(script.getFirstMovePattern(), MovePattern.FOLLOW_MAP);
+        bulletPattern = Utils.requireNonNullElse(script.getFirstBulletPattern(), BulletPattern.NO_BULLET);
+        movePattern = Utils.requireNonNullElse(script.getFirstMovePattern(), MovePattern.FOLLOW_MAP);
 
         dir = movePattern.dir(0);
     }

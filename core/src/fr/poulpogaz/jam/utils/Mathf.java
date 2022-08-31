@@ -43,9 +43,9 @@ public class Mathf {
         if (a == b) {
             return a;
         } else if (a < b) {
-            return RANDOM.nextFloat(a, b);
+            return RANDOM.nextFloat() * (b - a) + a;
         } else {
-            return RANDOM.nextFloat(b, a);
+            return RANDOM.nextFloat() * (a - b) + b;
         }
     }
 }

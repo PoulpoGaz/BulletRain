@@ -19,13 +19,8 @@ public class BulletRenderer extends TextureEntityRenderer {
     public void render(SpriteBatch batch, BitmapFont f2d, GameScreen game, Entity entity) {
         setTexture();
 
-        if (entity instanceof Bullet bullet) {
-
-            /*batch.draw(tex,
-                    bullet.getX() - tex.getRegionWidth() / 2f, bullet.getY() - tex.getRegionWidth() / 2f,
-                    0, 0, tex.getRegionWidth(), tex.getRegionHeight(),
-                    1, 1,
-                    bullet.getAngleDeg());*/
+        if (entity instanceof Bullet) {
+            Bullet bullet = (Bullet) entity;
 
             batch.draw(tex,
                     bullet.getX() - tex.getRegionWidth() / 2f, bullet.getY() - tex.getRegionHeight() / 2f,

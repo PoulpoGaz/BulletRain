@@ -38,14 +38,14 @@ public abstract class LivingEntity extends Entity {
                 life = 0;
 
                 if (DEATH == null) {
-                    DEATH = Animations.get("expl_08_animation");
+                    DEATH = Animations.get("expl_08");
                 }
 
                 death = new AnimatedParticle(pos, DEATH);
                 particles.add(death);
             } else {
                 if (HIT == null) {
-                    HIT = Animations.get("hit_animation");
+                    HIT = Animations.get("hit");
                 }
 
                 particles.add(new AnimatedParticle(pos, HIT));

@@ -8,36 +8,36 @@ import java.util.List;
 public class CollideHelper {
 
     public static boolean aabb(AABB a, HitBox b) {
-        if (b instanceof AABB aabb) {
-            return aabbAABB(a, aabb);
-        } else if (b instanceof Circle c) {
-            return aabbCircle(a, c);
-        } else if (b instanceof Polygon p) {
-            return aabbPolygon(a, p);
+        if (b instanceof AABB) {
+            return aabbAABB(a, (AABB) b);
+        } else if (b instanceof Circle) {
+            return aabbCircle(a, (Circle) b);
+        } else if (b instanceof Polygon) {
+            return aabbPolygon(a, (Polygon) b);
         } else {
             throw new UnsupportedOperationException();
         }
     }
 
     public static boolean circle(Circle c, HitBox b) {
-        if (b instanceof AABB aabb) {
-            return aabbCircle(aabb, c);
-        } else if (b instanceof Circle c2) {
-            return circleCircle(c, c2);
-        } else if (b instanceof Polygon p) {
-            return circlePolygon(c, p);
+        if (b instanceof AABB) {
+            return aabbCircle((AABB) b, c);
+        } else if (b instanceof Circle) {
+            return circleCircle(c, (Circle) b);
+        } else if (b instanceof Polygon) {
+            return circlePolygon(c, (Polygon) b);
         } else {
             throw new UnsupportedOperationException();
         }
     }
 
     public static boolean polygon(Polygon a, HitBox b) {
-        if (b instanceof AABB aabb) {
-            return aabbPolygon(aabb, a);
-        } else if (b instanceof Circle c) {
-            return circlePolygon(c, a);
-        } else if (b instanceof Polygon r) {
-            return polygonPolygon(a, r);
+        if (b instanceof AABB) {
+            return aabbPolygon((AABB) b, a);
+        } else if (b instanceof Circle) {
+            return circlePolygon((Circle) b, a);
+        } else if (b instanceof Polygon ) {
+            return polygonPolygon(a, (Polygon) b);
         } else {
             throw new UnsupportedOperationException();
         }

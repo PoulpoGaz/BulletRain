@@ -4,16 +4,13 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Align;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.badlogic.gdx.utils.ScreenUtils;
+import fr.poulpogaz.jam.utils.Utils;
 
 import static fr.poulpogaz.jam.Constants.*;
 
@@ -93,14 +90,15 @@ public class Jam implements ApplicationListener {
 			loading = false;
 			currentScreen.render(Gdx.graphics.getDeltaTime());
 		} else {
+			ScreenUtils.clear(0, 0, 0, 1);
 			float progress = manager.getProgress();
 
 			batch.begin();
-			font.draw(batch, "Loading: %.02f".formatted(progress * 100), 0, HALF_HEIGHT,
+			font.draw(batch, "Loading: " + Utils.round2(progress * 100), 0, HALF_HEIGHT,
 					WIDTH, Align.center, true);
 			batch.end();
 		}
-
+		
 		if (Constants.DEBUG && Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
 			Gdx.app.exit();
 		}

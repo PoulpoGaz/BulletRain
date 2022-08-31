@@ -10,10 +10,62 @@ import fr.poulpogaz.jam.utils.BuilderException;
 
 import java.util.Objects;
 
-public record BulletDescriptor(String name,
-                               EntityRenderer renderer,
-                               HitBoxSupplier hitBoxSupplier,
-                               float damage) implements IBulletDescriptor {
+public final class BulletDescriptor implements IBulletDescriptor {
+    private final String name;
+    private final EntityRenderer renderer;
+    private final HitBoxSupplier hitBoxSupplier;
+    private final float damage;
+
+    BulletDescriptor(String name,
+                     EntityRenderer renderer,
+                     HitBoxSupplier hitBoxSupplier,
+                     float damage) {
+        this.name = name;
+        this.renderer = renderer;
+        this.hitBoxSupplier = hitBoxSupplier;
+        this.damage = damage;
+    }
+
+    public String name() {
+        return name;
+    }
+
+    public EntityRenderer renderer() {
+        return renderer;
+    }
+
+    public HitBoxSupplier hitBoxSupplier() {
+        return hitBoxSupplier;
+    }
+
+    public float damage() {
+        return damage;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (obj == null || obj.getClass() != this.getClass()) return false;
+        BulletDescriptor that = (BulletDescriptor) obj;
+        return Objects.equals(this.name, that.name) &&
+                Objects.equals(this.renderer, that.renderer) &&
+                Objects.equals(this.hitBoxSupplier, that.hitBoxSupplier) &&
+                Float.floatToIntBits(this.damage) == Float.floatToIntBits(that.damage);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, renderer, hitBoxSupplier, damage);
+    }
+
+    @Override
+    public String toString() {
+        return "BulletDescriptor[" +
+                "name=" + name + ", " +
+                "renderer=" + renderer + ", " +
+                "hitBoxSupplier=" + hitBoxSupplier + ", " +
+                "damage=" + damage + ']';
+    }
 
     public Bullet create(GameScreen game, boolean playerBullet, MovePattern pattern, Vector2 pos) {
         return new Bullet(game, this, playerBullet, pattern, pos);

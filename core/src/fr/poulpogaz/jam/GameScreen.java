@@ -194,17 +194,18 @@ public class GameScreen extends AbstractScreen {
         // font.getDescent() is negative...
         float h = -font.getDescent() + font.getAscent() + font.getXHeight();
 
-        font.draw(spriteBatch, "Player: (%.0f, %.0f)".formatted(player.getX(), player.getY()),
+
+        font.draw(spriteBatch, "Player: (" + (int) player.getX() + ", " + (int) + player.getY(),
                 0, HEIGHT);
-        font.draw(spriteBatch, "Map scroll: %.0f".formatted(mapScroll),
+        font.draw(spriteBatch, "Map scroll: " + (int) mapScroll,
                 0, HEIGHT - h);
-        font.draw(spriteBatch, "Number of player bullets: %d".formatted(playerBullets.size()),
+        font.draw(spriteBatch, "Number of player bullets: " + playerBullets.size(),
                 0, HEIGHT - 2 * h);
-        font.draw(spriteBatch, "Number of enemies bullets: %d".formatted(enemiesBullets.size()),
+        font.draw(spriteBatch, "Number of enemies bullets: " + enemiesBullets.size(),
                 0, HEIGHT - 3 * h);
-        font.draw(spriteBatch, "Number of enemies: %d".formatted(enemies.size()),
+        font.draw(spriteBatch, "Number of enemies: " + enemies.size(),
                 0, HEIGHT - 4 * h);
-        font.draw(spriteBatch, "Number of particles: %d".formatted(particles.size()),
+        font.draw(spriteBatch, "Number of particles: " + particles.size(),
                 0, HEIGHT - 5 * h);
         font.draw(spriteBatch, "FPS: " + Gdx.graphics.getFramesPerSecond(),
                 0, HEIGHT - 6 * h);

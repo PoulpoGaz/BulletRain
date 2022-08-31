@@ -45,13 +45,18 @@ public class TextureEntityRenderer implements EntityRenderer {
 
         Vector2 p = entity.getPos();
 
-        if (entity instanceof LivingEntity l && l.isDying()) {
-            batch.setColor(1, 1, 1, 1 - l.percentToDeath());
-            batch.draw(tex, p.x - w / 2f, p.y - h / 2f);
-            batch.setColor(1, 1, 1, 1);
-        } else {
-            batch.draw(tex, p.x - w / 2f, p.y - h / 2f);
+        if (entity instanceof LivingEntity) {
+            LivingEntity l = (LivingEntity) entity;
+
+            if (l.isDying()) {
+                batch.setColor(1, 1, 1, 1 - l.percentToDeath());
+                batch.draw(tex, p.x - w / 2f, p.y - h / 2f);
+                batch.setColor(1, 1, 1, 1);
+                return;
+            }
         }
+
+        batch.draw(tex, p.x - w / 2f, p.y - h / 2f);
     }
 
     protected void setTexture() {

@@ -18,7 +18,9 @@ public class AABBRotateSupplier implements HitBoxSupplier {
 
     @Override
     public HitBox getDetailedHitBox(Entity entity, HitBox last) {
-        if (entity instanceof Bullet bullet) {
+        if (entity instanceof Bullet) {
+            Bullet bullet = (Bullet) entity;
+
             if (bullet.getAngle() % Mathf.PI == 0) {
                 return HitBoxUtils.createAABB(last,
                         bullet.getX() - width / 2f, bullet.getY() - height / 2f,
@@ -43,14 +45,14 @@ public class AABBRotateSupplier implements HitBoxSupplier {
 
 
                 Polygon poly;
-                if (last instanceof Polygon p) {
-                    poly = p;
+                if (last instanceof Polygon) {
+                    poly = (Polygon) last;
                     poly.getCenter().set(bullet.getPos());
-                    p.getModel(0).set(x1, y1);
-                    p.getModel(1).set(x2, y2);
-                    p.getModel(2).set(x3, y3);
-                    p.getModel(3).set(x4, y4);
-                    p.reloadPoints();
+                    poly.getModel(0).set(x1, y1);
+                    poly.getModel(1).set(x2, y2);
+                    poly.getModel(2).set(x3, y3);
+                    poly.getModel(3).set(x4, y4);
+                    poly.reloadPoints();
 
                 } else {
                     poly = new Polygon();

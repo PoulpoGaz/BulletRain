@@ -12,7 +12,8 @@ public class CircleSupplier implements HitBoxSupplier {
 
     @Override
     public HitBox getDetailedHitBox(Entity entity, HitBox p) {
-        if (p instanceof Circle c) {
+        if (p instanceof Circle) {
+            Circle c = (Circle) p;
             c.setRadius(radius);
             c.getCenter().set(entity.getPos());
             return c;

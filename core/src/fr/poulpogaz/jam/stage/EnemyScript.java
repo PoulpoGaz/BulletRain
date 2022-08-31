@@ -2,7 +2,6 @@ package fr.poulpogaz.jam.stage;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
-import fr.poulpogaz.jam.Constants;
 import fr.poulpogaz.jam.patterns.BulletPattern;
 import fr.poulpogaz.jam.patterns.LinearPattern;
 import fr.poulpogaz.jam.patterns.MovePattern;
@@ -12,13 +11,47 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static fr.poulpogaz.jam.Constants.*;
+import static fr.poulpogaz.jam.Constants.HALF_WIDTH;
+import static fr.poulpogaz.jam.Constants.HEIGHT;
 
-public record EnemyScript(EnemyDescriptor enemy,
-                          int triggerTime,
-                          StartPos startPos, // enemy is centered on the x-axis
-                          List<EnemyAction<MovePattern>> moves,
-                          List<EnemyAction<BulletPattern>> bullets) {
+public final class EnemyScript {
+    private final EnemyDescriptor enemy;
+    private final int triggerTime;
+    private final StartPos startPos;
+    private final List<EnemyAction<MovePattern>> moves;
+    private final List<EnemyAction<BulletPattern>> bullets;
+
+    EnemyScript(EnemyDescriptor enemy,
+                int triggerTime,
+                StartPos startPos, // enemy is centered on the x-axis
+                List<EnemyAction<MovePattern>> moves,
+                List<EnemyAction<BulletPattern>> bullets) {
+        this.enemy = enemy;
+        this.triggerTime = triggerTime;
+        this.startPos = startPos;
+        this.moves = moves;
+        this.bullets = bullets;
+    }
+
+    public EnemyDescriptor enemy() {
+        return enemy;
+    }
+
+    public int triggerTime() {
+        return triggerTime;
+    }
+
+    public StartPos startPos() {
+        return startPos;
+    }
+
+    public List<EnemyAction<MovePattern>> moves() {
+        return moves;
+    }
+
+    public List<EnemyAction<BulletPattern>> bullets() {
+        return bullets;
+    }
 
     public Vector2 startPosVec() {
         return startPos.asVec(enemy);
@@ -49,14 +82,52 @@ public record EnemyScript(EnemyDescriptor enemy,
         return moves.get(index);
     }
 
-    public record StartPos(float xy, Location location) {
+    public static final class StartPos {
+        private final float xy;
+        private final Location location;
+
+        StartPos(float xy, Location location) {
+            this.xy = xy;
+            this.location = location;
+        }
+
+        public float xy() {
+            return xy;
+        }
+
+        public Location location() {
+            return location;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == this) return true;
+            if (obj == null || obj.getClass() != this.getClass()) return false;
+            StartPos that = (StartPos) obj;
+            return Float.floatToIntBits(this.xy) == Float.floatToIntBits(that.xy) &&
+                    Objects.equals(this.location, that.location);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(xy, location);
+        }
+
+        @Override
+        public String toString() {
+            return "StartPos[" +
+                    "xy=" + xy + ", " +
+                    "location=" + location + ']';
+        }
 
         public Vector2 asVec(EnemyDescriptor desc) {
-            return switch (location) {
-                case TOP -> new Vector2(xy + HALF_WIDTH, HEIGHT + desc.height());
-                case LEFT -> new Vector2(-HALF_WIDTH - desc.width(), xy);
-                case RIGHT -> new Vector2(HALF_WIDTH + desc.width(), xy);
-            };
+            switch (location) {
+                case TOP: return new Vector2(xy + HALF_WIDTH, HEIGHT + desc.height());
+                case LEFT: return new Vector2(-HALF_WIDTH - desc.width(), xy);
+                case RIGHT: return new Vector2(HALF_WIDTH + desc.width(), xy);
+            }
+
+            throw new IllegalStateException();
         }
     }
 
