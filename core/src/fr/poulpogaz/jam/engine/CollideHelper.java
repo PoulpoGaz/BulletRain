@@ -174,10 +174,26 @@ public class CollideHelper {
 
         float discriminant = B * B - 4 * A * C;
 
-        return discriminant >= 0;
+        if (discriminant >= 0) {
+            float sqrt = (float) Math.sqrt(discriminant);
+
+            float t1 = (-B - sqrt) / (2 * A);
+            float t2 = (-B + sqrt) / (2 * A);
+
+            return between(t1, 0, 1) || between(t2, 0, 1);
+        }
+
+        return false;
     }
 
     public static boolean circlePoint(Circle c, float x, float y) {
         return c.getCenter().dst2(x, y) <= c.getRadiusSquared();
+    }
+
+    private static boolean between(float value, float a, float b) {
+        float min = Math.min(a, b);
+        float max = Math.max(a, b);
+
+        return min <= value && value <= max;
     }
 }

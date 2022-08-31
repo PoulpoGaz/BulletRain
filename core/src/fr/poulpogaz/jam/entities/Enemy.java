@@ -30,6 +30,7 @@ public class Enemy extends LivingEntity {
         this.pos = script.startPosVec();
 
         life = script.enemy().life();
+        maxLife = life;
         bulletPattern = Utils.requireNonNullElse(script.getFirstBulletPattern(), BulletPattern.NO_BULLET);
         movePattern = Utils.requireNonNullElse(script.getFirstMovePattern(), MovePattern.FOLLOW_MAP);
 
@@ -80,9 +81,5 @@ public class Enemy extends LivingEntity {
     @Override
     protected HitBox getDetailedHitBoxImpl() {
         return script.enemy().hitBox().getDetailedHitBox(this, detailedHitBox);
-    }
-
-    public int getLife() {
-        return life;
     }
 }

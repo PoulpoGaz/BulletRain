@@ -23,6 +23,9 @@ public class Constants {
 
     public static final int OUTER_SCREEN_SIZE = 50;
 
+    public static final float PLAYER_MIN_POWER = 1;
+    public static final float PLAYER_MAX_POWER = 4;
+
     // speed
     public static final float MAP_SCROLL_SPEED = 0.75f; // added to every entity
 
@@ -41,4 +44,10 @@ public class Constants {
     public static final int PLAYER_KILL = 5000;
     public static final int PLAYER_KILL_BOSS = 100_000;
     public static final int PLAYER_PERFECT_STAGE = 100_000;
+
+    // all items at a distance of 10 are attracted
+    public static final int PLAYER_MIN_ATTRACTION = 64;
+
+    public static final float ITEM_MAX_SPEED = 3f;
+    public static final float ITEM_MAX_SPEED_2 = ITEM_MAX_SPEED * ITEM_MAX_SPEED;
 }

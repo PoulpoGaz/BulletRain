@@ -36,6 +36,8 @@ public class TextureEntityRenderer implements EntityRenderer {
 
         if (t != null) {
             tex = new TextureRegion(t, x, y, w, h);
+        } else {
+            tex = null;
         }
     }
 

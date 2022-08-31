@@ -9,7 +9,13 @@ public class Mathf {
     public static final float PI_2 = (float) (Math.PI / 2);
     public static final float PI_4 = (float) (Math.PI / 4);
 
+    public static final float LN_2 = (float) Math.log(2f);
+
     public static final Random RANDOM = new Random();
+
+    public static float log(float a, float b) {
+        return (float) (Math.log(a) / b);
+    }
 
     public static float pow(float a, float b) {
         if (b == 2) {

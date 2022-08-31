@@ -27,6 +27,7 @@ public class Jam implements ApplicationListener {
 
 	private MainMenuScreen mainMenuScreen;
 	private GameScreen gameScreen;
+	private WinScreen winScreen;
 
 	private AbstractScreen currentScreen;
 	private boolean loading = true;
@@ -68,6 +69,7 @@ public class Jam implements ApplicationListener {
 
 		gameScreen = new GameScreen(this);
 		mainMenuScreen = new MainMenuScreen(this);
+		winScreen = new WinScreen(this);
 
 		setScreen(mainMenuScreen);
 	}
@@ -177,6 +179,7 @@ public class Jam implements ApplicationListener {
 
 		gameScreen.dispose();
 		mainMenuScreen.dispose();
+		winScreen.dispose();
 
 		shape.dispose();
 		batch.dispose();
@@ -200,6 +203,10 @@ public class Jam implements ApplicationListener {
 
 	public GameScreen getGameScreen() {
 		return gameScreen;
+	}
+
+	public WinScreen getWinScreen() {
+		return winScreen;
 	}
 
 	public static <T> T getOrLoad(String name, Class<T> type) {

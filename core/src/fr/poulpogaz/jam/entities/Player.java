@@ -20,18 +20,23 @@ public class Player extends LivingEntity {
 
     private final Circle hitBox;
     private float power;
+    private int score;
 
     private final BulletPattern pattern = new PlayerBulletPattern(this);
 
     private boolean slowdown;
     private boolean lastWasShooting = false;
 
+    private float attractionPower = Constants.PLAYER_MIN_ATTRACTION;
+
     public Player(GameScreen game) {
         super(game);
         life = 1;
+        maxLife = 1;
+        score = 0;
         this.pos = new Vector2(HALF_WIDTH, Q_HEIGHT);
 
-        power = 1;
+        power = Constants.PLAYER_MIN_POWER;
         hitBox = new Circle(pos, Constants.PLAYER_HITBOX_RAD);
     }
 
@@ -63,6 +68,8 @@ public class Player extends LivingEntity {
             if (moved) {
                 markDirty();
             }
+
+            score += Constants.PLAYER_SURVIVE;
         }
     }
 
@@ -119,8 +126,26 @@ public class Player extends LivingEntity {
         return power;
     }
 
+    public int getScore() {
+        return score;
+    }
+
     public boolean isSlowdown() {
         return slowdown;
+    }
+
+    public float getAttractionPower() {
+        return attractionPower;
+    }
+
+    public void pick(Item item) {
+        item.setPicked(true);
+
+        if (item.getType() == Item.POWER) {
+            power += item.getValue();
+        } else if (item.getType() == Item.SCORE) {
+            score += item.getValue();
+        }
     }
 
     public void reset() {
@@ -130,8 +155,10 @@ public class Player extends LivingEntity {
         slowdown = false;
         lastWasShooting = false;
         life = 1;
-        power = 1f;
+        power = Constants.PLAYER_MIN_POWER;
         death = null;
+        attractionPower = Constants.PLAYER_MIN_ATTRACTION;
+        score = 0;
         markDirty();
     }
 

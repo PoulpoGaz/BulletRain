@@ -16,13 +16,13 @@ import static fr.poulpogaz.jam.Constants.HEIGHT;
 
 public final class EnemyScript {
     private final EnemyDescriptor enemy;
-    private final int triggerTime;
+    private final float triggerTime;
     private final StartPos startPos;
     private final List<EnemyAction<MovePattern>> moves;
     private final List<EnemyAction<BulletPattern>> bullets;
 
     EnemyScript(EnemyDescriptor enemy,
-                int triggerTime,
+                float triggerTime,
                 StartPos startPos, // enemy is centered on the x-axis
                 List<EnemyAction<MovePattern>> moves,
                 List<EnemyAction<BulletPattern>> bullets) {
@@ -37,7 +37,7 @@ public final class EnemyScript {
         return enemy;
     }
 
-    public int triggerTime() {
+    public float triggerTime() {
         return triggerTime;
     }
 
@@ -99,27 +99,6 @@ public final class EnemyScript {
             return location;
         }
 
-        @Override
-        public boolean equals(Object obj) {
-            if (obj == this) return true;
-            if (obj == null || obj.getClass() != this.getClass()) return false;
-            StartPos that = (StartPos) obj;
-            return Float.floatToIntBits(this.xy) == Float.floatToIntBits(that.xy) &&
-                    Objects.equals(this.location, that.location);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(xy, location);
-        }
-
-        @Override
-        public String toString() {
-            return "StartPos[" +
-                    "xy=" + xy + ", " +
-                    "location=" + location + ']';
-        }
-
         public Vector2 asVec(EnemyDescriptor desc) {
             switch (location) {
                 case TOP: return new Vector2(xy + HALF_WIDTH, HEIGHT + desc.height());
@@ -142,7 +121,7 @@ public final class EnemyScript {
         private final StageBuilder parent;
         private final EnemyDescriptor enemy;
 
-        private int triggerTime;
+        private float triggerTime;
         private StartPos startPos;
         private final List<EnemyAction<MovePattern>> moves = new ArrayList<>();
         private final List<EnemyAction<BulletPattern>> bullets = new ArrayList<>();
@@ -164,7 +143,7 @@ public final class EnemyScript {
             return parent;
         }
 
-        public Builder moveTo(Vector2 dest, int duration) {
+        public Builder moveTo(Vector2 dest, float duration) {
             if (startPos == null) {
                 throw new BuilderException("Start pos not set");
             }
@@ -182,7 +161,7 @@ public final class EnemyScript {
             return this;
         }
 
-        public Builder wait(int duration) {
+        public Builder wait(float duration) {
             moves.add(new EnemyAction<>(duration, MovePattern.FOLLOW_MAP));
             return this;
         }
@@ -197,16 +176,16 @@ public final class EnemyScript {
             return this;
         }
 
-        public Builder addBulletPattern(int start, BulletPattern pattern) {
+        public Builder addBulletPattern(float start, BulletPattern pattern) {
             bullets.add(new EnemyAction<>(start, pattern));
             return this;
         }
 
-        public int getTriggerTime() {
+        public float getTriggerTime() {
             return triggerTime;
         }
 
-        public Builder setTriggerTime(int triggerTime) {
+        public Builder setTriggerTime(float triggerTime) {
             this.triggerTime = triggerTime;
             return this;
         }

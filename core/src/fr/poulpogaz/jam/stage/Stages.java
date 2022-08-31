@@ -21,7 +21,7 @@ public class Stages {
                 .enemyBuilder()
                     .setName("sunflower")
                     .setTexture("tileset.png", 0, 0, 32, 32)
-                    .setLife(15)
+                    .setLife(20)
                     .setHitBox(new AABBSupplier(32, 32))
                     .build()
 
@@ -47,12 +47,12 @@ public class Stages {
 
                 .scriptBuilder("sunflower")
                     .setStartPos(Q_WIDTH, Location.TOP)
-                    .setTriggerTime(200)
+                    .setTriggerTime(3)
                     .addBulletPattern(0, new TargetPlayer("sunflower_bullet", 45))
                     .build()
                 .scriptBuilder("sunflower")
                     .setStartPos(-Q_WIDTH, Location.TOP)
-                    .setTriggerTime(200)
+                    .setTriggerTime(3)
                     .addBulletPattern(0, new TargetPlayer("sunflower_bullet", 45))
                     .build()
                 .build();

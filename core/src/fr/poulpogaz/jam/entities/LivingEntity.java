@@ -14,6 +14,7 @@ public abstract class LivingEntity extends Entity {
     private static Animation<TextureRegion> DEATH;
 
     protected int life;
+    protected int maxLife;
     protected boolean hit;
 
     protected AnimatedParticle death;
@@ -53,6 +54,10 @@ public abstract class LivingEntity extends Entity {
 
             hit = true;
         }
+    }
+
+    public int getMaxLife() {
+        return maxLife;
     }
 
     public int getLife() {
