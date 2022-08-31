@@ -30,6 +30,9 @@ public class InstanceBuffer implements IGLBuffer {
         this.usage = usage;
 
         glBuffer = glGenBuffers();
+        glBindBuffer(GL_ARRAY_BUFFER, glBuffer);
+        glBufferData(GL_ARRAY_BUFFER, byteBuffer.capacity(), usage);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
     public void enableAttribs() {
@@ -113,7 +116,7 @@ public class InstanceBuffer implements IGLBuffer {
             byteBuffer.limit(buffer.limit() * 4);
             byteBuffer.position(0);
 
-            glBufferData(GL_ARRAY_BUFFER, byteBuffer, usage);
+            glBufferSubData(GL_ARRAY_BUFFER, 0, byteBuffer);
             dirty = false;
 
             return true;
