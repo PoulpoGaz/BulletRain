@@ -67,7 +67,7 @@ public abstract class Entity {
     }
 
 
-    protected void markDirty() {
+    public void markDirty() {
         hitBoxDirty = true;
         aabbDirty = true;
     }

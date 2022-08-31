@@ -1,5 +1,7 @@
 package fr.poulpogaz.jam.utils;
 
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+
 import java.util.Objects;
 
 public class Utils {
@@ -14,5 +16,10 @@ public class Utils {
 
     public static int round2(float v) {
         return Math.round(v * 100) / 100;
+    }
+
+    public static float fontHeight(BitmapFont font) {
+        // font.getDescent() is negative...
+        return -font.getDescent() + font.getAscent() + font.getXHeight();
     }
 }

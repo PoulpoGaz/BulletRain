@@ -30,8 +30,7 @@ public class Polygon implements HitBox {
 
     public void reloadPoints() {
         for (int i = 0; i < points.size(); i++) {
-            Vector2 v = points.get(i);
-            models.get(i).cpy().add(center);
+            points.get(i).set(models.get(i).add(center));
         }
     }
 

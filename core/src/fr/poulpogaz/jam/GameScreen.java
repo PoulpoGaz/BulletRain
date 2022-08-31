@@ -1,6 +1,8 @@
 package fr.poulpogaz.jam;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -17,6 +19,7 @@ import fr.poulpogaz.jam.stage.Stage;
 import fr.poulpogaz.jam.stage.Stages;
 import fr.poulpogaz.jam.utils.Animations;
 import fr.poulpogaz.jam.utils.Mathf;
+import fr.poulpogaz.jam.utils.Size;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,18 +51,34 @@ public class GameScreen extends AbstractScreen {
     // particles
     private final List<Particle> particles;
 
+    // menu
+    private final Size size = new Size();
+    private final Menu pauseMenu;
+    private final Menu deadMenu;
+
     public GameScreen(Jam jam) {
         super(jam);
         enemies = new ArrayList<>();
         playerBullets = new ArrayList<>();
         enemiesBullets = new ArrayList<>();
         particles = new ArrayList<>();
+
+        pauseMenu = new Menu();
+        pauseMenu.addLabel("Continue");
+        pauseMenu.addLabel("Restart");
+        pauseMenu.addLabel("Exit");
+        pauseMenu.setNotSelectedColor(new Color(0.7f, 0.7f, 0.7f, 1));
+
+        deadMenu = new Menu();
+        deadMenu.addLabel("Restart");
+        deadMenu.addLabel("Exit");
+        deadMenu.setNotSelectedColor(new Color(0.7f, 0.7f, 0.7f, 1));
     }
 
     @Override
     public void preLoad() {
         stage.loadAllTextures();
-        player = new Player(this, new Vector2(HALF_WIDTH, Q_HEIGHT));
+        player = new Player(this);
         player.getRenderer().loadTextures();
 
         Jam.getOrLoadTexture("explosions.png");
@@ -70,6 +89,11 @@ public class GameScreen extends AbstractScreen {
         mapScroll = -50;
         background = Jam.getTexture(stage.getBackground());
         Animations.loadAnimations();
+
+        pauseMenu.setVisible(false);
+        deadMenu.setVisible(false);
+
+        restart();
     }
 
     @Override
@@ -79,8 +103,82 @@ public class GameScreen extends AbstractScreen {
         renderForeground();
         spriteBatch.end();
 
-        update(delta);
+        if (pauseMenu.isVisible()) {
+            drawPauseMenuAndUpdate();
+        } else if (deadMenu.isVisible()) {
+            drawDeadMenuAndUpdate();
+        } else {
+            update(delta);
+
+            if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+                if (player.isDying()) {
+                    deadMenu.setVisible(true);
+                } else {
+                    pauseMenu.setVisible(true);
+                }
+            }
+        }
     }
+
+    protected void drawGrayMask(float alpha) {
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+        shapeRenderer.setColor(0.3f, 0.3f, 0.3f, alpha);
+        shapeRenderer.rect(0, 0, WIDTH, HEIGHT);
+
+        shapeRenderer.end();
+        Gdx.gl.glDisable(GL20.GL_BLEND);
+    }
+
+
+    protected void drawPauseMenuAndUpdate() {
+        drawGrayMask(0.5f);
+
+        spriteBatch.enableBlending();
+        spriteBatch.begin();
+        pauseMenu.getPreferredSize(font, size);
+        pauseMenu.draw(spriteBatch, font, Q_WIDTH, Q3_HEIGHT, size);
+        spriteBatch.end();
+        spriteBatch.disableBlending();
+
+        int s = pauseMenu.update();
+
+        if (s == 0) {
+            pauseMenu.setVisible(false);
+        } else if (s == 1) {
+            restart();
+            pauseMenu.setVisible(false);
+        } else if (s == 2) {
+            jam.setScreen(jam.getMainMenuScreen());
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            pauseMenu.setVisible(false);
+        }
+    }
+
+
+    protected void drawDeadMenuAndUpdate() {
+        drawGrayMask(0.5f);
+
+        spriteBatch.enableBlending();
+        spriteBatch.begin();
+        deadMenu.getPreferredSize(font, size);
+        deadMenu.draw(spriteBatch, font, Q_WIDTH, Q3_HEIGHT, size);
+        spriteBatch.end();
+        spriteBatch.disableBlending();
+
+        int s = deadMenu.update();
+
+        if (s == 0) {
+            restart();
+            deadMenu.setVisible(false);
+        } else if (s == 1) {
+            jam.setScreen(jam.getMainMenuScreen());
+        }
+    }
+
+
+
 
 
     protected void renderBackground() {
@@ -121,19 +219,13 @@ public class GameScreen extends AbstractScreen {
             p.render(spriteBatch, font);
         }
 
-        if (player.isDead()) {
+        if (player.isDying()) {
             spriteBatch.end();
-
-            Gdx.gl.glEnable(GL20.GL_BLEND);
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-
-            shapeRenderer.setColor(0.3f, 0.3f, 0.3f, player.percentToDeath() / 2f);
-            shapeRenderer.rect(0, 0, WIDTH, HEIGHT);
-
-            shapeRenderer.end();
-            Gdx.gl.glDisable(GL20.GL_BLEND);
-
+            drawGrayMask(player.percentToDeath() / 2f);
             spriteBatch.begin();
+
+        } else if (player.isDead() && !player.isDying()) {
+            deadMenu.setVisible(true);
         }
 
         if (Constants.SHOW_HITBOX) {
@@ -152,10 +244,6 @@ public class GameScreen extends AbstractScreen {
             spriteBatch.begin();
         }
 
-        if (DEBUG) {
-            drawDebugInfo();
-        }
-
         spriteBatch.disableBlending();
     }
 
@@ -169,7 +257,9 @@ public class GameScreen extends AbstractScreen {
         }
 
         drawBullets(playerBullets);
-        player.render(spriteBatch, font);
+        if (player.isDying() || !player.isDead()) {
+            player.render(spriteBatch, font);
+        }
         drawBullets(enemiesBullets);
     }
 
@@ -189,29 +279,6 @@ public class GameScreen extends AbstractScreen {
         shapeRenderer.setColor(1, 0, 0, 1);
         shapeRenderer.rect(a.getX(), a.getY(), a.getWidth(), a.getHeight());
     }
-
-    private void drawDebugInfo() {
-        // font.getDescent() is negative...
-        float h = -font.getDescent() + font.getAscent() + font.getXHeight();
-
-
-        font.draw(spriteBatch, "Player: (" + (int) player.getX() + ", " + (int) + player.getY(),
-                0, HEIGHT);
-        font.draw(spriteBatch, "Map scroll: " + (int) mapScroll,
-                0, HEIGHT - h);
-        font.draw(spriteBatch, "Number of player bullets: " + playerBullets.size(),
-                0, HEIGHT - 2 * h);
-        font.draw(spriteBatch, "Number of enemies bullets: " + enemiesBullets.size(),
-                0, HEIGHT - 3 * h);
-        font.draw(spriteBatch, "Number of enemies: " + enemies.size(),
-                0, HEIGHT - 4 * h);
-        font.draw(spriteBatch, "Number of particles: " + particles.size(),
-                0, HEIGHT - 5 * h);
-        font.draw(spriteBatch, "FPS: " + Gdx.graphics.getFramesPerSecond(),
-                0, HEIGHT - 6 * h);
-    }
-
-
 
 
 
@@ -346,7 +413,15 @@ public class GameScreen extends AbstractScreen {
 
 
 
+    private void restart() {
+        player.reset();
+        mapScroll = -50;
 
+        enemiesBullets.clear();
+        playerBullets.clear();
+        enemies.clear();
+        nextEnemyToAdd = 0;
+    }
 
 
     @Override
@@ -356,7 +431,7 @@ public class GameScreen extends AbstractScreen {
 
     @Override
     public void pause() {
-
+        pauseMenu.setVisible(true);
     }
 
     @Override
@@ -373,6 +448,17 @@ public class GameScreen extends AbstractScreen {
     public void dispose() {
 
     }
+
+    @Override
+    public void getDebugInfo(List<String> out) {
+        out.add("Player: (" + (int) player.getX() + ", " + (int) + player.getY() + ")");
+        out.add("Map scroll: " + (int) mapScroll);
+        out.add("Number of player bullets: " + playerBullets.size());
+        out.add("Number of enemies bullets: " + enemiesBullets.size());
+        out.add("Number of enemies: " + enemies.size());
+        out.add("Number of particles: " + particles.size());
+    }
+
 
     public void addBullet(Bullet bullet) {
         if (bullet.isPlayerBullet()) {

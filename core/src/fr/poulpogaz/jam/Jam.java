@@ -12,6 +12,9 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import fr.poulpogaz.jam.utils.Utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static fr.poulpogaz.jam.Constants.*;
 
 public class Jam implements ApplicationListener {
@@ -22,6 +25,7 @@ public class Jam implements ApplicationListener {
 	private SpriteBatch batch;
 	private ShapeRenderer shape;
 
+	private MainMenuScreen mainMenuScreen;
 	private GameScreen gameScreen;
 
 	private AbstractScreen currentScreen;
@@ -30,6 +34,9 @@ public class Jam implements ApplicationListener {
 	private OrthographicCamera ortho;
 	private Matrix4 transform;
 
+	private List<String> debugInfos = new ArrayList<>();
+	private boolean drawDebugInfo = DEBUG;
+
 	@Override
 	public void create () {
 		if (Constants.DEBUG) {
@@ -37,6 +44,8 @@ public class Jam implements ApplicationListener {
 		} else {
 			Gdx.app.setLogLevel(Application.LOG_INFO);
 		}
+
+		Gdx.input.setCatchKey(Input.Keys.SPACE, true);
 
 		ortho = new OrthographicCamera(WINDOW_WIDTH, WINDOW_HEIGHT);
 		ortho.setToOrtho(false);
@@ -58,11 +67,9 @@ public class Jam implements ApplicationListener {
 		shape.getTransformMatrix().set(transform);
 
 		gameScreen = new GameScreen(this);
-		gameScreen.setFont(font);
-		gameScreen.setSpriteBatch(batch);
-		gameScreen.setShapeRenderer(shape);
+		mainMenuScreen = new MainMenuScreen(this);
 
-		setScreen(gameScreen);
+		setScreen(mainMenuScreen);
 	}
 
 	@Override
@@ -94,13 +101,13 @@ public class Jam implements ApplicationListener {
 			float progress = manager.getProgress();
 
 			batch.begin();
-			font.draw(batch, "Loading: " + Utils.round2(progress * 100), 0, HALF_HEIGHT,
+			font.draw(batch, "Loading: " + Utils.round2(progress * 100) + "%", 0, HALF_HEIGHT,
 					WIDTH, Align.center, true);
 			batch.end();
 		}
-		
-		if (Constants.DEBUG && Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
-			Gdx.app.exit();
+
+		if (drawDebugInfo) {
+			drawDebugInfo();
 		}
 
 		if (Gdx.input.isKeyJustPressed(Input.Keys.F11)){
@@ -113,6 +120,35 @@ public class Jam implements ApplicationListener {
 				Gdx.graphics.setFullscreenMode(currentMode);
 			}
 		}
+
+		if (Gdx.input.isKeyJustPressed(Input.Keys.F3)) {
+			drawDebugInfo = !drawDebugInfo;
+		}
+	}
+
+	private void drawDebugInfo() {
+		batch.enableBlending();
+		batch.begin();
+
+		debugInfos.clear();
+		debugInfos.add("FPS: " + Gdx.graphics.getFramesPerSecond());
+
+		if (currentScreen != null && !loading) {
+			currentScreen.getDebugInfo(debugInfos);
+		}
+
+		float h = Utils.fontHeight(font);
+		font.setColor(1, 1, 1, 1);
+
+		float y = HEIGHT;
+		for (String str : debugInfos) {
+			font.draw(batch, str, 0, y);
+
+			y -= h;
+		}
+
+		batch.end();
+		batch.disableBlending();
 	}
 
 	@Override
@@ -131,6 +167,7 @@ public class Jam implements ApplicationListener {
 		this.currentScreen = screen;
 		if (this.currentScreen != null) {
 			this.currentScreen.preLoad();
+			loading = true;
 		}
 	}
 
@@ -139,9 +176,30 @@ public class Jam implements ApplicationListener {
 		manager.dispose();
 
 		gameScreen.dispose();
+		mainMenuScreen.dispose();
 
 		shape.dispose();
 		batch.dispose();
+	}
+
+	public BitmapFont getFont() {
+		return font;
+	}
+
+	public SpriteBatch getBatch() {
+		return batch;
+	}
+
+	public ShapeRenderer getShape() {
+		return shape;
+	}
+
+	public MainMenuScreen getMainMenuScreen() {
+		return mainMenuScreen;
+	}
+
+	public GameScreen getGameScreen() {
+		return gameScreen;
 	}
 
 	public static <T> T getOrLoad(String name, Class<T> type) {

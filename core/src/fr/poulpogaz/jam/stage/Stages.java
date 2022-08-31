@@ -21,7 +21,7 @@ public class Stages {
                 .enemyBuilder()
                     .setName("sunflower")
                     .setTexture("tileset.png", 0, 0, 32, 32)
-                    .setLife(100)
+                    .setLife(15)
                     .setHitBox(new AABBSupplier(32, 32))
                     .build()
 

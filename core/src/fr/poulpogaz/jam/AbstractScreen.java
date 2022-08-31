@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
+import java.util.List;
+
 public abstract class AbstractScreen implements Screen {
 
     protected final Jam jam;
@@ -15,12 +17,17 @@ public abstract class AbstractScreen implements Screen {
 
     public AbstractScreen(Jam jam) {
         this.jam = jam;
+        font = jam.getFont();
+        spriteBatch = jam.getBatch();
+        shapeRenderer = jam.getShape();
     }
 
     /**
      * Load textures with the global assets manager {@link Jam#manager}
      */
     public abstract void preLoad();
+
+    public abstract void getDebugInfo(List<String> out);
 
     public BitmapFont getFont() {
         return font;

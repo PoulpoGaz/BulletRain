@@ -13,23 +13,25 @@ import fr.poulpogaz.jam.engine.HitBox;
 import fr.poulpogaz.jam.patterns.BulletPattern;
 import fr.poulpogaz.jam.patterns.PlayerBulletPattern;
 
+import static fr.poulpogaz.jam.Constants.HALF_WIDTH;
+import static fr.poulpogaz.jam.Constants.Q_HEIGHT;
+
 public class Player extends LivingEntity {
 
     private final Circle hitBox;
     private float power;
 
-    private BulletPattern pattern = new PlayerBulletPattern(this);
+    private final BulletPattern pattern = new PlayerBulletPattern(this);
 
     private boolean slowdown;
-
     private boolean lastWasShooting = false;
 
-    public Player(GameScreen game, Vector2 pos) {
+    public Player(GameScreen game) {
         super(game);
         life = 1;
-        this.pos = pos;
+        this.pos = new Vector2(HALF_WIDTH, Q_HEIGHT);
 
-        power = 4f;
+        power = 1;
         hitBox = new Circle(pos, Constants.PLAYER_HITBOX_RAD);
     }
 
@@ -119,6 +121,18 @@ public class Player extends LivingEntity {
 
     public boolean isSlowdown() {
         return slowdown;
+    }
+
+    public void reset() {
+        pos.set(HALF_WIDTH, Q_HEIGHT);
+        particles.clear();
+        hit = false;
+        slowdown = false;
+        lastWasShooting = false;
+        life = 1;
+        power = 1f;
+        death = null;
+        markDirty();
     }
 
     private class PlayerEntityRenderer extends TextureEntityRenderer {
