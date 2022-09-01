@@ -54,4 +54,11 @@ public class Mathf {
             return RANDOM.nextFloat() * (a - b) + b;
         }
     }
+
+    public static int nDigit(int i) {
+        if (i == 0) {
+            return 1;
+        }
+        return 1 + (int) (Math.log10(i));
+    }
 }

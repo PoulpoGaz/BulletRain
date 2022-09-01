@@ -6,8 +6,12 @@ public class Constants {
     public static final boolean SHOW_HITBOX = DEBUG && true;
 
     // window
-    public static final int HEIGHT = 500;
-    public static final int WIDTH = HEIGHT * 3 / 4;
+    public static final int WIDTH = 640;
+    public static final int HEIGHT = 480;
+
+    // the size of the map
+    public static final int MAP_WIDTH = 420;
+    public static final int MAP_HEIGHT = HEIGHT;
 
     public static final int SCALE_FACTOR = 2;
 
@@ -21,10 +25,18 @@ public class Constants {
     public static final float Q3_WIDTH = 3 * WIDTH / 4f;
     public static final float Q3_HEIGHT = 3 * HEIGHT / 4f;
 
+    public static final float M_HALF_WIDTH = MAP_WIDTH / 2f;
+    public static final float M_HALF_HEIGHT = MAP_HEIGHT / 2f;
+    public static final float M_Q_WIDTH = MAP_WIDTH / 4f;
+    public static final float M_Q_HEIGHT = MAP_HEIGHT / 4f;
+    public static final float M_Q3_WIDTH = 3 * MAP_WIDTH / 4f;
+    public static final float M_Q3_HEIGHT = 3 * MAP_HEIGHT / 4f;
+
     public static final int OUTER_SCREEN_SIZE = 50;
 
     public static final float PLAYER_MIN_POWER = 1;
     public static final float PLAYER_MAX_POWER = 4;
+    public static final float POWER_BLOCK_VALUE = 0.05f;
 
     // speed
     public static final float MAP_SCROLL_SPEED = 0.75f; // added to every entity
@@ -45,8 +57,8 @@ public class Constants {
     public static final int PLAYER_KILL_BOSS = 100_000;
     public static final int PLAYER_PERFECT_STAGE = 100_000;
 
-    // all items at a distance of 10 are attracted
-    public static final int PLAYER_MIN_ATTRACTION = 64;
+    // all items at a distance of 30 are attracted
+    public static final float PLAYER_MIN_ATTRACTION = 50f;
 
     public static final float ITEM_MAX_SPEED = 3f;
     public static final float ITEM_MAX_SPEED_2 = ITEM_MAX_SPEED * ITEM_MAX_SPEED;

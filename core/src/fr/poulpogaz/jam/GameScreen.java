@@ -5,9 +5,12 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.ScreenUtils;
 import fr.poulpogaz.jam.engine.AABB;
 import fr.poulpogaz.jam.engine.HitBox;
 import fr.poulpogaz.jam.entities.*;
@@ -20,6 +23,9 @@ import fr.poulpogaz.jam.utils.Mathf;
 import fr.poulpogaz.jam.utils.Size;
 import fr.poulpogaz.jam.utils.Utils;
 
+import java.awt.*;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 import static fr.poulpogaz.jam.Constants.*;
@@ -38,13 +44,13 @@ public class GameScreen extends AbstractScreen {
 
 
     // part of the map that is visible
-    private final AABB screen = new AABB(0, 0,  WIDTH, HEIGHT);
+    private final AABB screen = new AABB(0, 0,  MAP_WIDTH, MAP_HEIGHT);
 
     // part of the map that is either visible or need to be updated
     private final AABB largeScreen = new AABB(-OUTER_SCREEN_SIZE,
             -OUTER_SCREEN_SIZE,
-            WIDTH + OUTER_SCREEN_SIZE * 2,
-            HEIGHT + OUTER_SCREEN_SIZE * 2);
+            MAP_WIDTH + OUTER_SCREEN_SIZE * 2,
+            MAP_HEIGHT + OUTER_SCREEN_SIZE * 2);
 
     private Stage stage = Stages.LEVEL_1;
     private int nextEnemyToAdd = 0;
@@ -111,9 +117,12 @@ public class GameScreen extends AbstractScreen {
 
     @Override
     public void render(float delta) {
+        ScreenUtils.clear(0, 0, 0, 1);
+
         spriteBatch.begin();
-        renderBackground();
-        renderForeground();
+        drawBackground();
+        drawForeground();
+        drawInformationPanel();
         spriteBatch.end();
 
         if (pauseMenu.isVisible()) {
@@ -138,7 +147,7 @@ public class GameScreen extends AbstractScreen {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
         shapeRenderer.setColor(0.3f, 0.3f, 0.3f, alpha);
-        shapeRenderer.rect(0, 0, WIDTH, HEIGHT);
+        shapeRenderer.rect(0, 0, MAP_WIDTH, MAP_HEIGHT);
 
         shapeRenderer.end();
         Gdx.gl.glDisable(GL20.GL_BLEND);
@@ -151,7 +160,7 @@ public class GameScreen extends AbstractScreen {
         spriteBatch.enableBlending();
         spriteBatch.begin();
         pauseMenu.getPreferredSize(font, size);
-        pauseMenu.draw(spriteBatch, font, Q_WIDTH, Q3_HEIGHT, size);
+        pauseMenu.draw(spriteBatch, font, M_Q_WIDTH, M_Q3_HEIGHT, size);
         spriteBatch.end();
         spriteBatch.disableBlending();
 
@@ -176,7 +185,7 @@ public class GameScreen extends AbstractScreen {
         spriteBatch.enableBlending();
         spriteBatch.begin();
         deadMenu.getPreferredSize(font, size);
-        deadMenu.draw(spriteBatch, font, Q_WIDTH, Q3_HEIGHT, size);
+        deadMenu.draw(spriteBatch, font, M_Q_WIDTH, M_Q3_HEIGHT, size);
         spriteBatch.end();
         spriteBatch.disableBlending();
 
@@ -194,36 +203,36 @@ public class GameScreen extends AbstractScreen {
 
 
 
-    protected void renderBackground() {
+    protected void drawBackground() {
         float texY = Mathf.absMod(mapScroll, background.getHeight());
 
-        if (texY + HEIGHT >= background.getHeight()) {
+        if (texY + MAP_HEIGHT >= background.getHeight()) {
             float u = 0;
             float v = texY / background.getHeight();
             float u2 = 1;
             float v2 = 1;
 
             float firstPartH = background.getHeight() - texY;
-            spriteBatch.draw(background, 0, 0, WIDTH, firstPartH, u, v, u2, v2);
+            spriteBatch.draw(background, 0, 0, MAP_WIDTH, firstPartH, u, v, u2, v2);
 
-            float secondPartH = HEIGHT - firstPartH;
+            float secondPartH = MAP_HEIGHT - firstPartH;
             u = 0;
             v = 0;
             u2 = 1;
             v2 = secondPartH / background.getHeight();
 
-            spriteBatch.draw(background, 0, firstPartH, WIDTH, secondPartH, u, v, u2, v2);
+            spriteBatch.draw(background, 0, firstPartH, MAP_WIDTH, secondPartH, u, v, u2, v2);
         } else {
             float u = 0;
             float v = texY / background.getHeight();
             float u2 = 1;
-            float v2 = (texY + HEIGHT) / background.getHeight();
+            float v2 = (texY + MAP_HEIGHT) / background.getHeight();
 
-            spriteBatch.draw(background, 0, 0, WIDTH, HEIGHT, u, v, u2, v2);
+            spriteBatch.draw(background, 0, 0, MAP_WIDTH, MAP_HEIGHT, u, v, u2, v2);
         }
     }
 
-    protected void renderForeground() {
+    protected void drawForeground() {
         spriteBatch.enableBlending();
 
         drawEntities();
@@ -264,7 +273,7 @@ public class GameScreen extends AbstractScreen {
         drawEntities(playerBullets);
 
         if (player.isDying() || !player.isDead()) {
-            player.render(spriteBatch, font);
+            player.draw(spriteBatch, font);
         }
 
         drawEntities(enemiesBullets);
@@ -276,7 +285,7 @@ public class GameScreen extends AbstractScreen {
             AABB aabb = p.getAABB();
 
             if (aabb.collide(screen)) {
-                p.render(spriteBatch, font);
+                p.draw(spriteBatch, font);
             }
         }
     }
@@ -289,6 +298,61 @@ public class GameScreen extends AbstractScreen {
     }
 
 
+    private void drawInformationPanel() {
+        spriteBatch.enableBlending();
+
+        BitmapFont font = jam.getFont42();
+        float scaleX = font.getScaleX();
+        float scaleY = font.getScaleY();
+
+        font.getData().setScale(3 / 8f);
+
+        float y = HEIGHT - 50;
+        font.draw(spriteBatch, "Level 1", MAP_WIDTH, y, WIDTH - MAP_WIDTH, Align.center, false);
+
+        y -= 2.5f * font.getLineHeight();
+        font.draw(spriteBatch, "Power", MAP_WIDTH + 30, y);
+        float x = drawPower(font, MAP_WIDTH + 100, y, player.getPower()) + 5;
+        x += font.draw(spriteBatch, "/", x, y).width + 5;
+        drawPower(font, x, y, 4);
+
+        y -= 1.5f * font.getLineHeight();
+        font.draw(spriteBatch, "Score", MAP_WIDTH + 30, y);
+
+        String score = Utils.toString(player.getScore(), 9);
+        font.draw(spriteBatch, score, MAP_WIDTH + 100, y);
+
+        font.getData().setScale(scaleX, scaleY);
+
+        spriteBatch.disableBlending();
+    }
+
+    private float drawPower(BitmapFont font, float x, float y, double power) {
+        BigDecimal dec = BigDecimal.valueOf(power);
+
+        int first = dec.intValue();
+        int second = dec.scaleByPowerOfTen(1).intValue() - 10 * first;
+        int third = dec.scaleByPowerOfTen(2).intValue() - 100 * first - 10 * second;
+
+        if (third > 0) {
+            third = 5;
+        }
+
+        x += font.draw(spriteBatch, first + ".", x, y).width;
+
+        float sx = font.getScaleX();
+        float sy = font.getScaleY();
+
+        x += font.draw(spriteBatch, Utils.toString(second * 10 + third, 2), x, y - 3).width;
+
+        font.getData().setScale(sx, sy);
+
+        return x;
+    }
+
+    // **********
+    // * UPDATE *
+    // **********
 
 
     private void update(float delta) {
@@ -406,6 +470,10 @@ public class GameScreen extends AbstractScreen {
     }
 
     private void enemyKilled(Enemy e) {
+        // increase score
+        player.killEnemy();
+
+        // add items
         int l = e.getMaxLife();
 
         int numItem = (int) (Math.ceil(Math.log(l) / Mathf.LN_2));
@@ -437,7 +505,7 @@ public class GameScreen extends AbstractScreen {
             float x = a.getX() + Mathf.random(0, a.getWidth());
             float y = a.getY() + Mathf.random(0, a.getHeight());
 
-            item.set(x, y, Item.POWER, 0.1f);
+            item.set(x, y, Item.POWER, POWER_BLOCK_VALUE);
 
             items.add(item);
         }
@@ -513,7 +581,7 @@ public class GameScreen extends AbstractScreen {
 
 
     @Override
-    public void resize(int width, int height) {
+    public void resize(int MAP_WIDTH, int MAP_HEIGHT) {
 
     }
 

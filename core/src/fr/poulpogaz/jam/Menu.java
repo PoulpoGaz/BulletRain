@@ -37,7 +37,7 @@ public class Menu {
             return;
         }
 
-        float h = Utils.fontHeight(font);
+        float h = font.getLineHeight();
 
         for (int i = labels.size() - 1; i >= 0; i--) {
             String str = labels.get(i);

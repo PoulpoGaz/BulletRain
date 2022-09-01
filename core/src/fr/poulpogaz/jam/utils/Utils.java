@@ -1,10 +1,21 @@
 package fr.poulpogaz.jam.utils;
 
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-
 import java.util.Objects;
 
 public class Utils {
+
+    private static final String[] ZERO = new String[] {
+            "",
+            "0",
+            "00",
+            "000",
+            "0000",
+            "00000",
+            "000000",
+            "0000000",
+            "00000000",
+            "000000000",
+    };
 
     public static <T> T requireNonNullElse(T value, T ifNull) {
         if (value == null) {
@@ -18,8 +29,15 @@ public class Utils {
         return Math.round(v * 100) / 100;
     }
 
-    public static float fontHeight(BitmapFont font) {
-        // font.getDescent() is negative...
-        return -font.getDescent() + font.getAscent() + font.getXHeight();
+    public static String toString(int score, int minZero) {
+        if (score >= 1e9) {
+            return String.valueOf(score);
+        } else if (score <= 0) {
+            return ZERO[minZero];
+        } else {
+            int zero = minZero - Mathf.nDigit(score);
+
+            return ZERO[zero] + score;
+        }
     }
 }

@@ -6,7 +6,7 @@ import fr.poulpogaz.jam.engine.CircleSupplier;
 import fr.poulpogaz.jam.patterns.TargetPlayer;
 
 import static fr.poulpogaz.jam.Constants.PLAYER_BULLET_NAME;
-import static fr.poulpogaz.jam.Constants.Q_WIDTH;
+import static fr.poulpogaz.jam.Constants.M_Q_WIDTH;
 import static fr.poulpogaz.jam.stage.EnemyScript.Location;
 
 public class Stages {
@@ -46,12 +46,12 @@ public class Stages {
                     .build()
 
                 .scriptBuilder("sunflower")
-                    .setStartPos(Q_WIDTH, Location.TOP)
+                    .setStartPos(M_Q_WIDTH, Location.TOP)
                     .setTriggerTime(3)
                     .addBulletPattern(0, new TargetPlayer("sunflower_bullet", 45))
                     .build()
                 .scriptBuilder("sunflower")
-                    .setStartPos(-Q_WIDTH, Location.TOP)
+                    .setStartPos(-M_Q_WIDTH, Location.TOP)
                     .setTriggerTime(3)
                     .addBulletPattern(0, new TargetPlayer("sunflower_bullet", 45))
                     .build()

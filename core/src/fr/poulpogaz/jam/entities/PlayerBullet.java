@@ -11,7 +11,7 @@ public class PlayerBullet extends Bullet {
 
     public PlayerBullet(GameScreen game, PlayerBulletDescriptor descriptor, boolean playerBullet, MovePattern movePattern, Vector2 pos) {
         super(game, descriptor, playerBullet, movePattern, pos);
-        this.damage = game.getPlayer().getPower();
+        this.damage = (float) game.getPlayer().getPower();
     }
 
     @Override

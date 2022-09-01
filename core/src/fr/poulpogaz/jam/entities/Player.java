@@ -13,13 +13,13 @@ import fr.poulpogaz.jam.engine.HitBox;
 import fr.poulpogaz.jam.patterns.BulletPattern;
 import fr.poulpogaz.jam.patterns.PlayerBulletPattern;
 
-import static fr.poulpogaz.jam.Constants.HALF_WIDTH;
-import static fr.poulpogaz.jam.Constants.Q_HEIGHT;
+import static fr.poulpogaz.jam.Constants.M_HALF_WIDTH;
+import static fr.poulpogaz.jam.Constants.M_Q_HEIGHT;
 
 public class Player extends LivingEntity {
 
     private final Circle hitBox;
-    private float power;
+    private double power;
     private int score;
 
     private final BulletPattern pattern = new PlayerBulletPattern(this);
@@ -34,7 +34,7 @@ public class Player extends LivingEntity {
         life = 1;
         maxLife = 1;
         score = 0;
-        this.pos = new Vector2(HALF_WIDTH, Q_HEIGHT);
+        this.pos = new Vector2(M_HALF_WIDTH, M_Q_HEIGHT);
 
         power = Constants.PLAYER_MIN_POWER;
         hitBox = new Circle(pos, Constants.PLAYER_HITBOX_RAD);
@@ -110,8 +110,8 @@ public class Player extends LivingEntity {
 
         pos.add(vx, vy);
 
-        pos.x = MathUtils.clamp(pos.x, 0, Constants.WIDTH);
-        pos.y = MathUtils.clamp(pos.y, 0, Constants.HEIGHT);
+        pos.x = MathUtils.clamp(pos.x, 0, Constants.MAP_WIDTH);
+        pos.y = MathUtils.clamp(pos.y, 0, Constants.MAP_HEIGHT);
 
         return vx != 0 || vy != 0;
     }
@@ -122,7 +122,7 @@ public class Player extends LivingEntity {
         return hitBox;
     }
 
-    public float getPower() {
+    public double getPower() {
         return power;
     }
 
@@ -148,8 +148,12 @@ public class Player extends LivingEntity {
         }
     }
 
+    public void killEnemy() {
+        score += Constants.PLAYER_KILL;
+    }
+
     public void reset() {
-        pos.set(HALF_WIDTH, Q_HEIGHT);
+        pos.set(M_HALF_WIDTH, M_Q_HEIGHT);
         particles.clear();
         hit = false;
         slowdown = false;

@@ -58,7 +58,7 @@ public abstract class Entity {
     }
 
 
-    public void render(SpriteBatch batch, BitmapFont font) {
+    public void draw(SpriteBatch batch, BitmapFont font) {
         renderer.render(batch, font, game, this);
 
         for (Particle p : particles) {

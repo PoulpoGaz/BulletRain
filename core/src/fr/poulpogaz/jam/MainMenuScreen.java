@@ -1,10 +1,12 @@
 package fr.poulpogaz.jam;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.utils.ScreenUtils;
 import fr.poulpogaz.jam.utils.Size;
 import fr.poulpogaz.jam.utils.Utils;
 
+import java.awt.*;
 import java.util.List;
 
 public class MainMenuScreen extends AbstractScreen {
@@ -39,12 +41,12 @@ public class MainMenuScreen extends AbstractScreen {
     public void render(float delta) {
         ScreenUtils.clear(0, 0, 0, 1);
 
+        BitmapFont font = jam.getFont42();
+
         spriteBatch.begin();
         spriteBatch.enableBlending();
-        font.getData().setScale(1);
         menu.getPreferredSize(font, s);
-        menu.draw(spriteBatch, font, (Constants.WIDTH - s.width) / 2f, (Constants.HEIGHT - s.height) / 2f + Utils.fontHeight(font), s);
-        font.getData().setScale(0.5f);
+        menu.draw(spriteBatch, font, (Constants.WIDTH - s.width) / 2f, (Constants.HEIGHT - s.height) / 2f + font.getLineHeight(), s);
         spriteBatch.end();
         spriteBatch.disableBlending();
 

@@ -35,7 +35,7 @@ public class WinScreen extends AbstractScreen {
         spriteBatch.begin();
         spriteBatch.enableBlending();
 
-        font.draw(spriteBatch, "YOU WIN!: SCORE= 0", 0, (Constants.HEIGHT - Utils.fontHeight(font)) / 2f,
+        font.draw(spriteBatch, "YOU WIN!: SCORE= 0", 0, (Constants.HEIGHT - font.getLineHeight()) / 2f,
                 Constants.WIDTH, Align.center, false);
 
         spriteBatch.disableBlending();

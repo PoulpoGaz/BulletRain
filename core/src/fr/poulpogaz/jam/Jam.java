@@ -21,7 +21,9 @@ public class Jam implements ApplicationListener {
 
 	public static final AssetManager manager = new AssetManager();
 
-	private BitmapFont font;
+	private BitmapFont font22;
+	private BitmapFont font42;
+
 	private SpriteBatch batch;
 	private ShapeRenderer shape;
 
@@ -35,7 +37,7 @@ public class Jam implements ApplicationListener {
 	private OrthographicCamera ortho;
 	private Matrix4 transform;
 
-	private List<String> debugInfos = new ArrayList<>();
+	private final List<String> debugInfos = new ArrayList<>();
 	private boolean drawDebugInfo = DEBUG;
 
 	@Override
@@ -56,11 +58,7 @@ public class Jam implements ApplicationListener {
 		batch = new SpriteBatch();
 		shape = new ShapeRenderer();
 
-		manager.load("fonts/dialog_22.fnt", BitmapFont.class);
-		manager.finishLoading();
-
-		font = manager.get("fonts/dialog_22.fnt", BitmapFont.class);
-		font.getData().setScale(0.5f);
+		loadFonts();
 
 		batch.getProjectionMatrix().set(ortho.combined);
 		shape.getProjectionMatrix().set(ortho.combined);
@@ -72,6 +70,18 @@ public class Jam implements ApplicationListener {
 		winScreen = new WinScreen(this);
 
 		setScreen(mainMenuScreen);
+	}
+
+	private void loadFonts() {
+		manager.load("fonts/dialog_22.fnt", BitmapFont.class);
+		manager.load("fonts/dialog_42.fnt", BitmapFont.class);
+		manager.finishLoading();
+
+		font22 = manager.get("fonts/dialog_22.fnt", BitmapFont.class);
+		font42 = manager.get("fonts/dialog_42.fnt", BitmapFont.class);
+
+		font22.getData().setScale(0.5f);
+		font42.getData().setScale(0.5f);
 	}
 
 	@Override
@@ -103,7 +113,7 @@ public class Jam implements ApplicationListener {
 			float progress = manager.getProgress();
 
 			batch.begin();
-			font.draw(batch, "Loading: " + Utils.round2(progress * 100) + "%", 0, HALF_HEIGHT,
+			font42.draw(batch, "Loading: " + Utils.round2(progress * 100) + "%", 0, HALF_HEIGHT,
 					WIDTH, Align.center, true);
 			batch.end();
 		}
@@ -139,12 +149,12 @@ public class Jam implements ApplicationListener {
 			currentScreen.getDebugInfo(debugInfos);
 		}
 
-		float h = Utils.fontHeight(font);
-		font.setColor(1, 1, 1, 1);
+		float h = font22.getLineHeight();
+		font22.setColor(1, 1, 1, 1);
 
-		float y = HEIGHT;
+		float y = HEIGHT - font22.getAscent();
 		for (String str : debugInfos) {
-			font.draw(batch, str, 0, y);
+			font22.draw(batch, str, 0, y);
 
 			y -= h;
 		}
@@ -186,7 +196,15 @@ public class Jam implements ApplicationListener {
 	}
 
 	public BitmapFont getFont() {
-		return font;
+		return getFont22();
+	}
+
+	public BitmapFont getFont22() {
+		return font22;
+	}
+
+	public BitmapFont getFont42() {
+		return font42;
 	}
 
 	public SpriteBatch getBatch() {

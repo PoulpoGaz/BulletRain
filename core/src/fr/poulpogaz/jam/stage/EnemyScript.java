@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static fr.poulpogaz.jam.Constants.HALF_WIDTH;
-import static fr.poulpogaz.jam.Constants.HEIGHT;
+import static fr.poulpogaz.jam.Constants.MAP_HEIGHT;
+import static fr.poulpogaz.jam.Constants.M_HALF_WIDTH;
 
 public final class EnemyScript {
     private final EnemyDescriptor enemy;
@@ -101,9 +101,9 @@ public final class EnemyScript {
 
         public Vector2 asVec(EnemyDescriptor desc) {
             switch (location) {
-                case TOP: return new Vector2(xy + HALF_WIDTH, HEIGHT + desc.height());
-                case LEFT: return new Vector2(-HALF_WIDTH - desc.width(), xy);
-                case RIGHT: return new Vector2(HALF_WIDTH + desc.width(), xy);
+                case TOP: return new Vector2(xy + M_HALF_WIDTH, MAP_HEIGHT + desc.height());
+                case LEFT: return new Vector2(-M_HALF_WIDTH - desc.width(), xy);
+                case RIGHT: return new Vector2(M_HALF_WIDTH + desc.width(), xy);
             }
 
             throw new IllegalStateException();
