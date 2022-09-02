@@ -45,6 +45,11 @@ public class PlayerBulletPattern implements BulletPattern {
     }
 
     @Override
+    public void reset() {
+        tickCount = 0;
+    }
+
+    @Override
     public void addBullets(GameScreen game, Entity entity, boolean p) {
         Stage s = game.getStage();
         Vector2 pos = player.getPos();

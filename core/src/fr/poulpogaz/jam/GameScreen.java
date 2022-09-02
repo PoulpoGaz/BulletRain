@@ -13,7 +13,9 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.ScreenUtils;
 import fr.poulpogaz.jam.engine.AABB;
+import fr.poulpogaz.jam.engine.Circle;
 import fr.poulpogaz.jam.engine.HitBox;
+import fr.poulpogaz.jam.engine.Polygon;
 import fr.poulpogaz.jam.entities.*;
 import fr.poulpogaz.jam.particles.AnimatedParticle;
 import fr.poulpogaz.jam.particles.Particle;
@@ -27,6 +29,7 @@ import fr.poulpogaz.jam.utils.Utils;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Vector;
 
 import static fr.poulpogaz.jam.Constants.*;
 
@@ -295,6 +298,33 @@ public class GameScreen extends AbstractScreen {
 
         shapeRenderer.setColor(1, 0, 0, 1);
         shapeRenderer.rect(a.getX(), a.getY(), a.getWidth(), a.getHeight());
+
+        HitBox p = entity.getDetailedHitBox();
+
+        shapeRenderer.setColor(0, 1, 0, 1);
+        if (p instanceof Polygon) {
+            Polygon poly = (Polygon) p;
+
+            List<Vector2> points = poly.getPoints();
+            for (int i = 0; i < points.size(); i++) {
+                Vector2 p1 = points.get(i);
+                Vector2 p2 = points.get((i + 1) % points.size());
+
+                shapeRenderer.line(p1, p2);
+            }
+        } else if (p instanceof Circle) {
+            Circle c = (Circle) p;
+
+            shapeRenderer.circle(c.getCenter().x, c.getCenter().y, c.getRadius(), 8);
+        }
+
+        shapeRenderer.end();
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(0, 0, 1, 0);
+        shapeRenderer.circle(entity.getX(), entity.getY(), 3, 6);
+
+        shapeRenderer.end();
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
     }
 
 
@@ -489,9 +519,14 @@ public class GameScreen extends AbstractScreen {
         // add items
         int l = e.getMaxLife();
 
-        int numItem = (int) Math.max(Math.ceil(Math.log(l) / Mathf.LN_2), 1);
+        double n = Math.ceil(Math.log(l) / Mathf.LN_2);
+        int numItem = (int) (Math.max(n, 1) * e.getDescriptor().dropRate());
         int numScore = 0;
         int numPower = 0;
+
+        if (numItem == 0) {
+            return;
+        }
 
         if (player.getPower() >= PLAYER_MAX_POWER) {
             numScore = numItem;

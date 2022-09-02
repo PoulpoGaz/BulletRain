@@ -7,6 +7,7 @@ import fr.poulpogaz.jam.engine.HitBox;
 import fr.poulpogaz.jam.patterns.BulletPattern;
 import fr.poulpogaz.jam.patterns.MovePattern;
 import fr.poulpogaz.jam.stage.EnemyAction;
+import fr.poulpogaz.jam.stage.EnemyDescriptor;
 import fr.poulpogaz.jam.stage.EnemyScript;
 import fr.poulpogaz.jam.utils.Mathf;
 import fr.poulpogaz.jam.utils.Utils;
@@ -17,8 +18,8 @@ public class Enemy extends LivingEntity implements IRotateEntity {
 
     private final EnemyScript script;
 
-    private int bulletPatternIndex = 0;
-    private int movePatternIndex = 0;
+    private int bulletPatternIndex = -1;
+    private int movePatternIndex = -1;
     private BulletPattern bulletPattern;
     private MovePattern movePattern;
 
@@ -36,8 +37,16 @@ public class Enemy extends LivingEntity implements IRotateEntity {
 
         life = script.enemy().life();
         maxLife = life;
-        bulletPattern = Utils.requireNonNullElse(script.getFirstBulletPattern(), BulletPattern.NO_BULLET);
-        movePattern = Utils.requireNonNullElse(script.getFirstMovePattern(), MovePattern.FOLLOW_MAP);
+
+        nextBulletPattern();
+        nextMovePattern();
+
+        if (bulletPattern == null) {
+            bulletPattern = BulletPattern.NO_BULLET;
+        }
+        if (movePattern == null) {
+            movePattern = MovePattern.FOLLOW_MAP;
+        }
 
         movePattern.init(game, this);
 
@@ -54,8 +63,6 @@ public class Enemy extends LivingEntity implements IRotateEntity {
         if (isAlive()) {
             movePattern.dir(t, dir, game, this);
             pos.add(dir);
-
-            Gdx.app.debug("DEBUG", "pos= " + pos + " dir=" + dir);
 
             bulletPattern.addBullets(game, this, false);
 
@@ -120,5 +127,9 @@ public class Enemy extends LivingEntity implements IRotateEntity {
     @Override
     public float getAngleDeg() {
         return angleDeg;
+    }
+
+    public EnemyDescriptor getDescriptor() {
+        return script.enemy();
     }
 }

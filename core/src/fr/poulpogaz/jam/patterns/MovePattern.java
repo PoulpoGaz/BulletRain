@@ -14,17 +14,8 @@ public interface MovePattern {
     void dir(int t, Vector2 last, GameScreen screen, Entity entity);
 
 
-    MovePattern FOLLOW_MAP = new MovePattern() {
-        @Override
-        public void dir(int t, Vector2 dest, GameScreen screen, Entity entity) {
-            dest.set(0, -Constants.MAP_SCROLL_SPEED);
-        }
-    };
+    MovePattern FOLLOW_MAP = (t, dest, screen, entity) -> dest.set(0, -Constants.MAP_SCROLL_SPEED);
+    MovePattern ANTI_FOLLOW_MAP = (t, dest, screen, entity) -> dest.set(0, Constants.MAP_SCROLL_SPEED);
 
-    MovePattern STATIC = new MovePattern() {
-        @Override
-        public void dir(int t, Vector2 dest, GameScreen screen, Entity entity) {
-            dest.set(0, 0);
-        }
-    };
+    MovePattern STATIC = (t, dest, screen, entity) -> dest.set(0, 0);
 }

@@ -147,6 +147,24 @@ public final class EnemyScript {
             return parent;
         }
 
+        public Builder moveTo(Vector2 dest, float speed) {
+            if (startPos == null) {
+                throw new BuilderException("Start pos not set");
+            }
+
+            dest.x += M_HALF_WIDTH;
+
+            if (moves.isEmpty()) {
+                pos = startPos.asVec(enemy);
+            }
+
+            Gdx.app.debug("DEBUG", "moveTo " + dest + " from " + pos + ", start = " + currentT + ", speed = " + speed);
+
+            MovePattern move = new TargetMove.Pos(dest, speed);
+            addMove(new EnemyAction<>(currentT, move), dest, (int) (dest.dst(pos) / speed));
+            return this;
+        }
+
         public Builder moveTo(Vector2 dest, int duration) {
             if (startPos == null) {
                 throw new BuilderException("Start pos not set");
@@ -165,6 +183,13 @@ public final class EnemyScript {
             return this;
         }
 
+        public Builder follow(int duration) {
+            Gdx.app.debug("DEBUG", "wait " + duration + " ticks, start: " + currentT);
+
+            addMove(new EnemyAction<>(currentT, MovePattern.FOLLOW_MAP), pos, duration);
+            return this;
+        }
+
         public Builder wait(int duration) {
             Gdx.app.debug("DEBUG", "wait " + duration + " ticks, start: " + currentT);
 
@@ -179,8 +204,13 @@ public final class EnemyScript {
         }
 
         public Builder addMove(EnemyAction<MovePattern> move, Vector2 endPos, int duration) {
+            if (endPos == null && moves.isEmpty()) {
+                pos = startPos.asVec(enemy);
+            } else {
+                pos = endPos;
+            }
+
             moves.add(move);
-            pos = endPos;
 
             lastStart = move.start();
             lastActionDuration = duration;

@@ -15,14 +15,16 @@ public final class EnemyDescriptor {
     private final int life;
     private final int width;
     private final int height;
+    private final float dropRate;
 
-    EnemyDescriptor(String name, EntityRenderer renderer, HitBoxSupplier hitBox, int life, int width, int height) {
+    EnemyDescriptor(String name, EntityRenderer renderer, HitBoxSupplier hitBox, int life, int width, int height, float dropRate) {
         this.name = name;
         this.renderer = renderer;
         this.hitBox = hitBox;
         this.life = life;
         this.width = width;
         this.height = height;
+        this.dropRate = dropRate;
     }
 
     public String name() {
@@ -49,35 +51,37 @@ public final class EnemyDescriptor {
         return height;
     }
 
+    public float dropRate() {
+        return dropRate;
+    }
+
     @Override
-    public boolean equals(Object obj) {
-        if (obj == this) return true;
-        if (obj == null || obj.getClass() != this.getClass()) return false;
-        EnemyDescriptor that = (EnemyDescriptor) obj;
-        return Objects.equals(this.name, that.name) &&
-                Objects.equals(this.renderer, that.renderer) &&
-                Objects.equals(this.hitBox, that.hitBox) &&
-                this.life == that.life &&
-                this.width == that.width &&
-                this.height == that.height;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        EnemyDescriptor that = (EnemyDescriptor) o;
+
+        if (life != that.life) return false;
+        if (width != that.width) return false;
+        if (height != that.height) return false;
+        if (Float.compare(that.dropRate, dropRate) != 0) return false;
+        if (!name.equals(that.name)) return false;
+        if (!renderer.equals(that.renderer)) return false;
+        return hitBox.equals(that.hitBox);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, renderer, hitBox, life, width, height);
+        int result = name.hashCode();
+        result = 31 * result + renderer.hashCode();
+        result = 31 * result + hitBox.hashCode();
+        result = 31 * result + life;
+        result = 31 * result + width;
+        result = 31 * result + height;
+        result = 31 * result + (dropRate != +0.0f ? Float.floatToIntBits(dropRate) : 0);
+        return result;
     }
-
-    @Override
-    public String toString() {
-        return "EnemyDescriptor[" +
-                "name=" + name + ", " +
-                "renderer=" + renderer + ", " +
-                "hitBox=" + hitBox + ", " +
-                "life=" + life + ", " +
-                "width=" + width + ", " +
-                "height=" + height + ']';
-    }
-
 
     public static class Builder extends BaseBuilder {
 
@@ -86,6 +90,7 @@ public final class EnemyDescriptor {
         private int life;
         private int width;
         private int height;
+        private float dropRate;
 
         private String name;
 
@@ -96,6 +101,7 @@ public final class EnemyDescriptor {
         public StageBuilder build() {
             Objects.requireNonNull(renderer);
             Objects.requireNonNull(hitBox);
+            Objects.requireNonNull(name);
 
             if (life <= 0) {
                 throw new BuilderException("enemy is dead");
@@ -106,8 +112,11 @@ public final class EnemyDescriptor {
             if (height <= 0) {
                 throw new BuilderException("Negative or null height");
             }
+            if (dropRate < 0) {
+                throw new BuilderException("Negative drop rate");
+            }
 
-            return parent.addEnemy(new EnemyDescriptor(name, renderer, hitBox, life, width, height));
+            return parent.addEnemy(new EnemyDescriptor(name, renderer, hitBox, life, width, height, dropRate));
         }
 
         public EntityRenderer getRenderer() {
@@ -180,6 +189,15 @@ public final class EnemyDescriptor {
 
         public Builder setName(String name) {
             this.name = name;
+            return this;
+        }
+
+        public float getDropRate() {
+            return dropRate;
+        }
+
+        public Builder setDropRate(float dropRate) {
+            this.dropRate = dropRate;
             return this;
         }
     }

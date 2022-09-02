@@ -11,9 +11,18 @@ public class AABBRotateSupplier implements HitBoxSupplier {
     private final float width;
     private final float height;
 
+    private final float cx;
+    private final float cy;
+
     public AABBRotateSupplier(float width, float height) {
+        this(width, height, width / 2f, height / 2f);
+    }
+
+    public AABBRotateSupplier(float width, float height, float cx, float cy) {
         this.width = width;
         this.height = height;
+        this.cx = cx;
+        this.cy = cy;
     }
 
     @Override
@@ -32,9 +41,6 @@ public class AABBRotateSupplier implements HitBoxSupplier {
                         height, width);
 
             } else {
-                float cx = width / 2;
-                float cy = height / 2;
-
                 float cos = MathUtils.cos(bullet.getAngle());
                 float sin = MathUtils.sin(bullet.getAngle());
 
