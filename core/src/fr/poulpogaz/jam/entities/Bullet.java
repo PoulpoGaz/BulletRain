@@ -6,7 +6,7 @@ import fr.poulpogaz.jam.engine.HitBox;
 import fr.poulpogaz.jam.patterns.MovePattern;
 import fr.poulpogaz.jam.stage.IBulletDescriptor;
 
-public class Bullet extends Entity {
+public class Bullet extends Entity implements IRotateEntity {
 
     protected final IBulletDescriptor descriptor;
     protected final MovePattern movePattern;
@@ -29,7 +29,11 @@ public class Bullet extends Entity {
         this.movePattern = movePattern;
         this.playerBullet = playerBullet;
 
-        dir = movePattern.dir(0);
+        movePattern.init(game, this);
+
+        this.dir = new Vector2();
+        movePattern.dir(0, dir, game, this);
+
         computeAngle();
     }
 
@@ -37,7 +41,7 @@ public class Bullet extends Entity {
     public void update(float delta) {
         super.update(delta);
 
-        movePattern.dir(t, dir);
+        movePattern.dir(t, dir, game, this);
         pos.add(dir);
         t++;
 

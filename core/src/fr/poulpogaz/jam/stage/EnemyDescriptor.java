@@ -3,6 +3,7 @@ package fr.poulpogaz.jam.stage;
 import fr.poulpogaz.jam.engine.HitBoxSupplier;
 import fr.poulpogaz.jam.entities.EntityRenderer;
 import fr.poulpogaz.jam.entities.TextureEntityRenderer;
+import fr.poulpogaz.jam.entities.TextureRotate;
 import fr.poulpogaz.jam.utils.BuilderException;
 
 import java.util.Objects;
@@ -125,6 +126,13 @@ public final class EnemyDescriptor {
 
         public Builder setTexture(String texture, int x, int y, int w, int h) {
             this.renderer = new TextureEntityRenderer(texture, x, y, w, h);
+            this.width = w;
+            this.height = h;
+            return this;
+        }
+
+        public Builder setRotateTexture(String texture, int x, int y, int w, int h) {
+            this.renderer = new TextureRotate(texture, x, y, w, h);
             this.width = w;
             this.height = h;
             return this;

@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import fr.poulpogaz.jam.engine.AABB;
 import fr.poulpogaz.jam.engine.HitBox;
 import fr.poulpogaz.jam.entities.*;
+import fr.poulpogaz.jam.particles.AnimatedParticle;
 import fr.poulpogaz.jam.particles.Particle;
 import fr.poulpogaz.jam.stage.EnemyScript;
 import fr.poulpogaz.jam.stage.Stage;
@@ -23,9 +25,7 @@ import fr.poulpogaz.jam.utils.Mathf;
 import fr.poulpogaz.jam.utils.Size;
 import fr.poulpogaz.jam.utils.Utils;
 
-import java.awt.*;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
 
 import static fr.poulpogaz.jam.Constants.*;
@@ -56,7 +56,7 @@ public class GameScreen extends AbstractScreen {
     private int nextEnemyToAdd = 0;
     private Texture background;
     private float mapScroll;
-    private float timeSinceStart;
+    private int tick;
 
     // entities that are on the screen
     private Player player;
@@ -363,6 +363,7 @@ public class GameScreen extends AbstractScreen {
 
             if ((e.isDead() && !e.hasParticles()) || !largeScreen.collide(e.getAABB())) {
                 enemies.removeIndex(i);
+                e.kill();
                 i--;
             }
         }
@@ -379,19 +380,31 @@ public class GameScreen extends AbstractScreen {
         updateItems(delta);
         spawnEnemies();
 
+        if (player.getPower() >= PLAYER_MAX_POWER) {
+            for (int i = 0; i < items.size; i++) {
+                Item item = items.get(i);
+
+                if (item.getType() == Item.POWER) {
+                    particles.add(new AnimatedParticle(new Vector2(item.getPos()), Animations.get("hit")));
+                    items.removeIndex(i);
+                    ITEM_POOL.free(item);
+                }
+            }
+        }
+
         if (enemies.isEmpty() && nextEnemyToAdd >= stage.getScripts().size()) {
-            jam.setScreen(jam.getWinScreen());
+            // jam.setScreen(jam.getWinScreen());
         }
 
         mapScroll += MAP_SCROLL_SPEED;
 
-        if (timeSinceStart >= 0) {
-            timeSinceStart += delta;
+        if (tick >= 0) {
+            tick++;
         }
 
         // "real" start of the game
-        if (mapScroll >= 0 && timeSinceStart < 0) {
-            timeSinceStart = 0;
+        if (mapScroll >= 0 && tick < 0) {
+            tick = 0;
         }
     }
 
@@ -476,15 +489,17 @@ public class GameScreen extends AbstractScreen {
         // add items
         int l = e.getMaxLife();
 
-        int numItem = (int) (Math.ceil(Math.log(l) / Mathf.LN_2));
-        int numScore;
+        int numItem = (int) Math.max(Math.ceil(Math.log(l) / Mathf.LN_2), 1);
+        int numScore = 0;
         int numPower = 0;
 
         if (player.getPower() >= PLAYER_MAX_POWER) {
             numScore = numItem;
+        } else if (numItem == 1) {
+            numPower = 1;
         } else {
-            numScore = 2 + Mathf.RANDOM.nextInt(numItem - 2); // the minimum enemy life is 15, thus the minimum numItem is 4
-            numPower = numItem - numScore;
+            numPower = 1 + Mathf.RANDOM.nextInt(numItem - 1);
+            numScore = numItem - numPower;
         }
 
         AABB a = e.getAABB();
@@ -553,7 +568,7 @@ public class GameScreen extends AbstractScreen {
         while (nextEnemyToAdd < scripts.size()) {
             s = scripts.get(nextEnemyToAdd);
 
-            if (s.triggerTime() <= timeSinceStart) {
+            if (s.triggerTime() <= tick) {
                 Enemy e = new Enemy(this, s);
 
                 enemies.add(e);
@@ -576,7 +591,7 @@ public class GameScreen extends AbstractScreen {
         enemies.clear();
         items.clear();
         nextEnemyToAdd = 0;
-        timeSinceStart = -1;
+        tick = 0;
     }
 
 
@@ -609,15 +624,32 @@ public class GameScreen extends AbstractScreen {
     public void getDebugInfo(List<String> out) {
         out.add("Player: (" + (int) player.getX() + ", " + (int) + player.getY() + ")");
         out.add("Map scroll: " + (int) mapScroll);
+        out.add("Tick: " + tick);
         out.add("Number of player bullets: " + playerBullets.size);
         out.add("Number of enemies bullets: " + enemiesBullets.size);
         out.add("Number of enemies: " + enemies.size);
         out.add("Number of particles: " + particles.size);
-        out.add("Time since start: " + Utils.round2(timeSinceStart));
-        out.add("Power: " + player.getPower());
-        out.add("Score: " + player.getScore());
     }
 
+    public Enemy nearestEnemy(Bullet b) {
+        Enemy min = null;
+        float minDist = Float.MAX_VALUE;
+
+        for (Enemy e : enemies) {
+            if (e.isDead()) {
+                continue;
+            }
+
+            float d = e.getPos().dst2(b.getPos());
+
+            if (d < minDist) {
+                min = e;
+                minDist = d;
+            }
+        }
+
+        return min;
+    }
 
     public void addBullet(Bullet bullet) {
         if (bullet.isPlayerBullet()) {

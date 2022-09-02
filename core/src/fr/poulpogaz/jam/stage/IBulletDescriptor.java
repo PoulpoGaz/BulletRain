@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import fr.poulpogaz.jam.GameScreen;
 import fr.poulpogaz.jam.engine.HitBoxSupplier;
 import fr.poulpogaz.jam.entities.Bullet;
-import fr.poulpogaz.jam.entities.BulletRenderer;
+import fr.poulpogaz.jam.entities.TextureRotate;
 import fr.poulpogaz.jam.entities.EntityRenderer;
 import fr.poulpogaz.jam.entities.TextureEntityRenderer;
 import fr.poulpogaz.jam.patterns.MovePattern;
@@ -63,8 +63,8 @@ public interface IBulletDescriptor {
             return this;
         }
 
-        public Builder setBulletTexture(String texture, int x, int y, int w, int h) {
-            this.renderer = new BulletRenderer(texture, x, y, w, h);
+        public Builder setRotateTexture(String texture, int x, int y, int w, int h) {
+            this.renderer = new TextureRotate(texture, x, y, w, h);
             return this;
         }
 

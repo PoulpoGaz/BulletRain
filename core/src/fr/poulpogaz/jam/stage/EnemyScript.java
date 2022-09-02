@@ -3,26 +3,26 @@ package fr.poulpogaz.jam.stage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import fr.poulpogaz.jam.patterns.BulletPattern;
-import fr.poulpogaz.jam.patterns.LinearPattern;
 import fr.poulpogaz.jam.patterns.MovePattern;
+import fr.poulpogaz.jam.patterns.TargetMove;
 import fr.poulpogaz.jam.utils.BuilderException;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static fr.poulpogaz.jam.Constants.MAP_HEIGHT;
-import static fr.poulpogaz.jam.Constants.M_HALF_WIDTH;
+import static fr.poulpogaz.jam.Constants.*;
 
 public final class EnemyScript {
+
     private final EnemyDescriptor enemy;
-    private final float triggerTime;
+    private final int triggerTime;
     private final StartPos startPos;
     private final List<EnemyAction<MovePattern>> moves;
     private final List<EnemyAction<BulletPattern>> bullets;
 
     EnemyScript(EnemyDescriptor enemy,
-                float triggerTime,
+                int triggerTime,
                 StartPos startPos, // enemy is centered on the x-axis
                 List<EnemyAction<MovePattern>> moves,
                 List<EnemyAction<BulletPattern>> bullets) {
@@ -37,7 +37,7 @@ public final class EnemyScript {
         return enemy;
     }
 
-    public float triggerTime() {
+    public int triggerTime() {
         return triggerTime;
     }
 
@@ -102,8 +102,8 @@ public final class EnemyScript {
         public Vector2 asVec(EnemyDescriptor desc) {
             switch (location) {
                 case TOP: return new Vector2(xy + M_HALF_WIDTH, MAP_HEIGHT + desc.height());
-                case LEFT: return new Vector2(-M_HALF_WIDTH - desc.width(), xy);
-                case RIGHT: return new Vector2(M_HALF_WIDTH + desc.width(), xy);
+                case LEFT: return new Vector2(-desc.width(), MAP_HEIGHT - xy);
+                case RIGHT: return new Vector2(MAP_WIDTH + desc.width(), MAP_HEIGHT - xy);
             }
 
             throw new IllegalStateException();
@@ -121,12 +121,16 @@ public final class EnemyScript {
         private final StageBuilder parent;
         private final EnemyDescriptor enemy;
 
-        private float triggerTime;
+        private int triggerTime;
         private StartPos startPos;
         private final List<EnemyAction<MovePattern>> moves = new ArrayList<>();
         private final List<EnemyAction<BulletPattern>> bullets = new ArrayList<>();
+
         private Vector2 pos;
-        
+        private int lastStart = -1;
+        private int lastActionDuration = -1;
+        private int currentT = 0;
+
         public Builder(StageBuilder parent, EnemyDescriptor enemy) {
             this.parent = Objects.requireNonNull(parent);
             this.enemy = Objects.requireNonNull(enemy);
@@ -143,50 +147,65 @@ public final class EnemyScript {
             return parent;
         }
 
-        public Builder moveTo(Vector2 dest, float duration) {
+        public Builder moveTo(Vector2 dest, int duration) {
             if (startPos == null) {
                 throw new BuilderException("Start pos not set");
             }
 
-            if (pos == null) {
+            dest.x += M_HALF_WIDTH;
+
+            if (moves.isEmpty()) {
                 pos = startPos.asVec(enemy);
             }
 
-            float step = pos.dst(dest) / duration;
+            Gdx.app.debug("DEBUG", "moveTo " + dest + " from " + pos + ", start = " + currentT + ", duration = " + duration);
 
-            Vector2 dir = dest.cpy().sub(pos).nor().scl(step);
-            LinearPattern pattern = new LinearPattern(dir);
-
-            addMove(new EnemyAction<>(duration, pattern), dest);
+            TargetMove.PosDur posDur = new TargetMove.PosDur(dest, duration);
+            addMove(new EnemyAction<>(currentT, posDur), dest, duration);
             return this;
         }
 
-        public Builder wait(float duration) {
-            moves.add(new EnemyAction<>(duration, MovePattern.FOLLOW_MAP));
+        public Builder wait(int duration) {
+            Gdx.app.debug("DEBUG", "wait " + duration + " ticks, start: " + currentT);
+
+            addMove(new EnemyAction<>(currentT, MovePattern.STATIC), pos, duration);
             return this;
         }
 
-        public Builder addMove(EnemyAction<MovePattern> move, Vector2 endPos) {
+        public Builder addLastMove(MovePattern pattern) {
+            Gdx.app.debug("DEBUG", "End move, start at " + currentT);
+
+            return addMove(new EnemyAction<>(currentT, pattern), null, Integer.MAX_VALUE);
+        }
+
+        public Builder addMove(EnemyAction<MovePattern> move, Vector2 endPos, int duration) {
             moves.add(move);
+            pos = endPos;
 
-            if (endPos != null) {
-                pos = endPos;
-            }
+            lastStart = move.start();
+            lastActionDuration = duration;
+
+            currentT = lastStart + lastActionDuration;
 
             return this;
         }
 
-        public Builder addBulletPattern(float start, BulletPattern pattern) {
+        public Builder addBulletPattern(int start, BulletPattern pattern) {
             bullets.add(new EnemyAction<>(start, pattern));
             return this;
         }
 
-        public float getTriggerTime() {
+        public int getTriggerTime() {
             return triggerTime;
         }
 
-        public Builder setTriggerTime(float triggerTime) {
+        public Builder setTriggerTime(int triggerTime) {
             this.triggerTime = triggerTime;
+            return this;
+        }
+
+        public Builder setTriggerTimeS(float second) {
+            this.triggerTime = (int) (second * 60);
             return this;
         }
 
@@ -201,12 +220,19 @@ public final class EnemyScript {
         public Builder setStartPos(StartPos startPos) {
             this.startPos = startPos;
 
-            if (pos != null) {
-                pos = startPos.asVec(enemy);
+            if (!moves.isEmpty()) {
                 Gdx.app.error("WARN", "Setting starting pos after the first movement is discouraged");
             }
 
             return this;
+        }
+
+        public int getLastActionDuration() {
+            return lastActionDuration;
+        }
+
+        public void setLastActionDuration(int lastActionDuration) {
+            this.lastActionDuration = lastActionDuration;
         }
     }
 }

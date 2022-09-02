@@ -11,6 +11,6 @@ public class DesktopLauncher {
 		config.setTitle("OLCJAM2022");
 		config.setResizable(false);
 		config.setWindowedMode(Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
-		new Lwjgl3Application(new Jam(), config);
+		new Lwjgl3Application(Jam.INSTANCE, config);
 	}
 }

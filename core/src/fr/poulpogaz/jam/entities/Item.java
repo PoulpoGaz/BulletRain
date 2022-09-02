@@ -26,6 +26,8 @@ public class Item extends Entity implements Pool.Poolable {
 
     private boolean picked;
 
+    private boolean attracted = false;
+
     public Item(GameScreen game) {
         super(game, renderer);
 
@@ -40,30 +42,34 @@ public class Item extends Entity implements Pool.Poolable {
 
         this.type = type;
         this.value = value;
-        picked = false;
     }
 
     @Override
     public void update(float delta) {
         Player p = game.getPlayer();
-        Vector2 dir = p.getPos().cpy().sub(pos);
 
+        Vector2 dir = p.getPos().cpy().sub(pos);
         float dist = dir.len();
 
-        speed.add(0, -MAP_SCROLL_SPEED);
+        if ((attracted && dist <= 2 * p.getAttractionPower()) || (dist <= p.getAttractionPower())) {
+            Gdx.app.debug("DEBUG", "dist= " + dist);
 
-        if (dist <= p.getAttractionPower()) {
-            float mul = Math.min(p.getAttractionPower() - dist, 1);
+            float s = Math.min(dist, Math.min(15f, p.getAttractionPower() / 10f));
 
-            dir.nor().scl(mul);
-            speed.add(dir);
+            speed.set(0, 0);
+            pos.add(dir.nor().scl(s));
+
+            attracted = true;
+        } else {
+            speed.add(0, -MAP_SCROLL_SPEED);
+
+            if (speed.len2() >= Constants.ITEM_MAX_SPEED_2) {
+                speed.scl(ITEM_MAX_SPEED / speed.len());
+            }
+
+            pos.add(speed);
+            attracted = false;
         }
-
-        if (speed.len2() >= Constants.ITEM_MAX_SPEED_2) {
-            speed.scl(ITEM_MAX_SPEED / speed.len());
-        }
-
-        pos.add(speed);
 
         markDirty();
         if (getDetailedHitBox().collide(p.getDetailedHitBox())) {
@@ -100,6 +106,8 @@ public class Item extends Entity implements Pool.Poolable {
         pos.x = 0;
         pos.y = 0;
         picked = false;
+        attracted = false;
+        markDirty();
     }
 
     public static class ItemRenderer implements EntityRenderer {

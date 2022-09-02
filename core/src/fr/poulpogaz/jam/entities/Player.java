@@ -2,19 +2,21 @@ package fr.poulpogaz.jam.entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Colors;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import fr.poulpogaz.jam.Constants;
 import fr.poulpogaz.jam.GameScreen;
+import fr.poulpogaz.jam.Jam;
 import fr.poulpogaz.jam.engine.Circle;
 import fr.poulpogaz.jam.engine.HitBox;
 import fr.poulpogaz.jam.patterns.BulletPattern;
 import fr.poulpogaz.jam.patterns.PlayerBulletPattern;
 
-import static fr.poulpogaz.jam.Constants.M_HALF_WIDTH;
-import static fr.poulpogaz.jam.Constants.M_Q_HEIGHT;
+import static fr.poulpogaz.jam.Constants.*;
 
 public class Player extends LivingEntity {
 
@@ -63,6 +65,12 @@ public class Player extends LivingEntity {
                 lastWasShooting = true;
             } else {
                 lastWasShooting = false;
+            }
+
+            if (getPos().y >= M_Q3_HEIGHT) {
+                attractionPower = Float.MAX_VALUE;
+            } else {
+                attractionPower = PLAYER_MIN_ATTRACTION;
             }
 
             if (moved) {
@@ -143,6 +151,10 @@ public class Player extends LivingEntity {
 
         if (item.getType() == Item.POWER) {
             power += item.getValue();
+
+            if (power > PLAYER_MAX_POWER) {
+                power = PLAYER_MAX_POWER;
+            }
         } else if (item.getType() == Item.SCORE) {
             score += item.getValue();
         }
@@ -177,8 +189,16 @@ public class Player extends LivingEntity {
             super.render(batch, font, game, entity);
 
             if (isSlowdown()) {
-                // g2d.setColor(Colors.RED);
-                // g2d.fillCircle(pos.x, pos.y, hitBox.getRadius(), 6);
+                batch.end();
+
+                ShapeRenderer sr = Jam.INSTANCE.getShape();
+                sr.begin(ShapeRenderer.ShapeType.Filled);
+                sr.setColor(1, 0, 0, 1);
+                sr.circle(pos.x, pos.y, hitBox.getRadius(), 6);
+                sr.end();
+
+                batch.begin();
+
             }
         }
     }

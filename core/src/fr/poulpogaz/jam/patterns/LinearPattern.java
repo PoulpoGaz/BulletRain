@@ -1,6 +1,8 @@
 package fr.poulpogaz.jam.patterns;
 
 import com.badlogic.gdx.math.Vector2;
+import fr.poulpogaz.jam.GameScreen;
+import fr.poulpogaz.jam.entities.Entity;
 
 public class LinearPattern implements MovePattern {
 
@@ -11,7 +13,7 @@ public class LinearPattern implements MovePattern {
     }
 
     @Override
-    public Vector2 dir(int t, Vector2 dest) {
-        return dest.set(dir);
+    public void dir(int t, Vector2 dest, GameScreen screen, Entity entity) {
+        dest.set(dir);
     }
 }

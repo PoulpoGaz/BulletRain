@@ -69,7 +69,7 @@ public abstract class LivingEntity extends Entity {
     }
 
     public boolean isDying() {
-        return death != null && !death.isDead();
+        return isDead() && (death == null || !death.isDead());
     }
 
     public float percentToDeath() {
@@ -77,7 +77,7 @@ public abstract class LivingEntity extends Entity {
             return 0;
         }
 
-        return (float) death.getTimeAlive() / death.getLifetime();
+        return death.getTimeAlive() / death.getLifetime();
     }
 
     public boolean isAlive() {

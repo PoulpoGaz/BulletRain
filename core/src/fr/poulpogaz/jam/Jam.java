@@ -19,6 +19,8 @@ import static fr.poulpogaz.jam.Constants.*;
 
 public class Jam implements ApplicationListener {
 
+	public static final Jam INSTANCE = new Jam();
+
 	public static final AssetManager manager = new AssetManager();
 
 	private BitmapFont font22;
@@ -39,6 +41,10 @@ public class Jam implements ApplicationListener {
 
 	private final List<String> debugInfos = new ArrayList<>();
 	private boolean drawDebugInfo = DEBUG;
+
+	private Jam() {
+
+	}
 
 	@Override
 	public void create () {

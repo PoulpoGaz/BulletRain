@@ -74,7 +74,8 @@ public class CollideHelper {
                 circleEdge(c, x1, y1, x2, y1) ||
                 circleEdge(c, x2, y1, x2, y2) ||
                 circleEdge(c, x2, y2, x1, y2) ||
-                circleEdge(c, x1, y2, x1, y1);
+                circleEdge(c, x1, y2, x1, y1) ||
+                aabbPoint(a, c.getCenter().x, c.getCenter().y);
     }
 
     public static boolean aabbPolygon(AABB a, Polygon b) {
@@ -115,7 +116,7 @@ public class CollideHelper {
             }
         }
 
-        return false;
+        return polygonPoint(b, c.getCenter().x, c.getCenter().y);
     }
 
 
@@ -188,6 +189,32 @@ public class CollideHelper {
 
     public static boolean circlePoint(Circle c, float x, float y) {
         return c.getCenter().dst2(x, y) <= c.getRadiusSquared();
+    }
+
+    public static boolean polygonPoint(Polygon p, float x, float y) {
+        List<Vector2> points = p.getPoints();
+
+        boolean intersect = false;
+        for (int i = 0; i < points.size(); i++) {
+            Vector2 a = points.get(i);
+            Vector2 b = points.get((i + 1) % points.size());
+
+            if (((a.y < y && b.y >= y)
+                    || b.y < y && a.y >= y)
+                    && (a.x <= x || b.x <= x)) {
+
+                if (a.x + (y - a.y) / (b.y - a.y) * (b.x - a.x) < x) {
+                    intersect = !intersect;
+                }
+            }
+        }
+
+        return intersect;
+    }
+
+    public static boolean aabbPoint(AABB aabb, float x, float y) {
+        return aabb.getX() <= x && x <= aabb.getX() + aabb.getWidth() &&
+                aabb.getY() <= y && y <= aabb.getY() + aabb.getHeight();
     }
 
     private static boolean between(float value, float a, float b) {
