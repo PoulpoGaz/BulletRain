@@ -20,6 +20,7 @@ import fr.poulpogaz.jam.entities.*;
 import fr.poulpogaz.jam.particles.AnimatedParticle;
 import fr.poulpogaz.jam.particles.Particle;
 import fr.poulpogaz.jam.stage.EnemyScript;
+import fr.poulpogaz.jam.stage.Sequence;
 import fr.poulpogaz.jam.stage.Stage;
 import fr.poulpogaz.jam.stage.Stages;
 import fr.poulpogaz.jam.utils.Animations;
@@ -29,7 +30,6 @@ import fr.poulpogaz.jam.utils.Utils;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Vector;
 
 import static fr.poulpogaz.jam.Constants.*;
 
@@ -56,7 +56,11 @@ public class GameScreen extends AbstractScreen {
             MAP_HEIGHT + OUTER_SCREEN_SIZE * 2);
 
     private Stage stage = Stages.LEVEL_1;
+    private int currentSeqIndex = 0;
     private int nextEnemyToAdd = 0;
+    private int waitSpawn = 0;
+    private int sequenceStart = 0;
+
     private Texture background;
     private float mapScroll;
     private int tick;
@@ -422,7 +426,7 @@ public class GameScreen extends AbstractScreen {
             }
         }
 
-        if (enemies.isEmpty() && nextEnemyToAdd >= stage.getScripts().size()) {
+        if (enemies.isEmpty() && nextEnemyToAdd >= stage.getSequences().size()) {
             // jam.setScreen(jam.getWinScreen());
         }
 
@@ -430,6 +434,14 @@ public class GameScreen extends AbstractScreen {
 
         if (tick >= 0) {
             tick++;
+
+            if (waitSpawn > 0) {
+                waitSpawn--;
+            }
+
+            if (waitSpawn < 0 && enemiesBullets.isEmpty()) {
+                waitSpawn = 0;
+            }
         }
 
         // "real" start of the game
@@ -597,13 +609,26 @@ public class GameScreen extends AbstractScreen {
     }
 
     private void spawnEnemies() {
-        List<EnemyScript> scripts = stage.getScripts();
+        if (tick < 0 || waitSpawn != 0 || currentSeqIndex >= stage.getSequences().size()) {
+            return;
+        }
 
+        Sequence current = stage.getSequences().get(currentSeqIndex);
+
+        if (nextEnemyToAdd >= current.size() && enemies.isEmpty()) {
+            waitSpawn = current.waitAfterEnd();
+            currentSeqIndex++;
+            nextEnemyToAdd = 0;
+            sequenceStart = tick + waitSpawn;
+            return;
+        }
+
+        int t = tick - sequenceStart;
         EnemyScript s;
-        while (nextEnemyToAdd < scripts.size()) {
-            s = scripts.get(nextEnemyToAdd);
+        while (nextEnemyToAdd < current.size()) {
+            s = current.get(nextEnemyToAdd);
 
-            if (s.triggerTime() <= tick) {
+            if (s.triggerTime() <= t) {
                 Enemy e = new Enemy(this, s);
 
                 enemies.add(e);
@@ -626,7 +651,10 @@ public class GameScreen extends AbstractScreen {
         enemies.clear();
         items.clear();
         nextEnemyToAdd = 0;
-        tick = 0;
+        currentSeqIndex = 0;
+        waitSpawn = 0;
+        sequenceStart = 0;
+        tick = -1;
     }
 
 

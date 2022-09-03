@@ -8,7 +8,6 @@ import fr.poulpogaz.jam.entities.Bullet;
 import fr.poulpogaz.jam.patterns.MovePattern;
 
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -18,17 +17,16 @@ public class Stage  {
     private final String background;
     private final Map<String, EnemyDescriptor> enemiesDescriptors;
     private final Map<String, IBulletDescriptor> bulletsDescriptors;
-    private final List<EnemyScript> scripts;
+    private final List<Sequence> sequences;
 
     public Stage(String background,
                  Map<String, EnemyDescriptor> enemiesDescriptors,
                  Map<String, IBulletDescriptor> bulletsDescriptors,
-                 List<EnemyScript> scripts) {
+                 List<Sequence> sequences) {
         this.background = background;
         this.enemiesDescriptors = enemiesDescriptors;
         this.bulletsDescriptors = bulletsDescriptors;
-        this.scripts = scripts;
-        scripts.sort(Comparator.comparingDouble(EnemyScript::triggerTime));
+        this.sequences = sequences;
     }
 
     public void loadAllTextures() {
@@ -65,7 +63,7 @@ public class Stage  {
         return enemiesDescriptors.values();
     }
 
-    public List<EnemyScript> getScripts() {
-        return scripts;
+    public List<Sequence> getSequences() {
+        return sequences;
     }
 }

@@ -10,7 +10,9 @@ public class StageBuilder {
     private String background;
     private final Map<String, EnemyDescriptor> enemiesDescriptors = new HashMap<>();
     private final Map<String, IBulletDescriptor> bulletsDescriptors = new HashMap<>();
-    private final List<EnemyScript> scripts = new ArrayList<>();
+    private final List<Sequence> scripts = new ArrayList<>();
+
+    private List<EnemyScript> currSeq;
 
     public Stage build() {
         Objects.requireNonNull(background, "no background set");
@@ -32,6 +34,10 @@ public class StageBuilder {
     }
 
     public EnemyScript.Builder scriptBuilder(String enemy) {
+        if (currSeq == null) {
+            throw new BuilderException("Sequence not started");
+        }
+
         EnemyDescriptor desc = enemiesDescriptors.get(enemy);
 
         if (desc == null) {
@@ -52,8 +58,31 @@ public class StageBuilder {
         return this;
     }
 
+    public StageBuilder startSeq() {
+        if (currSeq != null) {
+            throw new BuilderException("Sequence not ended");
+        }
+
+        currSeq = new ArrayList<>();
+        return this;
+    }
+
     public StageBuilder addEnemyScript(EnemyScript script) {
-        scripts.add(script);
+        if (currSeq == null) {
+            throw new BuilderException("Sequence not started");
+        }
+
+        currSeq.add(script);
+        return this;
+    }
+
+    public StageBuilder endSeq() {
+        return endSeq(-1);
+    }
+
+    public StageBuilder endSeq(int wait) {
+        scripts.add(new Sequence(currSeq, wait));
+        currSeq = null;
         return this;
     }
 
