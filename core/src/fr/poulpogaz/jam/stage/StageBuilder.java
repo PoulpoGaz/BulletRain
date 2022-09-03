@@ -1,6 +1,7 @@
 package fr.poulpogaz.jam.stage;
 
-import fr.poulpogaz.jam.entities.Boss;
+import fr.poulpogaz.jam.BackgroundRenderer;
+import fr.poulpogaz.jam.Effect;
 import fr.poulpogaz.jam.utils.BuilderException;
 
 import java.util.*;
@@ -8,7 +9,8 @@ import java.util.function.Function;
 
 public class StageBuilder {
 
-    private String background;
+    private BackgroundRenderer background;
+    private Effect effect = Effect.NONE;
     private final Map<String, EnemyDescriptor> enemiesDescriptors = new HashMap<>();
     private final Map<String, IBulletDescriptor> bulletsDescriptors = new HashMap<>();
     private final List<Sequence> scripts = new ArrayList<>();
@@ -19,11 +21,11 @@ public class StageBuilder {
     public Stage build() {
         Objects.requireNonNull(background, "no background set");
 
-        if (enemiesDescriptors.isEmpty()) {
+        /*if (enemiesDescriptors.isEmpty()) {
             throw new BuilderException("No enemy");
-        }
+        }*/
 
-        return new Stage(background, enemiesDescriptors, bulletsDescriptors, scripts, boss);
+        return new Stage(background, effect, enemiesDescriptors, bulletsDescriptors, scripts, boss);
     }
 
     public BulletDescriptor.Builder bulletBuilder() {
@@ -96,12 +98,26 @@ public class StageBuilder {
         return constructor.apply(this);
     }
 
-    public String getBackground() {
+    public BackgroundRenderer getBackground() {
         return background;
     }
 
     public StageBuilder setBackground(String background) {
+        this.background = new BackgroundRenderer.Tex(background);
+        return this;
+    }
+
+    public StageBuilder setBackground(BackgroundRenderer background) {
         this.background = background;
+        return this;
+    }
+
+    public Effect getEffect() {
+        return effect;
+    }
+
+    public StageBuilder setEffect(Effect effect) {
+        this.effect = effect;
         return this;
     }
 

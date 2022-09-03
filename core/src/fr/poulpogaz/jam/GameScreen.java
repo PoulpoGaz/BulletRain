@@ -4,14 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.utils.ScreenUtils;
 import fr.poulpogaz.jam.engine.AABB;
 import fr.poulpogaz.jam.engine.Circle;
 import fr.poulpogaz.jam.engine.HitBox;
@@ -25,7 +23,6 @@ import fr.poulpogaz.jam.utils.Mathf;
 import fr.poulpogaz.jam.utils.Size;
 import fr.poulpogaz.jam.utils.Utils;
 
-import java.awt.*;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -53,13 +50,12 @@ public class GameScreen extends AbstractScreen {
             MAP_WIDTH + OUTER_SCREEN_SIZE * 2,
             MAP_HEIGHT + OUTER_SCREEN_SIZE * 2);
 
-    private Stage stage = Stages.LEVEL_1;
+    private Stage stage = Stages.LEVEL_2;
     private int currentSeqIndex = 0;
     private int nextEnemyToAdd = 0;
     private int waitSpawn = 0;
     private int sequenceStart = 0;
 
-    private Texture background;
     private float mapScroll;
     private int tick;
 
@@ -112,7 +108,6 @@ public class GameScreen extends AbstractScreen {
     @Override
     public void show() {
         mapScroll = -50;
-        background = Jam.getTexture(stage.getBackground());
         Animations.loadAnimations();
 
         pauseMenu.setVisible(false);
@@ -124,8 +119,12 @@ public class GameScreen extends AbstractScreen {
     @Override
     public void render(float delta) {
         spriteBatch.begin();
-        drawBackground();
+        stage.getBackground().renderBackground(mapScroll, spriteBatch, shapeRenderer);
         drawForeground();
+        if (stage.getEffect() != null) {
+            stage.getEffect().renderEffect(spriteBatch, shapeRenderer);
+        }
+
         drawInformationPanel();
         spriteBatch.end();
 
@@ -204,37 +203,6 @@ public class GameScreen extends AbstractScreen {
     }
 
 
-
-
-
-    protected void drawBackground() {
-        float texY = Mathf.absMod(mapScroll, background.getHeight());
-
-        if (texY + MAP_HEIGHT >= background.getHeight()) {
-            float u = 0;
-            float v = texY / background.getHeight();
-            float u2 = 1;
-            float v2 = 1;
-
-            float firstPartH = background.getHeight() - texY;
-            spriteBatch.draw(background, 0, 0, MAP_WIDTH, firstPartH, u, v, u2, v2);
-
-            float secondPartH = MAP_HEIGHT - firstPartH;
-            u = 0;
-            v = 0;
-            u2 = 1;
-            v2 = secondPartH / background.getHeight();
-
-            spriteBatch.draw(background, 0, firstPartH, MAP_WIDTH, secondPartH, u, v, u2, v2);
-        } else {
-            float u = 0;
-            float v = texY / background.getHeight();
-            float u2 = 1;
-            float v2 = (texY + MAP_HEIGHT) / background.getHeight();
-
-            spriteBatch.draw(background, 0, 0, MAP_WIDTH, MAP_HEIGHT, u, v, u2, v2);
-        }
-    }
 
     protected void drawForeground() {
         spriteBatch.enableBlending();
@@ -428,8 +396,6 @@ public class GameScreen extends AbstractScreen {
         font.draw(spriteBatch, score, MAP_WIDTH + 100, y);
 
         font.getData().setScale(scaleX, scaleY);
-
-        spriteBatch.disableBlending();
     }
 
     private float drawPower(BitmapFont font, float x, float y, double power) {
@@ -483,7 +449,7 @@ public class GameScreen extends AbstractScreen {
 
         updateParticles(delta);
         updateItems(delta);
-        spawnEnemies();
+        // spawnEnemies();
 
         if (player.getPower() >= PLAYER_MAX_POWER) {
             for (int i = 0; i < items.size; i++) {
@@ -763,6 +729,10 @@ public class GameScreen extends AbstractScreen {
         sequenceStart = 0;
         boss = null;
         tick = -1;
+
+        if (stage.getEffect() != null) {
+            stage.getEffect().reset();
+        }
     }
 
 

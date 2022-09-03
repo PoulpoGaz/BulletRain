@@ -1,11 +1,17 @@
 package fr.poulpogaz.jam.stage;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
+import fr.poulpogaz.jam.BackgroundRenderer;
+import fr.poulpogaz.jam.RainEffect;
 import fr.poulpogaz.jam.engine.AABBRotateSupplier;
 import fr.poulpogaz.jam.engine.AABBSupplier;
 import fr.poulpogaz.jam.engine.CircleSupplier;
 import fr.poulpogaz.jam.entities.TextureRotate;
 import fr.poulpogaz.jam.patterns.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static fr.poulpogaz.jam.Constants.*;
 import static fr.poulpogaz.jam.stage.EnemyScript.Location;
@@ -22,7 +28,10 @@ public class Stages {
     private static final float M_5_8_H = 5 * MAP_HEIGHT / 8f;
     private static final float M_7_8_H = 7 * MAP_HEIGHT / 8f;
 
+    public static final List<Stage> STAGES;
+
     public static final Stage LEVEL_1;
+    public static final Stage LEVEL_2;
 
     static {
         LEVEL_1 = new StageBuilder()
@@ -398,7 +407,17 @@ public class Stages {
                     .addLastMove(new RandomMovePulse(90))
                     .addBulletPattern(120, new MultiSpiralPattern("fire_ball", 10, 30))
                     .build()
-
                 .build();
+
+
+        LEVEL_2 = new StageBuilder()
+                .setBackground(new BackgroundRenderer.Tex("water_background.png"))
+                .setEffect(new RainEffect())
+                .build();
+
+
+        STAGES = new ArrayList<>();
+        STAGES.add(LEVEL_1);
+        STAGES.add(LEVEL_2);
     }
 }

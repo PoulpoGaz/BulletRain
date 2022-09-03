@@ -2,6 +2,8 @@ package fr.poulpogaz.jam.stage;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
+import fr.poulpogaz.jam.BackgroundRenderer;
+import fr.poulpogaz.jam.Effect;
 import fr.poulpogaz.jam.GameScreen;
 import fr.poulpogaz.jam.Jam;
 import fr.poulpogaz.jam.entities.Boss;
@@ -14,20 +16,23 @@ import java.util.Map;
 
 public class Stage  {
 
-    // background texture
-    private final String background;
+    private final BackgroundRenderer background;
+    private final Effect effect;
+
     private final Map<String, EnemyDescriptor> enemiesDescriptors;
     private final Map<String, IBulletDescriptor> bulletsDescriptors;
     private final List<Sequence> sequences;
 
     private final BossDescriptor boss;
 
-    public Stage(String background,
+    public Stage(BackgroundRenderer background,
+                 Effect effect,
                  Map<String, EnemyDescriptor> enemiesDescriptors,
                  Map<String, IBulletDescriptor> bulletsDescriptors,
                  List<Sequence> sequences,
                  BossDescriptor boss) {
         this.background = background;
+        this.effect = effect;
         this.enemiesDescriptors = enemiesDescriptors;
         this.bulletsDescriptors = bulletsDescriptors;
         this.sequences = sequences;
@@ -43,7 +48,11 @@ public class Stage  {
             desc.renderer().loadTextures();
         }
 
-        Jam.loadIfNeededTexture(background);
+        background.loadTextures();
+
+        if (effect != null) {
+            effect.loadTextures();
+        }
     }
 
     public Bullet createPlayerBullet(String name, GameScreen game, MovePattern movePattern, Vector2 pos) {
@@ -60,8 +69,12 @@ public class Stage  {
         return desc.create(game, playerBullet, pattern, pos);
     }
 
-    public String getBackground() {
+    public BackgroundRenderer getBackground() {
         return background;
+    }
+
+    public Effect getEffect() {
+        return effect;
     }
 
     public Collection<EnemyDescriptor> getEnemiesDescriptors() {

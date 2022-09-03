@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
+import fr.poulpogaz.jam.stage.Stage;
+import fr.poulpogaz.jam.stage.Stages;
 import fr.poulpogaz.jam.utils.Utils;
 
 import java.util.ArrayList;
@@ -199,6 +201,14 @@ public class Jam implements ApplicationListener {
 
 		shape.dispose();
 		batch.dispose();
+
+		for (Stage s : Stages.STAGES) {
+			s.getBackground().dispose();
+
+			if (s.getEffect() != null) {
+				s.getEffect().dispose();
+			}
+		}
 	}
 
 	public BitmapFont getFont() {
