@@ -2,7 +2,6 @@ package fr.poulpogaz.jam.entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Colors;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -30,6 +29,8 @@ public class Player extends LivingEntity {
     private boolean lastWasShooting = false;
 
     private float attractionPower = Constants.PLAYER_MIN_ATTRACTION;
+
+    private int tickSinceLeftRightOnBorder = 0;
 
     public Player(GameScreen game) {
         super(game);
@@ -106,6 +107,10 @@ public class Player extends LivingEntity {
             } else {
                 vx -= Constants.PLAYER_SPEED;
             }
+
+            if (pos.x == 0) {
+                tickSinceLeftRightOnBorder++;
+            }
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
@@ -114,14 +119,30 @@ public class Player extends LivingEntity {
             } else {
                 vx += Constants.PLAYER_SPEED;
             }
+
+            if (pos.x == MAP_WIDTH) {
+                tickSinceLeftRightOnBorder++;
+            }
         }
 
-        pos.add(vx, vy);
+        if (tickSinceLeftRightOnBorder >= 30) {
+            if (pos.x == 0) {
+                pos.x = MAP_WIDTH;
+            } else {
+                pos.x = 0;
+            }
 
-        pos.x = MathUtils.clamp(pos.x, 0, Constants.MAP_WIDTH);
-        pos.y = MathUtils.clamp(pos.y, 0, Constants.MAP_HEIGHT);
+            tickSinceLeftRightOnBorder = 0;
 
-        return vx != 0 || vy != 0;
+            return true;
+        } else {
+            pos.add(vx, vy);
+
+            pos.x = MathUtils.clamp(pos.x, 0, Constants.MAP_WIDTH);
+            pos.y = MathUtils.clamp(pos.y, 0, Constants.MAP_HEIGHT);
+
+            return vx != 0 || vy != 0;
+        }
     }
 
     @Override

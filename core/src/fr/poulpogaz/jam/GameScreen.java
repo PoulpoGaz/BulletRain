@@ -508,10 +508,15 @@ public class GameScreen extends AbstractScreen {
 
             if (waitSpawn > 0) {
                 waitSpawn--;
+
+                if (waitSpawn == 0) {
+                    sequenceStart = tick;
+                }
             }
 
             if (waitSpawn < 0 && enemiesBullets.isEmpty()) {
                 waitSpawn = 0;
+                sequenceStart = tick;
             }
         }
 
@@ -721,7 +726,6 @@ public class GameScreen extends AbstractScreen {
                 waitSpawn = current.waitAfterEnd();
                 currentSeqIndex++;
                 nextEnemyToAdd = 0;
-                sequenceStart = tick + waitSpawn;
                 return;
             }
 
