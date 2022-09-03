@@ -1,5 +1,6 @@
 package fr.poulpogaz.jam.stage;
 
+import fr.poulpogaz.jam.entities.Boss;
 import fr.poulpogaz.jam.utils.BuilderException;
 
 import java.util.*;
@@ -12,6 +13,7 @@ public class StageBuilder {
     private final Map<String, IBulletDescriptor> bulletsDescriptors = new HashMap<>();
     private final List<Sequence> scripts = new ArrayList<>();
 
+    private BossDescriptor boss;
     private List<EnemyScript> currSeq;
 
     public Stage build() {
@@ -21,7 +23,7 @@ public class StageBuilder {
             throw new BuilderException("No enemy");
         }
 
-        return new Stage(background, enemiesDescriptors, bulletsDescriptors, scripts);
+        return new Stage(background, enemiesDescriptors, bulletsDescriptors, scripts, boss);
     }
 
     public BulletDescriptor.Builder bulletBuilder() {
@@ -31,6 +33,10 @@ public class StageBuilder {
 
     public EnemyDescriptor.Builder enemyBuilder() {
         return new EnemyDescriptor.Builder(this);
+    }
+
+    public BossDescriptor.Builder bossBuilder() {
+        return new BossDescriptor.Builder(this);
     }
 
     public EnemyScript.Builder scriptBuilder(String enemy) {
@@ -96,6 +102,15 @@ public class StageBuilder {
 
     public StageBuilder setBackground(String background) {
         this.background = background;
+        return this;
+    }
+
+    public BossDescriptor getBoss() {
+        return boss;
+    }
+
+    public StageBuilder setBoss(BossDescriptor boss) {
+        this.boss = boss;
         return this;
     }
 }

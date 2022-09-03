@@ -65,4 +65,14 @@ public class AABB implements HitBox {
     public void setHeight(float height) {
         this.height = height;
     }
+
+    @Override
+    public String toString() {
+        return "AABB{" +
+                "x=" + x +
+                ", y=" + y +
+                ", width=" + width +
+                ", height=" + height +
+                '}';
+    }
 }

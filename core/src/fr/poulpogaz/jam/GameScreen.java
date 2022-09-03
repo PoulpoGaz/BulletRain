@@ -19,15 +19,13 @@ import fr.poulpogaz.jam.engine.Polygon;
 import fr.poulpogaz.jam.entities.*;
 import fr.poulpogaz.jam.particles.AnimatedParticle;
 import fr.poulpogaz.jam.particles.Particle;
-import fr.poulpogaz.jam.stage.EnemyScript;
-import fr.poulpogaz.jam.stage.Sequence;
-import fr.poulpogaz.jam.stage.Stage;
-import fr.poulpogaz.jam.stage.Stages;
+import fr.poulpogaz.jam.stage.*;
 import fr.poulpogaz.jam.utils.Animations;
 import fr.poulpogaz.jam.utils.Mathf;
 import fr.poulpogaz.jam.utils.Size;
 import fr.poulpogaz.jam.utils.Utils;
 
+import java.awt.*;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -67,10 +65,11 @@ public class GameScreen extends AbstractScreen {
 
     // entities that are on the screen
     private Player player;
-    private final Array<Enemy> enemies;
+    private final Array<AbstractEnemy> enemies;
     private final Array<Bullet> playerBullets;
     private final Array<Bullet> enemiesBullets;
     private final Array<Item> items;
+    private Boss boss;
 
     // particles
     private final Array<Particle> particles;
@@ -124,8 +123,6 @@ public class GameScreen extends AbstractScreen {
 
     @Override
     public void render(float delta) {
-        ScreenUtils.clear(0, 0, 0, 1);
-
         spriteBatch.begin();
         drawBackground();
         drawForeground();
@@ -257,6 +254,10 @@ public class GameScreen extends AbstractScreen {
             deadMenu.setVisible(true);
         }
 
+        if (boss != null) {
+            drawBossLifeBar();
+        }
+
         if (Constants.SHOW_HITBOX) {
             spriteBatch.end();
 
@@ -265,7 +266,7 @@ public class GameScreen extends AbstractScreen {
 
             for (Bullet b : playerBullets) drawHitBox(b);
             for (Bullet b : enemiesBullets) drawHitBox(b);
-            for (Enemy e : enemies) drawHitBox(e);
+            for (AbstractEnemy e : enemies) drawHitBox(e);
             for (Item i : items) drawHitBox(i);
 
             shapeRenderer.end();
@@ -331,8 +332,78 @@ public class GameScreen extends AbstractScreen {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
     }
 
+    private void drawBossLifeBar() {
+        spriteBatch.end();
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+
+        float x = 20;
+
+        float width = MAP_WIDTH - 2 * x;
+        float height = 8;
+
+        float y = MAP_HEIGHT - 10 - height;
+
+        List<BossPhase> phases = boss.getDescriptor().phases();
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(0, 0, 0, boss.bossAppearAnimationPercent());
+        shapeRenderer.rect(x - 1, y - 1, width + 2, height + 2);
+        shapeRenderer.end();
+
+        float max = boss.getMaxLife();
+        float life;
+        if (boss.isAppearing()) {
+            life = boss.bossAppearAnimationPercent() * boss.getMaxLife();
+        } else {
+            life = boss.getLife();
+        }
+
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+        float lastLife = 0;
+        float hue = 0f;
+        for (int i = phases.size() - 1; i >= 0; i--) {
+            BossPhase p = phases.get(i);
+
+            shapeRenderer.getColor().fromHsv(hue, 0.6f, 0.9f);
+
+            if (p.onLife() >= life) {
+                float len = width * (life - lastLife) / max;
+                shapeRenderer.rect(x, y, len, height);
+
+                break;
+            } else {
+                float len = width * (p.onLife() - lastLife) / max;
+                shapeRenderer.rect(x, y, len, height);
+
+                x += len;
+            }
+
+            hue += 360f / phases.size();
+
+            lastLife = p.onLife();
+        }
+
+        shapeRenderer.getColor().set(0, 0, 0, 1);
+        shapeRenderer.end();
+        Gdx.gl.glDisable(GL20.GL_BLEND);
+        spriteBatch.begin();
+    }
+
+
+
+
 
     private void drawInformationPanel() {
+        spriteBatch.end();
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(0, 0, 0, 1);
+        shapeRenderer.rect(MAP_WIDTH, 0, WIDTH - MAP_WIDTH, MAP_HEIGHT);
+        shapeRenderer.end();
+
+        spriteBatch.begin();
         spriteBatch.enableBlending();
 
         BitmapFont font = jam.getFont42();
@@ -391,7 +462,7 @@ public class GameScreen extends AbstractScreen {
 
     private void update(float delta) {
         for (int i = 0; i < enemies.size; i++) {
-            Enemy e = enemies.get(i);
+            AbstractEnemy e = enemies.get(i);
 
             e.update(delta);
 
@@ -477,7 +548,7 @@ public class GameScreen extends AbstractScreen {
             AABB bAABB = playerBullet.getAABB();
             HitBox p = playerBullet.getDetailedHitBox();
 
-            for (Enemy e : enemies) {
+            for (AbstractEnemy e : enemies) {
                 if (e.isDead()) {
                     continue;
                 }
@@ -522,17 +593,41 @@ public class GameScreen extends AbstractScreen {
                 i++;
             }
         }
+
+
+        // player vs enemy
+        AABB playerAABB = player.getAABB();
+        HitBox playerP = player.getDetailedHitBox();
+
+        for (i = 0; i < enemies.size; i++) {
+            AbstractEnemy e = enemies.get(i);
+
+            AABB eAABB = e.getAABB();
+            HitBox pE = e.getDetailedHitBox();
+
+            if (playerAABB.collide(eAABB) && playerP.collide(pE)) {
+                player.hit(e, 1);
+                break;
+            }
+        }
     }
 
-    private void enemyKilled(Enemy e) {
+    private void enemyKilled(AbstractEnemy e) {
         // increase score
         player.killEnemy();
 
         // add items
         int l = e.getMaxLife();
 
-        double n = Math.ceil(Math.log(l) / Mathf.LN_2);
-        int numItem = (int) (Math.max(n, 1) * e.getDescriptor().dropRate());
+        double n = Math.max(Math.ceil(Math.log(l) / Mathf.LN_2), 1);
+        int numItem;
+
+        if (e instanceof Enemy) {
+            numItem = (int) (n * ((Enemy) e).getDescriptor().dropRate());
+        } else {
+            numItem = (int) n;
+        }
+
         int numScore = 0;
         int numPower = 0;
 
@@ -609,32 +704,40 @@ public class GameScreen extends AbstractScreen {
     }
 
     private void spawnEnemies() {
-        if (tick < 0 || waitSpawn != 0 || currentSeqIndex >= stage.getSequences().size()) {
+        if (tick < 0 || waitSpawn != 0) {
             return;
         }
 
-        Sequence current = stage.getSequences().get(currentSeqIndex);
+        if (currentSeqIndex >= stage.getSequences().size()) {
+            if (boss == null && enemiesBullets.isEmpty()) {
+                boss = new Boss(this, stage.getBoss());
 
-        if (nextEnemyToAdd >= current.size() && enemies.isEmpty()) {
-            waitSpawn = current.waitAfterEnd();
-            currentSeqIndex++;
-            nextEnemyToAdd = 0;
-            sequenceStart = tick + waitSpawn;
-            return;
-        }
+                enemies.add(boss);
+            }
+        } else {
+            Sequence current = stage.getSequences().get(currentSeqIndex);
 
-        int t = tick - sequenceStart;
-        EnemyScript s;
-        while (nextEnemyToAdd < current.size()) {
-            s = current.get(nextEnemyToAdd);
+            if (nextEnemyToAdd >= current.size() && enemies.isEmpty()) {
+                waitSpawn = current.waitAfterEnd();
+                currentSeqIndex++;
+                nextEnemyToAdd = 0;
+                sequenceStart = tick + waitSpawn;
+                return;
+            }
 
-            if (s.triggerTime() <= t) {
-                Enemy e = new Enemy(this, s);
+            int t = tick - sequenceStart;
+            EnemyScript s;
+            while (nextEnemyToAdd < current.size()) {
+                s = current.get(nextEnemyToAdd);
 
-                enemies.add(e);
-                nextEnemyToAdd++;
-            } else {
-                break;
+                if (s.triggerTime() <= t) {
+                    Enemy e = new Enemy(this, s);
+
+                    enemies.add(e);
+                    nextEnemyToAdd++;
+                } else {
+                    break;
+                }
             }
         }
     }
@@ -654,6 +757,7 @@ public class GameScreen extends AbstractScreen {
         currentSeqIndex = 0;
         waitSpawn = 0;
         sequenceStart = 0;
+        boss = null;
         tick = -1;
     }
 
@@ -692,13 +796,17 @@ public class GameScreen extends AbstractScreen {
         out.add("Number of enemies bullets: " + enemiesBullets.size);
         out.add("Number of enemies: " + enemies.size);
         out.add("Number of particles: " + particles.size);
+
+        if (boss != null) {
+            out.add("Boss life: " + boss.getLife() + "/" + boss.getMaxLife());
+        }
     }
 
-    public Enemy nearestEnemy(Bullet b) {
-        Enemy min = null;
+    public AbstractEnemy nearestEnemy(Bullet b) {
+        AbstractEnemy min = null;
         float minDist = Float.MAX_VALUE;
 
-        for (Enemy e : enemies) {
+        for (AbstractEnemy e : enemies) {
             if (e.isDead()) {
                 continue;
             }

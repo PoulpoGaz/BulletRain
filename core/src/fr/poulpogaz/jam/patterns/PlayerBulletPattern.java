@@ -3,10 +3,7 @@ package fr.poulpogaz.jam.patterns;
 import com.badlogic.gdx.math.Vector2;
 import fr.poulpogaz.jam.Constants;
 import fr.poulpogaz.jam.GameScreen;
-import fr.poulpogaz.jam.entities.Bullet;
-import fr.poulpogaz.jam.entities.Enemy;
-import fr.poulpogaz.jam.entities.Entity;
-import fr.poulpogaz.jam.entities.Player;
+import fr.poulpogaz.jam.entities.*;
 import fr.poulpogaz.jam.stage.Stage;
 import fr.poulpogaz.jam.utils.Mathf;
 
@@ -99,7 +96,7 @@ public class PlayerBulletPattern implements BulletPattern {
     private static class Level3BulletMovePattern implements MovePattern {
 
         private final Vector2 baseSpeed;
-        private Enemy target;
+        private AbstractEnemy target;
 
         public Level3BulletMovePattern(Vector2 baseSpeed) {
             this.baseSpeed = baseSpeed;

@@ -2,7 +2,7 @@ package fr.poulpogaz.jam.stage;
 
 import java.util.List;
 
-public class Sequence {
+public final class Sequence {
 
     private final List<EnemyScript> scripts;
     private final int wait;

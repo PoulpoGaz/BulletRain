@@ -46,20 +46,26 @@ public class CollideHelper {
 
 
     public static boolean aabbAABB(AABB a, AABB b) {
-        float x0 = a.getX();
-        float y0 = a.getY();
-        float w0 = a.getWidth();
-        float h0 = a.getHeight();
-
-        float x1 = b.getX();
-        float y1 = b.getY();
-        float w1 = b.getWidth();
-        float h1 = b.getHeight();
-
-        return x0 + w0 > x1 &&
-                y0 + h0 > y1 &&
-                x0 < x1 + w1 &&
-                y0 < y1 + h1;
+        float tw = a.getWidth();
+        float th = a.getHeight();
+        float rw = b.getWidth();
+        float rh = b.getHeight();
+        if (rw <= 0 || rh <= 0 || tw <= 0 || th <= 0) {
+            return false;
+        }
+        float tx = a.getX();
+        float ty = a.getY();
+        float rx = b.getX();
+        float ry = b.getY();
+        rw += rx;
+        rh += ry;
+        tw += tx;
+        th += ty;
+        //      overflow || intersect
+        return ((rw < rx || rw > tx) &&
+                (rh < ry || rh > ty) &&
+                (tw < tx || tw > rx) &&
+                (th < ty || th > ry));
     }
 
     public static boolean aabbCircle(AABB a, Circle c) {

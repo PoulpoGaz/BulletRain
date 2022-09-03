@@ -29,7 +29,7 @@ public class Bullet extends Entity implements IRotateEntity {
         this.movePattern = movePattern;
         this.playerBullet = playerBullet;
 
-        movePattern.init(game, this);
+        movePattern.init(game, this, 0);
 
         this.dir = new Vector2();
         movePattern.dir(0, dir, game, this);
@@ -58,9 +58,7 @@ public class Bullet extends Entity implements IRotateEntity {
     }
 
     private void computeAngle() {
-        if (dir.x == 0 && dir.y == 0) {
-            angle = angleDeg = 0;
-        } else {
+        if (dir.x != 0 || dir.y != 0) {
             angle = (float) (Math.atan2(dir.y, dir.x));
             angleDeg = (float) Math.toDegrees(angle);
         }

@@ -10,7 +10,7 @@ public abstract class TargetMove implements MovePattern {
     protected final Vector2 dir = new Vector2();
 
     @Override
-    public void init(GameScreen game, Entity entity) {
+    public void init(GameScreen game, Entity entity, int tStart) {
         dir.set(getDest(game, entity))
                 .sub(entity.getPos())
                 .scl(getSpeed(game, entity) / dir.len());

@@ -7,7 +7,7 @@ import fr.poulpogaz.jam.entities.Entity;
 
 public interface MovePattern {
 
-    default void init(GameScreen game, Entity entity) {
+    default void init(GameScreen game, Entity entity, int tStart) {
 
     }
 

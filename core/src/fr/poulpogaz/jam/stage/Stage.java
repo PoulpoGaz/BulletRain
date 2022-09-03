@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import fr.poulpogaz.jam.GameScreen;
 import fr.poulpogaz.jam.Jam;
+import fr.poulpogaz.jam.entities.Boss;
 import fr.poulpogaz.jam.entities.Bullet;
 import fr.poulpogaz.jam.patterns.MovePattern;
 
@@ -19,14 +20,18 @@ public class Stage  {
     private final Map<String, IBulletDescriptor> bulletsDescriptors;
     private final List<Sequence> sequences;
 
+    private final BossDescriptor boss;
+
     public Stage(String background,
                  Map<String, EnemyDescriptor> enemiesDescriptors,
                  Map<String, IBulletDescriptor> bulletsDescriptors,
-                 List<Sequence> sequences) {
+                 List<Sequence> sequences,
+                 BossDescriptor boss) {
         this.background = background;
         this.enemiesDescriptors = enemiesDescriptors;
         this.bulletsDescriptors = bulletsDescriptors;
         this.sequences = sequences;
+        this.boss = boss;
     }
 
     public void loadAllTextures() {
@@ -65,5 +70,9 @@ public class Stage  {
 
     public List<Sequence> getSequences() {
         return sequences;
+    }
+
+    public BossDescriptor getBoss() {
+        return boss;
     }
 }

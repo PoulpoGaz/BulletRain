@@ -28,8 +28,12 @@ public abstract class LivingEntity extends Entity {
     }
 
     public void hit(Bullet b) {
+        hit(b, b.getDamage());
+    }
+
+    public void hit(Entity b, float damage) {
         if (isAlive()) {
-            life -= b.getDamage();
+            life -= damage;
 
             float x = Mathf.random(getX(), b.getX());
             float y = Mathf.random(getY(), b.getY());
@@ -54,6 +58,10 @@ public abstract class LivingEntity extends Entity {
 
             hit = true;
         }
+    }
+
+    public void kill() {
+        life = 0;
     }
 
     public int getMaxLife() {
