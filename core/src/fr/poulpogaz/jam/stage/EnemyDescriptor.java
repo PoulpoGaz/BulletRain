@@ -90,7 +90,7 @@ public final class EnemyDescriptor {
         private int life;
         private int width;
         private int height;
-        private float dropRate;
+        private float dropRate = 1;
 
         private String name;
 

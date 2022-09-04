@@ -449,7 +449,7 @@ public class GameScreen extends AbstractScreen {
 
         updateParticles(delta);
         updateItems(delta);
-        // spawnEnemies();
+        spawnEnemies();
 
         if (player.getPower() >= PLAYER_MAX_POWER) {
             for (int i = 0; i < items.size; i++) {
@@ -500,7 +500,13 @@ public class GameScreen extends AbstractScreen {
 
             if (largeScreen.collide(p.getAABB())) {
                 p.update(delta);
-                i++;
+
+                if (p.hasExploded()) {
+                    particles.add(new AnimatedParticle(new Vector2(p.getExplosionPos()), Animations.get("expl_08")));
+                    bullets.removeIndex(i);
+                } else {
+                    i++;
+                }
             } else {
                 // remove, bullet is out of the screen and
                 // there is practically no chance the bullet will one day come back

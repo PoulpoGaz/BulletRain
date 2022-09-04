@@ -10,7 +10,7 @@ import fr.poulpogaz.jam.utils.BuilderException;
 
 import java.util.Objects;
 
-public final class BulletDescriptor implements IBulletDescriptor {
+public class BulletDescriptor implements IBulletDescriptor {
     private final String name;
     private final EntityRenderer renderer;
     private final HitBoxSupplier hitBoxSupplier;
@@ -87,7 +87,11 @@ public final class BulletDescriptor implements IBulletDescriptor {
                 throw new BuilderException("Negative or 0 damage bullet");
             }
 
-            return parent.addBullet(new BulletDescriptor(name, renderer, hitBoxSupplier, damage));
+            return parent.addBullet(createDesc());
+        }
+
+        protected BulletDescriptor createDesc() {
+            return new BulletDescriptor(name, renderer, hitBoxSupplier, damage);
         }
     }
 }

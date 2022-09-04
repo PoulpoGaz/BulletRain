@@ -14,6 +14,26 @@ public class CollideHelper {
             return aabbCircle(a, (Circle) b);
         } else if (b instanceof Polygon) {
             return aabbPolygon(a, (Polygon) b);
+        } else if (b instanceof Edge) {
+            return edgeAABB(a, (Edge) b);
+        } else if (b instanceof MultiHitBox) {
+            return b.collide(a);
+        } else {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    public static boolean edge(Edge a, HitBox b) {
+        if (b instanceof AABB) {
+            return edgeAABB((AABB) b, a);
+        } else if (b instanceof Circle) {
+            return circleEdge((Circle) b, a.getA().x, a.getA().y, a.getB().x, a.getB().y);
+        } else if (b instanceof Polygon ) {
+            return edgePolygon(a, (Polygon) b);
+        } else if (b instanceof Edge) {
+            return edgeEdge(a, (Edge) b);
+        } else if (b instanceof MultiHitBox) {
+            return b.collide(a);
         } else {
             throw new UnsupportedOperationException();
         }
@@ -26,6 +46,11 @@ public class CollideHelper {
             return circleCircle(c, (Circle) b);
         } else if (b instanceof Polygon) {
             return circlePolygon(c, (Polygon) b);
+        } else if (b instanceof Edge) {
+            Edge e = (Edge) b;
+            return circleEdge(c, e.getA().x, e.getA().y, e.getB().x, e.getB().y);
+        } else if (b instanceof MultiHitBox) {
+            return b.collide(c);
         } else {
             throw new UnsupportedOperationException();
         }
@@ -38,11 +63,14 @@ public class CollideHelper {
             return circlePolygon((Circle) b, a);
         } else if (b instanceof Polygon ) {
             return polygonPolygon(a, (Polygon) b);
+        } else if (b instanceof Edge) {
+            return edgePolygon((Edge) b, a);
+        } else if (b instanceof MultiHitBox) {
+            return b.collide(a);
         } else {
             throw new UnsupportedOperationException();
         }
     }
-
 
 
     public static boolean aabbAABB(AABB a, AABB b) {
@@ -50,9 +78,7 @@ public class CollideHelper {
         float th = a.getHeight();
         float rw = b.getWidth();
         float rh = b.getHeight();
-        if (rw <= 0 || rh <= 0 || tw <= 0 || th <= 0) {
-            return false;
-        }
+
         float tx = a.getX();
         float ty = a.getY();
         float rx = b.getX();
@@ -66,6 +92,57 @@ public class CollideHelper {
                 (rh < ry || rh > ty) &&
                 (tw < tx || tw > rx) &&
                 (th < ty || th > ry));
+    }
+
+    public static boolean edgeAABB(AABB a, Edge e) {
+        // TODO: avoid creation of arraylist + vectors
+        List<Vector2> v = new ArrayList<>(4);
+
+        float x1 = a.getX();
+        float y1 = a.getY();
+
+        float x2 = a.getX() + a.getWidth();
+        float y2 = a.getY() + a.getHeight();
+
+        v.add(new Vector2(x1, y1));
+        v.add(new Vector2(x2, y1));
+        v.add(new Vector2(x2, y2));
+        v.add(new Vector2(x1, y2));
+
+        List<Vector2> v2 = new ArrayList<>(2);
+        v2.add(e.getA());
+        v2.add(e.getB());
+
+        return sat(v, v2) || sat(v2, v);
+    }
+
+    public static boolean edgeEdge(Edge e1, Edge e2) {
+        Vector2 a = e1.getA();
+        Vector2 b = e1.getB();
+        Vector2 c = e2.getA();
+        Vector2 d = e2.getB();
+
+        float x1x3 = a.x - c.x;
+        float y1y3 = a.y - c.y;
+
+        float x3x4 = c.x - d.x;
+        float y3y4 = c.y - d.y;
+
+        float x1x2 = a.x - b.x;
+        float y1y2 = a.y - b.y;
+
+        float denominator = x1x2 * y3y4 - y1y2 * x3x4;
+
+        if (denominator != 0) {
+            float t = (x1x3 * y3y4 - y1y3 * x3x4) / denominator;
+            float u = -(x1x2 * y1y3 - y1y2 * x1x3) / denominator;
+
+            if (between(t, 0, 1) && between(u, 0, 1)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public static boolean aabbCircle(AABB a, Circle c) {
@@ -126,7 +203,13 @@ public class CollideHelper {
     }
 
 
+    public static boolean edgePolygon(Edge e, Polygon p) {
+        List<Vector2> v = new ArrayList<>(2);
+        v.add(e.getA());
+        v.add(e.getB());
 
+        return sat(v, p.getPoints()) || sat(p.getPoints(), v);
+    }
 
     public static boolean polygonPolygon(Polygon a, Polygon b) {
         return sat(a.getPoints(), b.getPoints()) ||

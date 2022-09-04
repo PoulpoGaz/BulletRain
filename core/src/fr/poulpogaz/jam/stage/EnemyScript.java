@@ -190,6 +190,14 @@ public final class EnemyScript {
             return this;
         }
 
+        public Builder slowFollow(int duration) {
+            Gdx.app.debug("DEBUG", "wait " + duration + " ticks, start: " + currentT);
+
+            addMove(new EnemyAction<>(currentT, MovePattern.SLOW_FOLLOW_MAP), pos, duration);
+            return this;
+        }
+
+
         public Builder wait(int duration) {
             Gdx.app.debug("DEBUG", "wait " + duration + " ticks, start: " + currentT);
 

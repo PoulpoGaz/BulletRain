@@ -2,8 +2,10 @@ package fr.poulpogaz.jam.entities;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import fr.poulpogaz.jam.GameScreen;
+import fr.poulpogaz.jam.engine.AABB;
 import fr.poulpogaz.jam.particles.AnimatedParticle;
 import fr.poulpogaz.jam.utils.Animations;
 import fr.poulpogaz.jam.utils.Mathf;
@@ -35,8 +37,19 @@ public abstract class LivingEntity extends Entity {
         if (isAlive()) {
             life -= damage;
 
-            float x = Mathf.random(getX(), b.getX());
-            float y = Mathf.random(getY(), b.getY());
+            AABB aabb = b.getAABB();
+
+            float x;
+            float y;
+            if (aabb.getWidth() >= 100 || aabb.getHeight() >= 100) {
+                x = Mathf.random(-10, 10) + getX();
+                y = Mathf.random(-10, 10) + getX();
+
+            } else {
+                x = Mathf.random(getX(), b.getX());
+                y = Mathf.random(getY(), b.getY());
+            }
+
             Vector2 pos = new Vector2(x, y);
 
             if (life <= 0) {

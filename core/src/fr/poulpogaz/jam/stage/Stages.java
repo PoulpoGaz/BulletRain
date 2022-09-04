@@ -1,6 +1,5 @@
 package fr.poulpogaz.jam.stage;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import fr.poulpogaz.jam.BackgroundRenderer;
 import fr.poulpogaz.jam.RainEffect;
@@ -8,6 +7,8 @@ import fr.poulpogaz.jam.engine.AABBRotateSupplier;
 import fr.poulpogaz.jam.engine.AABBSupplier;
 import fr.poulpogaz.jam.engine.CircleSupplier;
 import fr.poulpogaz.jam.entities.TextureRotate;
+import fr.poulpogaz.jam.entities.ThunderBullet;
+import fr.poulpogaz.jam.entities.ThunderBulletRenderer;
 import fr.poulpogaz.jam.patterns.*;
 
 import java.util.ArrayList;
@@ -413,6 +414,46 @@ public class Stages {
         LEVEL_2 = new StageBuilder()
                 .setBackground(new BackgroundRenderer.Tex("water_background.png"))
                 .setEffect(new RainEffect())
+
+                .enemyBuilder()
+                    .setName("seahorse")
+                    .setTexture("tileset.png", 160, 0, 16, 32)
+                    .setLife(1000)
+                    .setHitBox(new AABBSupplier(16, 32))
+                    .build()
+                .enemyBuilder()
+                    .setName("octopus")
+                    .setTexture("tileset.png", 176, 0, 17, 17)
+                    .setLife(1000)
+                    .setHitBox(new AABBSupplier(17, 17))
+                    .build()
+                .enemyBuilder()
+                    .setName("cloud")
+                    .setTexture("tileset.png", 193, 0, 41, 29)
+                    .setLife(1500)
+                    .setHitBox(new AABBSupplier(41, 29))
+                    .build()
+
+
+                .subBuilder(ThunderBulletDescriptor.ThunderBuilder::new)
+                    .setName("thunder")
+                    .setRenderer(new ThunderBulletRenderer())
+                    .setHitBoxSupplier(new ThunderBullet.HBSupplier())
+                    .setDamage(1)
+                    .build()
+                .subBuilder(PlayerBulletDescriptor.Builder::new)
+                    .setName(PLAYER_BULLET_NAME)
+                    .setRotateTexture("tileset.png", 32, 96, 10, 3)
+                    .setHitBoxSupplier(new AABBRotateSupplier(10, 3))
+                    .build()
+
+                .startSeq()
+                    .scriptBuilder("cloud")
+                    .setStartPos(0, Location.TOP)
+                    .addBulletPattern(0, new ThunderPattern.Bullet("thunder"))
+                    .slowFollow(Integer.MAX_VALUE)
+                    .build()
+                .endSeq()
                 .build();
 
 

@@ -18,6 +18,9 @@ public class Bullet extends Entity implements IRotateEntity {
     protected float angle;
     protected float angleDeg;
 
+    protected boolean exploded = false;
+    protected Vector2 explosionPos;
+
     public Bullet(GameScreen game,
                   IBulletDescriptor descriptor,
                   boolean playerBullet,
@@ -83,6 +86,26 @@ public class Bullet extends Entity implements IRotateEntity {
 
     public Vector2 getDirection() {
         return dir;
+    }
+
+    public void setExploded(boolean exploded) {
+        this.exploded = exploded;
+    }
+
+    public Vector2 getExplosionPos() {
+        if (explosionPos == null) {
+            return pos;
+        }
+
+        return explosionPos;
+    }
+
+    public void setExplosionPos(Vector2 explosionPos) {
+        this.explosionPos = explosionPos;
+    }
+
+    public boolean hasExploded() {
+        return exploded;
     }
 
     public float getDamage() {
