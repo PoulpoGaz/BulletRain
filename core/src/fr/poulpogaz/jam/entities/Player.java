@@ -21,7 +21,6 @@ public class Player extends LivingEntity {
 
     private final Circle hitBox;
     private double power;
-    private int score;
 
     private final BulletPattern pattern = new PlayerBulletPattern(this);
 
@@ -36,7 +35,6 @@ public class Player extends LivingEntity {
         super(game);
         life = 1;
         maxLife = 1;
-        score = 0;
         this.pos = new Vector2(M_HALF_WIDTH, M_Q_HEIGHT);
 
         power = Constants.PLAYER_MIN_POWER;
@@ -78,7 +76,7 @@ public class Player extends LivingEntity {
                 markDirty();
             }
 
-            score += Constants.PLAYER_SURVIVE;
+            game.getPlayerScore().survive();
         }
     }
 
@@ -155,10 +153,6 @@ public class Player extends LivingEntity {
         return power;
     }
 
-    public int getScore() {
-        return score;
-    }
-
     public boolean isSlowdown() {
         return slowdown;
     }
@@ -177,12 +171,8 @@ public class Player extends LivingEntity {
                 power = PLAYER_MAX_POWER;
             }
         } else if (item.getType() == Item.SCORE) {
-            score += item.getValue();
+            game.getPlayerScore().addItem();
         }
-    }
-
-    public void killEnemy() {
-        score += Constants.PLAYER_KILL;
     }
 
     public void reset() {
@@ -195,8 +185,23 @@ public class Player extends LivingEntity {
         power = Constants.PLAYER_MIN_POWER;
         death = null;
         attractionPower = Constants.PLAYER_MIN_ATTRACTION;
-        score = 0;
         markDirty();
+    }
+
+    public void resetForContinue() {
+        pos.set(M_HALF_WIDTH, M_Q_HEIGHT);
+        particles.clear();
+        hit = false;
+        slowdown = false;
+        lastWasShooting = false;
+        life = 1;
+        death = null;
+        attractionPower = Constants.PLAYER_MIN_ATTRACTION;
+        markDirty();
+    }
+
+    public void setPower(double power) {
+        this.power = power;
     }
 
     private class PlayerEntityRenderer extends TextureEntityRenderer {

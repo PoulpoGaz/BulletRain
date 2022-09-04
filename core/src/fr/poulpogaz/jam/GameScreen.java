@@ -25,7 +25,6 @@ import fr.poulpogaz.jam.utils.Utils;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
 
 import static fr.poulpogaz.jam.Constants.*;
 
@@ -51,7 +50,8 @@ public class GameScreen extends AbstractScreen {
             MAP_WIDTH + OUTER_SCREEN_SIZE * 2,
             MAP_HEIGHT + OUTER_SCREEN_SIZE * 2);
 
-    private Stage stage = Stages.LEVEL_2;
+    private int currentStage = 0;
+    private Stage stage;
     private int currentSeqIndex = 0;
     private int nextEnemyToAdd = 0;
     private int waitSpawn = 0;
@@ -75,7 +75,11 @@ public class GameScreen extends AbstractScreen {
     private final Size size = new Size();
     private final Menu pauseMenu;
     private final Menu deadMenu;
-    private Difficulty difficulty = Difficulty.NORMAL;
+
+    private final Checkpoint checkpoint = new Checkpoint();
+    private final Score playerScore = new Score();
+
+    private float stageTransition = -1;
 
     public GameScreen(Jam jam) {
         super(jam);
@@ -92,6 +96,7 @@ public class GameScreen extends AbstractScreen {
         pauseMenu.setNotSelectedColor(new Color(0.7f, 0.7f, 0.7f, 1));
 
         deadMenu = new Menu();
+        deadMenu.addLabel("Continue");
         deadMenu.addLabel("Restart");
         deadMenu.addLabel("Exit");
         deadMenu.setNotSelectedColor(new Color(0.7f, 0.7f, 0.7f, 1));
@@ -99,7 +104,10 @@ public class GameScreen extends AbstractScreen {
 
     @Override
     public void preLoad() {
-        stage.loadAllTextures();
+        for (Stage s : Stages.STAGES) {
+            s.loadAllTextures();
+        }
+
         player = new Player(this);
         player.getRenderer().loadTextures();
 
@@ -130,18 +138,60 @@ public class GameScreen extends AbstractScreen {
         drawInformationPanel();
         spriteBatch.end();
 
+        if (stageTransition >= 0) {
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            shapeRenderer.rect(0, HEIGHT - stageTransition, WIDTH, stageTransition);
+            shapeRenderer.end();
+            stageTransition += 3f;
+
+            if (stageTransition >= HEIGHT) {
+                stageTransition = -1;
+
+                checkpoint.setBossPhase(-1);
+                checkpoint.setTick(0);
+                checkpoint.setMapScroll(0);
+                checkpoint.setCurrentStage(1);
+                checkpoint.setSeqIndex(0);
+                checkpoint.getScore().copy(playerScore);
+
+                waitSpawn = 0;
+                tick = -1;
+                mapScroll = -50f;
+                currentStage++;
+                stage = Stages.STAGES.get(currentStage);
+                currentSeqIndex = 0;
+                sequenceStart = 0;
+
+                if (stage.getEffect() != null) {
+                    stage.getEffect().reset();
+                }
+
+                boss = null;
+                enemies.clear();
+                playerBullets.clear();
+                enemiesBullets.clear();
+                ITEM_POOL.freeAll(items);
+                items.clear();
+
+                player.resetForContinue();
+            }
+        }
+
+
         if (pauseMenu.isVisible()) {
             drawPauseMenuAndUpdate();
         } else if (deadMenu.isVisible()) {
             drawDeadMenuAndUpdate();
         } else {
-            update(delta);
+            if (stageTransition < 0) {
+                update(delta);
 
-            if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-                if (player.isDying()) {
-                    deadMenu.setVisible(true);
-                } else {
-                    pauseMenu.setVisible(true);
+                if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+                    if (player.isDying()) {
+                        deadMenu.setVisible(true);
+                    } else {
+                        pauseMenu.setVisible(true);
+                    }
                 }
             }
         }
@@ -185,16 +235,6 @@ public class GameScreen extends AbstractScreen {
 
 
     protected void drawDeadMenuAndUpdate() {
-        if (difficulty == Difficulty.EASY) {
-            if (deadMenu.getLabels().size() != 3) {
-                deadMenu.getLabels().add(0, "Continue");
-            }
-        } else if (difficulty == Difficulty.NORMAL) {
-            if (deadMenu.getLabels().size() != 2) {
-                deadMenu.getLabels().remove(0);
-            }
-        }
-
         drawGrayMask(0.5f);
 
         spriteBatch.enableBlending();
@@ -205,10 +245,6 @@ public class GameScreen extends AbstractScreen {
         spriteBatch.disableBlending();
 
         int s = deadMenu.update();
-
-        if (difficulty == Difficulty.NORMAL) {
-            s++;
-        }
 
         if (s == 0) {
             continueGame();
@@ -333,7 +369,7 @@ public class GameScreen extends AbstractScreen {
         List<BossPhase> phases = boss.getDescriptor().phases();
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(0, 0, 0, boss.bossAppearAnimationPercent());
+        shapeRenderer.setColor(0, 0, 0, boss.isAppearing() ? boss.bossAppearAnimationPercent() : 1);
         shapeRenderer.rect(x - 1, y - 1, width + 2, height + 2);
         shapeRenderer.end();
 
@@ -400,7 +436,7 @@ public class GameScreen extends AbstractScreen {
         font.getData().setScale(3 / 8f);
 
         float y = HEIGHT - 50;
-        font.draw(spriteBatch, "Level 1", MAP_WIDTH, y, WIDTH - MAP_WIDTH, Align.center, false);
+        font.draw(spriteBatch, "Stage " + (currentStage + 1), MAP_WIDTH, y, WIDTH - MAP_WIDTH, Align.center, false);
 
         y -= 2.5f * font.getLineHeight();
         font.draw(spriteBatch, "Power", MAP_WIDTH + 30, y);
@@ -411,8 +447,12 @@ public class GameScreen extends AbstractScreen {
         y -= 1.5f * font.getLineHeight();
         font.draw(spriteBatch, "Score", MAP_WIDTH + 30, y);
 
-        String score = Utils.toString(player.getScore(), 9);
+        String score = Utils.toString(playerScore.getScore(), 9);
         font.draw(spriteBatch, score, MAP_WIDTH + 100, y);
+
+        y -= 1.5f * font.getLineHeight();
+        font.draw(spriteBatch, "N continue", MAP_WIDTH + 30, y);
+        font.draw(spriteBatch, Utils.toString(playerScore.getnContinue(), 2), MAP_WIDTH + 150, y);
 
         font.getData().setScale(scaleX, scaleY);
     }
@@ -451,7 +491,12 @@ public class GameScreen extends AbstractScreen {
 
             e.update(delta);
 
-            if ((e.isDead() && !e.hasParticles()) || !largeScreen.collide(e.getAABB())) {
+            boolean outside = !largeScreen.collide(e.getAABB());
+            if ((e.isDead() && !e.hasParticles()) || outside) {
+                if (outside) {
+                    playerScore.setPerfect(false);
+                }
+
                 enemies.removeIndex(i);
                 e.kill();
                 i--;
@@ -470,6 +515,10 @@ public class GameScreen extends AbstractScreen {
         updateItems(delta);
         spawnEnemies();
 
+        if (boss != null) {
+            checkpoint.setBossPhase(boss.getCurrentPhase());
+        }
+
         if (player.getPower() >= PLAYER_MAX_POWER) {
             for (int i = 0; i < items.size; i++) {
                 Item item = items.get(i);
@@ -482,8 +531,24 @@ public class GameScreen extends AbstractScreen {
             }
         }
 
-        if (enemies.isEmpty() && nextEnemyToAdd >= stage.getSequences().size()) {
-            // jam.setScreen(jam.getWinScreen());
+        if (boss != null && boss.isDying()) {
+            for (int i = 0; i < items.size; i++) {
+                Item item = items.get(i);
+                player.pick(item);
+
+                particles.add(new AnimatedParticle(new Vector2(item.getPos()), Animations.get("hit")));
+                items.removeIndex(i);
+                ITEM_POOL.free(item);
+            }
+        }
+
+        if (enemies.isEmpty() && currentSeqIndex >= stage.getSequences().size() && (boss != null && boss.isDead() && !boss.isDying())) {
+            if (currentStage + 1 >= Stages.STAGES.size()) {
+                jam.getWinScreen().setScore(playerScore);
+                jam.setScreen(jam.getWinScreen());
+            } else {
+                stageTransition = 0;
+            }
         }
 
         mapScroll += MAP_SCROLL_SPEED;
@@ -496,12 +561,14 @@ public class GameScreen extends AbstractScreen {
 
                 if (waitSpawn == 0) {
                     sequenceStart = tick;
+                    setCheckpoint();
                 }
             }
 
             if (waitSpawn < 0 && enemiesBullets.isEmpty()) {
                 waitSpawn = 0;
                 sequenceStart = tick;
+                setCheckpoint();
             }
         }
 
@@ -614,7 +681,7 @@ public class GameScreen extends AbstractScreen {
 
     private void enemyKilled(AbstractEnemy e) {
         // increase score
-        player.killEnemy();
+        playerScore.addKill(e);
 
         // add items
         int l = e.getMaxLife();
@@ -739,6 +806,19 @@ public class GameScreen extends AbstractScreen {
         }
     }
 
+    private void setCheckpoint() {
+        checkpoint.setScore(checkpoint.getScore());
+        checkpoint.setMapScroll(mapScroll);
+        checkpoint.setTick(tick);
+        checkpoint.setSeqIndex(currentSeqIndex);
+
+        if (boss != null) {
+            checkpoint.setBossPhase(checkpoint.getBossPhase());
+        }
+        checkpoint.setPlayerPower(player.getPower());
+
+        checkpoint.getScore().copy(playerScore);
+    }
 
     private void continueGame() {
         nextEnemyToAdd = 0;
@@ -747,10 +827,25 @@ public class GameScreen extends AbstractScreen {
         enemies.clear();
         enemiesBullets.clear();
         playerBullets.clear();
-        boss = null;
+        items.clear();
 
-        sequenceStart = tick;
-        player.reset();
+        if (checkpoint.getBossPhase() >= 0) {
+            boss.setPhase(checkpoint.getBossPhase());
+            enemies.add(boss);
+        } else {
+            boss = null;
+        }
+
+        currentSeqIndex = checkpoint.getSeqIndex();
+        tick = checkpoint.getTick();
+        sequenceStart = checkpoint.getTick();
+        currentStage = checkpoint.getCurrentStage();
+
+        checkpoint.getScore().useContinue();
+        playerScore.copy(checkpoint.getScore());
+        player.setPower(checkpoint.getPlayerPower());
+
+        player.resetForContinue();
     }
 
     private void restart() {
@@ -767,14 +862,18 @@ public class GameScreen extends AbstractScreen {
         sequenceStart = 0;
         boss = null;
         tick = -1;
+        currentStage = 0;
+
+        stage = Stages.STAGES.get(currentStage);
 
         if (stage.getEffect() != null) {
             stage.getEffect().reset();
         }
-    }
 
-    public void setDifficulty(Difficulty diff) {
-        this.difficulty = Objects.requireNonNull(diff);
+        checkpoint.clear();
+        playerScore.clear();
+
+        stageTransition = -1;
     }
 
     @Override
@@ -867,5 +966,9 @@ public class GameScreen extends AbstractScreen {
 
     public Stage getStage() {
         return stage;
+    }
+
+    public Score getPlayerScore() {
+        return playerScore;
     }
 }

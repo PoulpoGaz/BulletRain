@@ -473,7 +473,7 @@ public class Stages {
 
                 // SCRIPT START!
 
-                /*.startSeq()
+                .startSeq()
                     .scriptBuilder("seahorse")
                         .setStartPos(0, Location.TOP)
                         .setTriggerTime(0)
@@ -546,9 +546,9 @@ public class Stages {
                         .addBulletPattern(0, new BubblePattern("bubble", 2f))
                         .slowFollow(Integer.MAX_VALUE)
                         .build()
-                .endSeq()*/
+                .endSeq()
 
-                /*.startSeq()
+                .startSeq()
                     .scriptBuilder("cloud")
                         .setStartPos(0, Location.TOP)
                         .addBulletPattern(0, new ThunderPattern.Bullet("thunder"))
@@ -649,7 +649,7 @@ public class Stages {
                         .moveTo(new Vector2(-200, MAP_HEIGHT - 200), 60 * 30)
                         .addBulletPattern(120, new BattleshipBulletPattern("battleship_bullet", "battleship_bullet2"))
                         .build()
-                .endSeq()*/;
+                .endSeq();
 
         Boss2Pattern2 pattern2 = new Boss2Pattern2("bubble");
         Boss2Pattern3 pattern3 = new Boss2Pattern3("bubble");

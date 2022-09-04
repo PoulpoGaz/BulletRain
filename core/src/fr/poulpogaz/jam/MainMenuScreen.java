@@ -18,8 +18,7 @@ public class MainMenuScreen extends AbstractScreen {
         super(jam);
 
         menu = new Menu();
-        menu.addLabel("Play - Easy");
-        menu.addLabel("Play - Normal");
+        menu.addLabel("Play");
         menu.addLabel("Exit");
     }
 
@@ -35,7 +34,7 @@ public class MainMenuScreen extends AbstractScreen {
 
     @Override
     public void show() {
-        menu.setSelected(1);
+        menu.setSelected(0);
     }
 
     @Override
@@ -54,12 +53,8 @@ public class MainMenuScreen extends AbstractScreen {
         int s = menu.update();
 
         if (s == 0) {
-            jam.getGameScreen().setDifficulty(Difficulty.EASY);
             jam.setScreen(jam.getGameScreen());
         } else if (s == 1) {
-            jam.getGameScreen().setDifficulty(Difficulty.NORMAL);
-            jam.setScreen(jam.getGameScreen());
-        } else if (s == 2) {
             Gdx.app.exit();
         }
     }

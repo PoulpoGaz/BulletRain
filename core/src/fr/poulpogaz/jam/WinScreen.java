@@ -1,13 +1,18 @@
 package fr.poulpogaz.jam;
 
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
-import fr.poulpogaz.jam.utils.Utils;
 
 import java.util.List;
 
 public class WinScreen extends AbstractScreen {
+
+    private Score score;
+    private final GlyphLayout layout = new GlyphLayout();
+    private final Color color = new Color(1, 1, 1, 1);
 
     public WinScreen(Jam jam) {
         super(jam);
@@ -35,8 +40,19 @@ public class WinScreen extends AbstractScreen {
         spriteBatch.begin();
         spriteBatch.enableBlending();
 
-        font.draw(spriteBatch, "YOU WIN!: SCORE= 0", 0, (Constants.HEIGHT - font.getLineHeight()) / 2f,
-                Constants.WIDTH, Align.center, false);
+        String text = "YOU WIN!!\n" +
+                "Total score = " + score.getScore(true) + "\n" +
+                "Kill: " + score.getnKill() + "\n" +
+                "Item: " + score.getnItem() + "\n" +
+                "Total time: " + score.getTimeSurvived() + "\n" +
+                "Number of continue: " + score.getnContinue() +
+                (score.isPerfect() ? "\nPERFECT GAME!" : "");
+
+        layout.setText(font, text, color, Constants.WIDTH, Align.center, false);
+
+        Gdx.app.debug("DEBUG", "w=" + layout.width + ", h=" + layout.height);
+
+        font.draw(spriteBatch, layout, 0, Constants.HEIGHT / 2f);
 
         spriteBatch.disableBlending();
         spriteBatch.end();
@@ -65,5 +81,9 @@ public class WinScreen extends AbstractScreen {
     @Override
     public void dispose() {
 
+    }
+
+    public void setScore(Score score) {
+        this.score = score;
     }
 }

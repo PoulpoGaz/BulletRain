@@ -140,4 +140,35 @@ public class Boss extends AbstractEnemy {
     public int getCurrentPhase() {
         return currentPhase;
     }
+
+    public void setPhase(int bossPhase) {
+        t = 0;
+        tickPhaseStart = 0;
+
+        if (bossPhase == 0) {
+            this.pos.set(Constants.M_HALF_WIDTH, Constants.MAP_HEIGHT + descriptor.height());
+
+            life = descriptor.life();
+            maxLife = life;
+            currentPhase = 0;
+            tickPhaseStart = 0;
+
+            isAppearing = true;
+
+            init();
+        } else {
+            currentPhase = bossPhase;
+            pos.set(Constants.M_HALF_WIDTH, Constants.MAP_HEIGHT - 100);
+            life = descriptor.phases().get(bossPhase).onLife();
+
+            bulletPattern = BulletPattern.NO_BULLET;
+            movePattern = MovePattern.STATIC;
+            bulletPatternIndex = -1;
+            movePatternIndex = -1;
+            tickPhaseStart = t;
+
+            nextPatterns();
+            markDirty();
+        }
+    }
 }

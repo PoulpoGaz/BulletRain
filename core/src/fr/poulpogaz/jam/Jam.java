@@ -130,7 +130,7 @@ public class Jam implements ApplicationListener {
 			drawDebugInfo();
 		}
 
-		if (Gdx.input.isKeyJustPressed(Input.Keys.F11)){
+		if (Gdx.input.isKeyJustPressed(Input.Keys.F2)){
 			boolean fullScreen = Gdx.graphics.isFullscreen();
 			Graphics.DisplayMode currentMode = Gdx.graphics.getDisplayMode();
 

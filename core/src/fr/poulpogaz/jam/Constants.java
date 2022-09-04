@@ -2,7 +2,7 @@ package fr.poulpogaz.jam;
 
 public class Constants {
 
-    public static boolean DEBUG = true;
+    public static boolean DEBUG = false;
     public static boolean SHOW_HITBOX = false;
 
     // window
@@ -34,8 +34,8 @@ public class Constants {
 
     public static final int OUTER_SCREEN_SIZE = 50;
 
-    public static final float PLAYER_MIN_POWER = 4f;
-    public static final float PLAYER_MAX_POWER = 4;
+    public static final float PLAYER_MIN_POWER = 1f;
+    public static final float PLAYER_MAX_POWER = 4f;
     public static final float POWER_BLOCK_VALUE = 0.05f;
 
     // speed
@@ -54,8 +54,8 @@ public class Constants {
     public static final int PLAYER_SURVIVE = 1; // added every tick
     public static final int PLAYER_PICK_SCORE_BLOCK = 100;
     public static final int PLAYER_KILL = 5000;
-    public static final int PLAYER_KILL_BOSS = 100_000;
-    public static final int PLAYER_PERFECT_STAGE = 100_000;
+    public static final int PLAYER_KILL_BOSS = 50_000;
+    public static final int PLAYER_PERFECT_GAME = 100_000;
 
     // all items at a distance of 30 are attracted
     public static final float PLAYER_MIN_ATTRACTION = 50f;
