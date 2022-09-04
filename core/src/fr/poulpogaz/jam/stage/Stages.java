@@ -446,14 +446,31 @@ public class Stages {
                     .setRotateTexture("tileset.png", 32, 96, 10, 3)
                     .setHitBoxSupplier(new AABBRotateSupplier(10, 3))
                     .build()
+                .bulletBuilder()
+                    .setName("bubble")
+                    .setTexture("tileset.png", 176, 32, 8, 8)
+                    .setHitBoxSupplier(new CircleSupplier(4))
+                    .setDamage(1)
+                    .build()
+
+                //.startSeq()
+                //    .scriptBuilder("cloud")
+                //    .setStartPos(0, Location.TOP)
+                //    .addBulletPattern(0, new ThunderPattern.Bullet("thunder"))
+                //    .slowFollow(Integer.MAX_VALUE)
+                //    .build()
+                //.endSeq()
 
                 .startSeq()
-                    .scriptBuilder("cloud")
+
+                .scriptBuilder("seahorse")
                     .setStartPos(0, Location.TOP)
-                    .addBulletPattern(0, new ThunderPattern.Bullet("thunder"))
-                    .slowFollow(Integer.MAX_VALUE)
+                    .setTriggerTime(0)
+                    .addBulletPattern(0, new BubblePattern("bubble", 5f))
                     .build()
+
                 .endSeq()
+
                 .build();
 
 
