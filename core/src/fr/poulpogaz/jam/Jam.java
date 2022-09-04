@@ -42,7 +42,6 @@ public class Jam implements ApplicationListener {
 	private Matrix4 transform;
 
 	private final List<String> debugInfos = new ArrayList<>();
-	private boolean drawDebugInfo = DEBUG;
 
 	private Jam() {
 
@@ -121,12 +120,13 @@ public class Jam implements ApplicationListener {
 			float progress = manager.getProgress();
 
 			batch.begin();
+			font42.setColor(1, 1, 1, 1);
 			font42.draw(batch, "Loading: " + Utils.round2(progress * 100) + "%", 0, HALF_HEIGHT,
 					WIDTH, Align.center, true);
 			batch.end();
 		}
 
-		if (drawDebugInfo) {
+		if (DEBUG) {
 			drawDebugInfo();
 		}
 
@@ -142,7 +142,10 @@ public class Jam implements ApplicationListener {
 		}
 
 		if (Gdx.input.isKeyJustPressed(Input.Keys.F3)) {
-			drawDebugInfo = !drawDebugInfo;
+			DEBUG = !DEBUG;
+		}
+		if (Gdx.input.isKeyJustPressed(Input.Keys.F4)) {
+			SHOW_HITBOX = !SHOW_HITBOX;
 		}
 	}
 

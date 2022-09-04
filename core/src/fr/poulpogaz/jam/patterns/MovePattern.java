@@ -15,7 +15,7 @@ public interface MovePattern {
 
 
     MovePattern FOLLOW_MAP = (t, dest, screen, entity) -> dest.set(0, -Constants.MAP_SCROLL_SPEED);
-    MovePattern SLOW_FOLLOW_MAP = (t, dest, screen, entity) -> dest.set(0, -Constants.MAP_SCROLL_SPEED / 4f);
+    MovePattern SLOW_FOLLOW_MAP = (t, dest, screen, entity) -> dest.set(0, -Constants.MAP_SCROLL_SPEED / 2f);
     MovePattern ANTI_FOLLOW_MAP = (t, dest, screen, entity) -> dest.set(0, Constants.MAP_SCROLL_SPEED);
 
     MovePattern STATIC = (t, dest, screen, entity) -> dest.set(0, 0);

@@ -52,8 +52,6 @@ public class Item extends Entity implements Pool.Poolable {
         float dist = dir.len();
 
         if ((attracted && dist <= 2 * p.getAttractionPower()) || (dist <= p.getAttractionPower())) {
-            Gdx.app.debug("DEBUG", "dist= " + dist);
-
             float s = Math.min(dist, Math.min(15f, p.getAttractionPower() / 10f));
 
             speed.set(0, 0);

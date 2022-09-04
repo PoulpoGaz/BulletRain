@@ -91,7 +91,7 @@ public class ThunderPattern extends AbstractMovePattern {
             }
 
             tick++;
-            if (tick >= 60) {
+            if (tick >= 45) {
                 tick = 0;
             }
         }

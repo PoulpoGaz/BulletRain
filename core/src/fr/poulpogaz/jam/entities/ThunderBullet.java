@@ -23,8 +23,6 @@ public class ThunderBullet extends Bullet {
                          MovePattern movePattern,
                          Vector2 pos) {
         super(game, descriptor, playerBullet, movePattern, pos);
-
-        Gdx.app.debug("DEBUG", "thunder bullet, desc= " + descriptor.getClass() + ", move=" + movePattern.getClass() + ", renderer=" + descriptor.renderer().getClass());
     }
 
     public List<Vector2> getHits() {

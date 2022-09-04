@@ -2,8 +2,8 @@ package fr.poulpogaz.jam;
 
 public class Constants {
 
-    public static final boolean DEBUG = true;
-    public static final boolean SHOW_HITBOX = DEBUG && true;
+    public static boolean DEBUG = true;
+    public static boolean SHOW_HITBOX = false;
 
     // window
     public static final int WIDTH = 640;

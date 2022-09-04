@@ -29,14 +29,14 @@ public class ThunderBulletRenderer implements EntityRenderer {
 
             batch.end();
             ShapeRenderer sr = Jam.INSTANCE.getShape();
-            sr.begin(ShapeRenderer.ShapeType.Line);
+            sr.begin(ShapeRenderer.ShapeType.Filled);
             sr.setColor(1, 1, 153 / 255f, 1);
 
             Vector2 start = entity.getPos();
             for (int i = 0; i < pos.size(); i++) {
                 Vector2 p = pos.get(i);
 
-                sr.line(start.x, start.y, p.x, p.y);
+                sr.rectLine(start.x, start.y, p.x, p.y, 2f);
 
                 start = p;
             }

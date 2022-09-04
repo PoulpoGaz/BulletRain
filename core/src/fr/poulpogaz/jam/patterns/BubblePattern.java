@@ -19,7 +19,7 @@ public class BubblePattern implements BulletPattern {
 
     @Override
     public void addBullets(GameScreen game, Entity entity, boolean player) {
-        if (tick < 10) {
+        if (tick % 2 == 0 && tick < 10) {
             Stage stage = game.getStage();
 
             Vector2 dir = game.getPlayer().getPos().cpy().sub(entity.getPos());
@@ -30,7 +30,7 @@ public class BubblePattern implements BulletPattern {
 
 
         tick++;
-        if (tick >= 30) {
+        if (tick >= 70) {
             tick = 0;
         }
     }

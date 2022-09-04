@@ -61,8 +61,6 @@ public class RandomMovePulse extends AbstractMovePattern {
             speed = 0;
         }
 
-        Gdx.app.debug("DEBUG", "" + speed + " -" + dir.cpy().scl(speed));
-
         last.set(dir).scl(speed);
     }
 }

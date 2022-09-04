@@ -29,11 +29,6 @@ public class PlayerBulletPattern implements BulletPattern {
     private static final LinearPattern PATTERN_B = new LinearPattern(BULLET_DIR_B);
     private static final LinearPattern PATTERN_B2 = new LinearPattern(BULLET_DIR_B2);
 
-    private static final MovePattern HEAT_SEEKING_PATTERN_1 = new Level3BulletMovePattern(new Vector2( 1,  1).nor().scl(PLAYER_BULLET_SPEED));
-    private static final MovePattern HEAT_SEEKING_PATTERN_2 = new Level3BulletMovePattern(new Vector2(-1,  1).nor().scl(PLAYER_BULLET_SPEED));
-    private static final MovePattern HEAT_SEEKING_PATTERN_3 = new Level3BulletMovePattern(new Vector2(-1, -1).nor().scl(PLAYER_BULLET_SPEED));
-    private static final MovePattern HEAT_SEEKING_PATTERN_4 = new Level3BulletMovePattern(new Vector2( 1, -1).nor().scl(PLAYER_BULLET_SPEED));
-
     private final Player player;
     private int tickCount = 0;
 
@@ -80,10 +75,10 @@ public class PlayerBulletPattern implements BulletPattern {
 
 
             } else if (tickCount % 10 == 0) {
-                game.addBullet(s.createPlayerBullet(PLAYER_BULLET_NAME, game, HEAT_SEEKING_PATTERN_1, pos.cpy().add(13, 0)));
-                game.addBullet(s.createPlayerBullet(PLAYER_BULLET_NAME, game, HEAT_SEEKING_PATTERN_2, pos.cpy().add(13, -3)));
-                game.addBullet(s.createPlayerBullet(PLAYER_BULLET_NAME, game, HEAT_SEEKING_PATTERN_3, pos.cpy().add(-13, -3)));
-                game.addBullet(s.createPlayerBullet(PLAYER_BULLET_NAME, game, HEAT_SEEKING_PATTERN_4, pos.cpy().add(-13, 0)));
+                game.addBullet(s.createPlayerBullet(PLAYER_BULLET_NAME, game, new Level3BulletMovePattern(new Vector2( 1,  1).nor().scl(PLAYER_BULLET_SPEED)), pos.cpy().add(13, 0)));
+                game.addBullet(s.createPlayerBullet(PLAYER_BULLET_NAME, game, new Level3BulletMovePattern(new Vector2(-1,  1).nor().scl(PLAYER_BULLET_SPEED)), pos.cpy().add(13, -3)));
+                game.addBullet(s.createPlayerBullet(PLAYER_BULLET_NAME, game, new Level3BulletMovePattern(new Vector2(-1, -1).nor().scl(PLAYER_BULLET_SPEED)), pos.cpy().add(-13, -3)));
+                game.addBullet(s.createPlayerBullet(PLAYER_BULLET_NAME, game, new Level3BulletMovePattern(new Vector2( 1, -1).nor().scl(PLAYER_BULLET_SPEED)), pos.cpy().add(-13, 0)));
             }
         }
 

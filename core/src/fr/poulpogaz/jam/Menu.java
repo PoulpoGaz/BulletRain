@@ -73,7 +73,7 @@ public class Menu {
 
     public int update() {
         if (!visible) {
-            return -1;
+            return -100;
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
@@ -104,7 +104,7 @@ public class Menu {
             return selected;
         }
 
-        return -1;
+        return -100;
     }
 
     public void addLabel(String label) {

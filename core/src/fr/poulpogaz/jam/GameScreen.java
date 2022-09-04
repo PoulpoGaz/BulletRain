@@ -25,6 +25,7 @@ import fr.poulpogaz.jam.utils.Utils;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 import static fr.poulpogaz.jam.Constants.*;
 
@@ -74,6 +75,7 @@ public class GameScreen extends AbstractScreen {
     private final Size size = new Size();
     private final Menu pauseMenu;
     private final Menu deadMenu;
+    private Difficulty difficulty = Difficulty.NORMAL;
 
     public GameScreen(Jam jam) {
         super(jam);
@@ -183,6 +185,16 @@ public class GameScreen extends AbstractScreen {
 
 
     protected void drawDeadMenuAndUpdate() {
+        if (difficulty == Difficulty.EASY) {
+            if (deadMenu.getLabels().size() != 3) {
+                deadMenu.getLabels().add(0, "Continue");
+            }
+        } else if (difficulty == Difficulty.NORMAL) {
+            if (deadMenu.getLabels().size() != 2) {
+                deadMenu.getLabels().remove(0);
+            }
+        }
+
         drawGrayMask(0.5f);
 
         spriteBatch.enableBlending();
@@ -194,10 +206,17 @@ public class GameScreen extends AbstractScreen {
 
         int s = deadMenu.update();
 
+        if (difficulty == Difficulty.NORMAL) {
+            s++;
+        }
+
         if (s == 0) {
-            restart();
+            continueGame();
             deadMenu.setVisible(false);
         } else if (s == 1) {
+            restart();
+            deadMenu.setVisible(false);
+        } else if (s == 2) {
             jam.setScreen(jam.getMainMenuScreen());
         }
     }
@@ -579,6 +598,10 @@ public class GameScreen extends AbstractScreen {
         for (i = 0; i < enemies.size; i++) {
             AbstractEnemy e = enemies.get(i);
 
+            if (e.isDying() || e.isDead()) {
+                continue;
+            }
+
             AABB eAABB = e.getAABB();
             HitBox pE = e.getDetailedHitBox();
 
@@ -717,7 +740,18 @@ public class GameScreen extends AbstractScreen {
     }
 
 
+    private void continueGame() {
+        nextEnemyToAdd = 0;
+        waitSpawn = 0;
 
+        enemies.clear();
+        enemiesBullets.clear();
+        playerBullets.clear();
+        boss = null;
+
+        sequenceStart = tick;
+        player.reset();
+    }
 
     private void restart() {
         player.reset();
@@ -739,6 +773,9 @@ public class GameScreen extends AbstractScreen {
         }
     }
 
+    public void setDifficulty(Difficulty diff) {
+        this.difficulty = Objects.requireNonNull(diff);
+    }
 
     @Override
     public void resize(int MAP_WIDTH, int MAP_HEIGHT) {
