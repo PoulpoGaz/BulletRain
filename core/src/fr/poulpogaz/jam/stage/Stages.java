@@ -6,6 +6,7 @@ import fr.poulpogaz.jam.RainEffect;
 import fr.poulpogaz.jam.engine.AABBRotateSupplier;
 import fr.poulpogaz.jam.engine.AABBSupplier;
 import fr.poulpogaz.jam.engine.CircleSupplier;
+import fr.poulpogaz.jam.entities.BattleshipRenderer;
 import fr.poulpogaz.jam.entities.TextureRotate;
 import fr.poulpogaz.jam.entities.ThunderBullet;
 import fr.poulpogaz.jam.entities.ThunderBulletRenderer;
@@ -433,6 +434,14 @@ public class Stages {
                     .setLife(1500)
                     .setHitBox(new AABBSupplier(41, 29))
                     .build()
+                .subBuilder(BattleshipDescriptor.BBuilder::new)
+                    .setName("battleship")
+                    .setRenderer(new BattleshipRenderer())
+                    .setLife(4000)
+                    .setHitBox(new AABBRotateSupplier(87, 18))
+                    .setWidth(87)
+                    .setHeight(18)
+                    .build()
 
 
                 .subBuilder(ThunderBulletDescriptor.ThunderBuilder::new)
@@ -452,6 +461,12 @@ public class Stages {
                     .setHitBoxSupplier(new CircleSupplier(4))
                     .setDamage(1)
                     .build()
+                .bulletBuilder()
+                    .setName("battleship_bullet")
+                    .setTexture("tileset.png", 154, 35, 22, 3)
+                    .setHitBoxSupplier(new AABBRotateSupplier(22, 3))
+                    .setDamage(1)
+                    .build()
 
                 //.startSeq()
                 //    .scriptBuilder("cloud")
@@ -463,10 +478,18 @@ public class Stages {
 
                 .startSeq()
 
-                .scriptBuilder("seahorse")
-                    .setStartPos(0, Location.TOP)
-                    .setTriggerTime(0)
-                    .addBulletPattern(0, new BubblePattern("bubble", 5f))
+                //.scriptBuilder("seahorse")
+                //    .setStartPos(0, Location.TOP)
+                //    .setTriggerTime(0)
+                //    .addBulletPattern(0, new BubblePattern("bubble", 5f))
+                //    .build()
+
+                .scriptBuilder("battleship")
+                .setStartPos(0, Location.TOP)
+                    .setTriggerTimeS(0)
+                    .follow(50)
+                    .addLastMove(new CircularMove(new Vector2(0, -50), 1f))
+                    .addBulletPattern(0, new BattleshipBulletPattern("battleship_bullet"))
                     .build()
 
                 .endSeq()

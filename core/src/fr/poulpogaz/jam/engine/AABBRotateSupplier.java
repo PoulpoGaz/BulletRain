@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import fr.poulpogaz.jam.entities.Bullet;
 import fr.poulpogaz.jam.entities.Entity;
+import fr.poulpogaz.jam.entities.IRotateEntity;
 import fr.poulpogaz.jam.utils.Mathf;
 
 public class AABBRotateSupplier implements HitBoxSupplier {
@@ -27,22 +28,22 @@ public class AABBRotateSupplier implements HitBoxSupplier {
 
     @Override
     public HitBox getDetailedHitBox(Entity entity, HitBox last) {
-        if (entity instanceof Bullet) {
-            Bullet bullet = (Bullet) entity;
+        if (entity instanceof IRotateEntity) {
+            IRotateEntity rot = (IRotateEntity) entity;
 
-            if (bullet.getAngle() % Mathf.PI == 0) {
+            if (rot.getAngle() % Mathf.PI == 0) {
                 return HitBoxUtils.createAABB(last,
-                        bullet.getX() - width / 2f, bullet.getY() - height / 2f,
+                        entity.getX() - width / 2f, entity.getY() - height / 2f,
                         width, height);
-            } else if (bullet.getAngle() % Mathf.PI == Mathf.PI_2) {
+            } else if (rot.getAngle() % Mathf.PI == Mathf.PI_2) {
                 // inverted
                 return HitBoxUtils.createAABB(last,
-                        bullet.getX() - height / 2f, bullet.getY() - width / 2f,
+                        entity.getX() - height / 2f, entity.getY() - width / 2f,
                         height, width);
 
             } else {
-                float cos = MathUtils.cos(bullet.getAngle());
-                float sin = MathUtils.sin(bullet.getAngle());
+                float cos = MathUtils.cos(rot.getAngle());
+                float sin = MathUtils.sin(rot.getAngle());
 
                 float x1 = cos * -cx - sin * -cy,  y1 =  cos * -cy + sin * -cx;
                 float x2 = cos * +cx - sin * -cy,  y2 =  cos * -cy + sin * +cx;
@@ -53,7 +54,7 @@ public class AABBRotateSupplier implements HitBoxSupplier {
                 Polygon poly;
                 if (last instanceof Polygon) {
                     poly = (Polygon) last;
-                    poly.getCenter().set(bullet.getPos());
+                    poly.getCenter().set(entity.getPos());
                     poly.getModel(0).set(x1, y1);
                     poly.getModel(1).set(x2, y2);
                     poly.getModel(2).set(x3, y3);
@@ -62,7 +63,7 @@ public class AABBRotateSupplier implements HitBoxSupplier {
 
                 } else {
                     poly = new Polygon();
-                    poly.getCenter().set(bullet.getPos());
+                    poly.getCenter().set(entity.getPos());
                     poly.addPoint(new Vector2(x1, y1));
                     poly.addPoint(new Vector2(x2, y2));
                     poly.addPoint(new Vector2(x3, y3));

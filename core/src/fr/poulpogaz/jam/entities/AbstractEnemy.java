@@ -45,17 +45,22 @@ public abstract class AbstractEnemy extends LivingEntity implements IRotateEntit
         if (isAlive()) {
             movePattern.dir(t, dir, game, this);
             pos.add(dir);
+            computeAngle();
+            onMove();
 
             bulletPattern.addBullets(game, this, false);
 
             t++;
             nextPatterns();
-            computeAngle();
 
             if (!dir.epsilonEquals(0, 0)) {
                 markDirty();
             }
         }
+    }
+
+    protected void onMove() {
+
     }
 
     protected abstract void nextPatterns();

@@ -707,9 +707,7 @@ public class GameScreen extends AbstractScreen {
                 s = current.get(nextEnemyToAdd);
 
                 if (s.triggerTime() <= t) {
-                    Enemy e = new Enemy(this, s);
-
-                    enemies.add(e);
+                    enemies.add(s.createEnemy(this));
                     nextEnemyToAdd++;
                 } else {
                     break;

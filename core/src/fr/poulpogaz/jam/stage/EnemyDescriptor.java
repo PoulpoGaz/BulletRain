@@ -1,14 +1,13 @@
 package fr.poulpogaz.jam.stage;
 
+import fr.poulpogaz.jam.GameScreen;
 import fr.poulpogaz.jam.engine.HitBoxSupplier;
-import fr.poulpogaz.jam.entities.EntityRenderer;
-import fr.poulpogaz.jam.entities.TextureEntityRenderer;
-import fr.poulpogaz.jam.entities.TextureRotate;
+import fr.poulpogaz.jam.entities.*;
 import fr.poulpogaz.jam.utils.BuilderException;
 
 import java.util.Objects;
 
-public final class EnemyDescriptor {
+public class EnemyDescriptor {
     private final String name;
     private final EntityRenderer renderer;
     private final HitBoxSupplier hitBox;
@@ -25,6 +24,10 @@ public final class EnemyDescriptor {
         this.width = width;
         this.height = height;
         this.dropRate = dropRate;
+    }
+
+    public AbstractEnemy createEnemy(GameScreen screen, EnemyScript script) {
+        return new Enemy(screen, script);
     }
 
     public String name() {
@@ -85,14 +88,14 @@ public final class EnemyDescriptor {
 
     public static class Builder extends BaseBuilder {
 
-        private EntityRenderer renderer;
-        private HitBoxSupplier hitBox;
-        private int life;
-        private int width;
-        private int height;
-        private float dropRate = 1;
+        protected EntityRenderer renderer;
+        protected HitBoxSupplier hitBox;
+        protected int life;
+        protected int width;
+        protected int height;
+        protected float dropRate = 1;
 
-        private String name;
+        protected String name;
 
         public Builder(StageBuilder parent) {
             super(parent);
@@ -116,7 +119,11 @@ public final class EnemyDescriptor {
                 throw new BuilderException("Negative drop rate");
             }
 
-            return parent.addEnemy(new EnemyDescriptor(name, renderer, hitBox, life, width, height, dropRate));
+            return parent.addEnemy(createDescriptor());
+        }
+
+        protected EnemyDescriptor createDescriptor() {
+            return new EnemyDescriptor(name, renderer, hitBox, life, width, height, dropRate);
         }
 
         public EntityRenderer getRenderer() {
