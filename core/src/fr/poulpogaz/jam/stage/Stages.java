@@ -6,10 +6,7 @@ import fr.poulpogaz.jam.RainEffect;
 import fr.poulpogaz.jam.engine.AABBRotateSupplier;
 import fr.poulpogaz.jam.engine.AABBSupplier;
 import fr.poulpogaz.jam.engine.CircleSupplier;
-import fr.poulpogaz.jam.entities.BattleshipRenderer;
-import fr.poulpogaz.jam.entities.TextureRotate;
-import fr.poulpogaz.jam.entities.ThunderBullet;
-import fr.poulpogaz.jam.entities.ThunderBulletRenderer;
+import fr.poulpogaz.jam.entities.*;
 import fr.poulpogaz.jam.patterns.*;
 
 import java.util.ArrayList;
@@ -398,21 +395,21 @@ public class Stages {
                     .setHitBox(new AABBSupplier(24, 30))
 
                     .newPhase()
-                    .addBulletPattern(0, new BulletRainPattern("fire_ball", 8, new Vector2(-1, -1), 3f, 5f))
-                    .wait(Integer.MAX_VALUE)
+                        .addBulletPattern(0, new BulletRainPattern("fire_ball", 8, new Vector2(-1, -1), 3f, 5f))
+                        .wait(Integer.MAX_VALUE)
 
                     .newPhase(5000)
-                    .addLastMove(new CircularMove(new Vector2(0, -100),  5))
-                    .addBulletPattern(0, new MultiSpiralPattern("fire_ball", 10, 30))
+                        .addLastMove(new CircularMove(new Vector2(0, -100),  5))
+                        .addBulletPattern(0, new MultiSpiralPattern("fire_ball", 10, 30))
 
                     .newPhase(2500)
-                    .addLastMove(new RandomMovePulse(90))
-                    .addBulletPattern(120, new MultiSpiralPattern("fire_ball", 10, 30))
+                        .addLastMove(new RandomMovePulse(90))
+                        .addBulletPattern(120, new MultiSpiralPattern("fire_ball", 10, 30))
                     .build()
                 .build();
 
 
-        LEVEL_2 = new StageBuilder()
+        StageBuilder level2Builder = new StageBuilder()
                 .setBackground(new BackgroundRenderer.Tex("water_background.png"))
                 .setEffect(new RainEffect())
 
@@ -614,7 +611,7 @@ public class Stages {
                         .slowFollow(Integer.MAX_VALUE)
                         .setTriggerTimeS(13)
                         .build()
-                .endSeq()*/
+                .endSeq()
 
                 .startSeq()
                     .scriptBuilder("battleship")
@@ -652,8 +649,33 @@ public class Stages {
                         .moveTo(new Vector2(-200, MAP_HEIGHT - 200), 60 * 30)
                         .addBulletPattern(120, new BattleshipBulletPattern("battleship_bullet", "battleship_bullet2"))
                         .build()
-                .endSeq()
+                .endSeq()*/;
 
+        Boss2Pattern2 pattern2 = new Boss2Pattern2("bubble");
+        Boss2Pattern3 pattern3 = new Boss2Pattern3("bubble");
+
+        LEVEL_2 = level2Builder.bossBuilder()
+                    .setLife(15000)
+                    .setHitBox(new AABBSupplier(23, 25))
+                    .setRenderer(new Boss2Renderer())
+                    .setWidth(23)
+                    .setHeight(25)
+
+                    .newPhase()
+                        .addBulletPattern(0, new SpiralPattern("bubble", 0.5f, 11, 2f))
+                    .endPhase()
+
+                    .newPhase(10000)
+                        .addMove(0, new CircularMove(new Vector2(0, -50), 10), null, 60 * 5)
+                        .moveTo(new Vector2(0, MAP_HEIGHT - 100), 60)
+                        .addLastMove(pattern2)
+                        .addBulletPattern(60 * 5, pattern2)
+                    .endPhase()
+
+                    .newPhase(5000)
+                        .addLastMove(pattern3)
+                        .addBulletPattern(0, pattern3)
+                    .build()
                 .build();
 
 

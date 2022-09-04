@@ -849,6 +849,14 @@ public class GameScreen extends AbstractScreen {
         particles.add(particle);
     }
 
+    public Array<Bullet> getPlayerBullets() {
+        return playerBullets;
+    }
+
+    public Array<Bullet> getEnemiesBullets() {
+        return enemiesBullets;
+    }
+
     public float getMapScroll() {
         return mapScroll;
     }

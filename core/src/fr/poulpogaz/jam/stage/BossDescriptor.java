@@ -174,6 +174,9 @@ public class BossDescriptor {
 
             phases.add(new BossPhase(onLife, moves, bullets));
 
+            moves = null;
+            bullets = null;
+
             return this;
         }
         
@@ -216,6 +219,10 @@ public class BossDescriptor {
             Gdx.app.debug("DEBUG", "End move, start at " + currentT);
 
             return addMove(new EnemyAction<>(currentT, pattern), null, Integer.MAX_VALUE);
+        }
+
+        public Builder addMove(int start, MovePattern move, Vector2 endPos, int duration) {
+            return addMove(new EnemyAction<>(start, move), endPos, duration);
         }
 
         public Builder addMove(EnemyAction<MovePattern> move, Vector2 endPos, int duration) {
