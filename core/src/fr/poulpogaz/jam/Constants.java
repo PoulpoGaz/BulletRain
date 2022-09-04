@@ -34,7 +34,7 @@ public class Constants {
 
     public static final int OUTER_SCREEN_SIZE = 50;
 
-    public static final float PLAYER_MIN_POWER = 1f;
+    public static final float PLAYER_MIN_POWER = 1;
     public static final float PLAYER_MAX_POWER = 4f;
     public static final float POWER_BLOCK_VALUE = 0.05f;
 

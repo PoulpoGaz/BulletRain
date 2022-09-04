@@ -2,7 +2,6 @@ package fr.poulpogaz.jam.engine;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import fr.poulpogaz.jam.entities.Bullet;
 import fr.poulpogaz.jam.entities.Entity;
 import fr.poulpogaz.jam.entities.IRotateEntity;
 import fr.poulpogaz.jam.utils.Mathf;

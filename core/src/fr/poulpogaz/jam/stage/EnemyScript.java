@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import fr.poulpogaz.jam.GameScreen;
 import fr.poulpogaz.jam.entities.AbstractEnemy;
-import fr.poulpogaz.jam.entities.Enemy;
 import fr.poulpogaz.jam.patterns.BulletPattern;
 import fr.poulpogaz.jam.patterns.MovePattern;
 import fr.poulpogaz.jam.patterns.TargetMove;

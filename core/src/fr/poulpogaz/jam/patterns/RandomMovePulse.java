@@ -1,6 +1,5 @@
 package fr.poulpogaz.jam.patterns;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import fr.poulpogaz.jam.Constants;
 import fr.poulpogaz.jam.GameScreen;

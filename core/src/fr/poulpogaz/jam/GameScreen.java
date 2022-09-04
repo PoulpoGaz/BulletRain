@@ -186,7 +186,7 @@ public class GameScreen extends AbstractScreen {
             if (stageTransition < 0) {
                 update(delta);
 
-                if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+                if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) || Gdx.input.isKeyJustPressed(Input.Keys.CONTROL_RIGHT)) {
                     if (player.isDying()) {
                         deadMenu.setVisible(true);
                     } else {
@@ -228,7 +228,7 @@ public class GameScreen extends AbstractScreen {
             pauseMenu.setVisible(false);
         } else if (s == 2) {
             jam.setScreen(jam.getMainMenuScreen());
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) || Gdx.input.isKeyJustPressed(Input.Keys.CONTROL_RIGHT)) {
             pauseMenu.setVisible(false);
         }
     }

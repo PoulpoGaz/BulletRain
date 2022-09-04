@@ -5,8 +5,6 @@ import com.badlogic.gdx.math.Vector2;
 import fr.poulpogaz.jam.BackgroundRenderer;
 import fr.poulpogaz.jam.Effect;
 import fr.poulpogaz.jam.GameScreen;
-import fr.poulpogaz.jam.Jam;
-import fr.poulpogaz.jam.entities.Boss;
 import fr.poulpogaz.jam.entities.Bullet;
 import fr.poulpogaz.jam.patterns.MovePattern;
 

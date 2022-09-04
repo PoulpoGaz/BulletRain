@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
 import fr.poulpogaz.jam.utils.Size;
-import fr.poulpogaz.jam.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;

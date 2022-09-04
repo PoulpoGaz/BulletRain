@@ -4,9 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.utils.ScreenUtils;
 import fr.poulpogaz.jam.utils.Size;
-import fr.poulpogaz.jam.utils.Utils;
 
-import java.awt.*;
 import java.util.List;
 
 public class MainMenuScreen extends AbstractScreen {

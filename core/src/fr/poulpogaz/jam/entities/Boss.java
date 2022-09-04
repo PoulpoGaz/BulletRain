@@ -1,8 +1,6 @@
 package fr.poulpogaz.jam.entities;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
 import fr.poulpogaz.jam.Constants;
 import fr.poulpogaz.jam.GameScreen;
 import fr.poulpogaz.jam.engine.HitBox;

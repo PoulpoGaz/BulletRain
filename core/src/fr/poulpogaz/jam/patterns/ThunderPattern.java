@@ -3,8 +3,8 @@ package fr.poulpogaz.jam.patterns;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import fr.poulpogaz.jam.GameScreen;
-import fr.poulpogaz.jam.entities.ThunderBullet;
 import fr.poulpogaz.jam.entities.Entity;
+import fr.poulpogaz.jam.entities.ThunderBullet;
 import fr.poulpogaz.jam.stage.Stage;
 import fr.poulpogaz.jam.utils.Mathf;
 
